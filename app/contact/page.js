@@ -1,9 +1,90 @@
 "use client";
-
+import toast, { Toaster } from "react-hot-toast";
+import "./contact.css";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase";
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  doc,
+  getDoc
+} from "firebase/firestore";
 export default function Contact() {
+    const [loading, setLoading] = useState(true);
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
+
+  const [contactInfo, setContactInfo] = useState([]);
+
+    useEffect(() => {
+    const load = async () => {
+      try {
+        const snap = await getDoc(
+          doc(db, "websites", "globalbiomedical", "pages", "contact")
+        );
+
+        if (snap.exists()) {
+          setContactInfo(snap.data().contactInfo || []);
+        } else {
+          setContactInfo([]);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      setLoading(false);
+    };
+
+    load();
+  }, [])
+    const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+const handleSubmit = async () => {
+  const { name, email, phone, message } = form;
+
+  if (!name || !email || !phone || !message) {
+    return toast.error("Fill all fields");
+  }
+
+  try {
+    await addDoc(
+      collection(db, "websitesQueries", "globalbiomedical", "contactQueries"),
+      {
+        ...form,
+        createdAt: serverTimestamp()
+      }
+    );
+
+    toast.success("Message sent");
+
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: ""
+    });
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to send");
+  }
+};
   return (
     <div className="contact-page">
-
+      <Toaster position="top-right" />
       {/* 🔥 HERO */}
       <section className="contact-hero text-center">
         <div className="container">
@@ -30,61 +111,103 @@ export default function Contact() {
                 We are here to help you with all your diagnostic and medical needs.
               </p>
 
-            <div className="contact-info mt-4">
-            <div className="info-box">
-              <i className="bi bi-geo-alt"></i>
-              <div>
-                <strong>Location</strong>
-                <p>Jaipur, India</p>
-              </div>
-            </div>
+              <div className="contact-info mt-4">
 
-            <div className="info-box">
-              <i className="bi bi-envelope"></i>
-              <div>
-                <strong>Email</strong>
-                <p>info@rajbiosis.com</p>
-              </div>
-            </div>
+                {loading ? (
+                  <p className="text-muted">Loading...</p>
+                ) : contactInfo.length === 0 ? (
+                  <p className="text-muted">No contact info added</p>
+                ) : (
+                  contactInfo.map((item, i) => (
+                    <div className="info-box" key={i}>
 
-            <div className="info-box">
-              <i className="bi bi-telephone"></i>
-              <div>
-                <strong>Phone</strong>
-                <p>+91 XXXXX XXXXX</p>
+                      <i className={
+                        item.label.toLowerCase().includes("address")
+                          ? "bi bi-geo-alt"
+                          : item.label.toLowerCase().includes("email")
+                          ? "bi bi-envelope"
+                          : item.label.toLowerCase().includes("phone")
+                          ? "bi bi-telephone"
+                          : "bi bi-info-circle"
+                      }></i>
+
+                      <div>
+                        <strong>{item.label}</strong>
+                        <p>{item.value}</p>
+                      </div>
+
+                    </div>
+                  ))
+                )}
+
               </div>
-            </div>
-          </div>
             </div>
 
             {/* 🔥 RIGHT FORM */}
             <div className="col-lg-7" data-aos="fade-left">
               <div className="contact-form">
                 <div className="row g-3">
-                  <div className="col-md-6">
-                    <input type="text" placeholder="Your Name" className="input-field"/>
-                  </div>
+<div className="col-md-6">
+  <input
+    type="text"
+    name="name"
+    placeholder="Your Name"
+    className="input-field"
+    value={form.name}
+    onChange={handleChange}
+  />
+</div>
 
-                  <div className="col-md-6">
-                    <input type="email" placeholder="Email Address" className="input-field"/>
-                  </div>
+<div className="col-md-6">
+  <input
+    type="email"
+    name="email"
+    placeholder="Email Address"
+    className="input-field"
+    value={form.email}
+    onChange={handleChange}
+  />
+</div>
 
-                  <div className="col-md-6">
-                    <input type="text" placeholder="Phone Number" className="input-field"/>
-                  </div>
+<div className="col-md-6">
+  <input
+    type="text"
+    name="phone"
+    placeholder="Phone Number"
+    className="input-field"
+    value={form.phone}
+    onChange={handleChange}
+  />
+</div>
 
-                  <div className="col-md-6">
-                    <input type="text" placeholder="Subject" className="input-field"/>
-                  </div>
+<div className="col-md-6">
+  <input
+    type="text"
+    name="subject"
+    placeholder="Subject"
+    className="input-field"
+    value={form.subject}
+    onChange={handleChange}
+  />
+</div>
+
+<div className="col-12">
+  <textarea
+    name="message"
+    rows="4"
+    placeholder="Your Message"
+    value={form.message}
+    onChange={handleChange}
+  ></textarea>
+</div>
 
                   <div className="col-12">
-                    <textarea rows="4" placeholder="Your Message"></textarea>
-                  </div>
-
-                  <div className="col-12">
-                    <button className="btn submit-btn w-100">
-                      Send Message
-                    </button>
+ <button
+  className="btn submit-btn w-100"
+  onClick={handleSubmit}
+>
+  Send Message
+</button>
                   </div>
                 </div>
               </div>
@@ -108,116 +231,7 @@ export default function Contact() {
       </section>
 
       {/* 🔥 STYLES */}
-      <style jsx>{`
 
-      /* PAGE */
-      .contact-page {
-        background: #f9fafb;
-      }
-
-      /* HERO */
-      .contact-hero {
-        padding: 100px 0;
-        background: linear-gradient(3deg, #945c8dd6, #db8a64, #462c647d);
-        color: #fff;
-      }
-
-      .contact-hero span {
-        color: #f5e6d3;
-      }
-
-      .contact-hero p {
-        color: rgba(255,255,255,0.8);
-      }
-
-      /* LEFT TEXT */
-      .contact-info p {
-        margin-bottom: 10px;
-        font-size: 15px;
-        color: #666;
-      }
-
-      /* INFO BOX */
-      .info-box {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        background: #fff;
-        padding: 14px;
-        border-radius: 12px;
-        margin-bottom: 12px;
-        border: 1px solid #eee;
-        transition: 0.3s;
-      }
-
-      .info-box:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      }
-
-      .info-box i {
-        font-size: 20px;
-        color: #8e6a8f; /* 👈 purple */
-      }
-
-      .info-box p {
-        margin: 0;
-        font-size: 14px;
-        color: #666;
-      }
-
-      /* FORM */
-      .contact-form {
-        background: #fff;
-        padding: 35px;
-        border-radius: 20px;
-        box-shadow: 0 25px 60px rgba(0,0,0,0.1);
-      }
-
-      /* INPUT */
-      .input-field,
-      .contact-form textarea {
-        width: 100%;
-        padding: 14px;
-        border-radius: 12px;
-        border: 1px solid #ddd;
-        transition: 0.3s;
-      }
-
-      .input-field:focus,
-      .contact-form textarea:focus {
-        border-color: #8e6a8f;
-        box-shadow: 0 0 12px rgba(142,106,143,0.2);
-      }
-
-      /* BUTTON */
-      .submit-btn {
-        background: #111;
-        color: #fff;
-        border-radius: 50px;
-        padding: 14px;
-        font-weight: 500;
-        border: none;
-        transition: 0.3s;
-      }
-
-      .submit-btn:hover {
-        background: #000;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      }
-
-      /* MAP */
-      .map-section iframe {
-        border-radius: 0;
-      }
-
-      /* SECTION SPACING */
-      section {
-        padding: 80px 0;
-      }
-
-      `}</style>
 
           </div>
         );

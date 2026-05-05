@@ -1,6 +1,51 @@
-import Link from "next/link";
+"use client";
 
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import Link from "next/link";
 export default function Home() {
+    const [services, setServices] = useState([]);
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+  const fetchData = async () => {
+    const snap = await getDoc(
+      doc(db, "websites", "globalbiomedical", "pages", "products")
+    );
+
+    if (snap.exists()) {
+      const data = snap.data().products || [];
+      const visible = data.filter((p) => p.isPublished !== false);
+      setProducts(visible);
+    }
+  };
+
+  fetchData();
+}, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const snap = await getDoc(
+        doc(db, "websites", "globalbiomedical", "pages", "services")
+      );
+
+      if (snap.exists()) {
+        const data = snap.data().services || [];
+
+        // 🔥 sirf first 3
+        setServices(data.slice(0, 3));
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const icons = [
+    "bi-heart-pulse",
+    "bi-capsule",
+    "bi-tools",
+  ];
+
   return (
     <>
     <section className="py-5 service-section">
@@ -8,38 +53,26 @@ export default function Home() {
 
     <h2 className="section-title">Our Core Services</h2>
 
-    <div className="row g-4">
-      <div className="col-md-4">
-        <div className="service-card h-100">
-          <i className="bi bi-heart-pulse"></i>
-          <h5 className="mt-3">Diagnostic Equipment</h5>
-          <p className="service-text">
-            High-end lab machines and diagnostic tools.
-          </p>
-        </div>
-      </div>
+        <div className="row g-4">
+          {services.length === 0 ? (
+            <p>No Services Found</p>
+          ) : (
+            services.map((item, i) => (
+              <div className="col-md-4" key={i}>
+                <div className="p-4 rounded-4 service-card h-100">
 
-      <div className="col-md-4">
-        <div className="service-card h-100">
-          <i className="bi bi-capsule"></i>
-          <h5 className="mt-3">Medical Consumables</h5>
-          <p className="service-text">
-            Trusted quality consumables for healthcare.
-          </p>
-        </div>
-      </div>
+                  {/* ICON */}
+                  <i className={`bi ${icons[i] || "bi-heart-pulse"} fs-1 text-success`}></i>
 
-      <div className="col-md-4">
-        <div className="service-card h-100">
-          <i className="bi bi-tools"></i>
-          <h5 className="mt-3">Support & Maintenance</h5>
-          <p className="service-text">
-            Reliable after-sales and technical support.
-          </p>
-        </div>
-      </div>
+                  {/* DATA */}
+                  <h5 className="mt-3">{item.title}</h5>
+                  <p className="text-muted">{item.desc}</p>
 
-    </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
 
   </div>
 </section>
@@ -53,26 +86,27 @@ export default function Home() {
 
     <div className="row g-4">
 
-      {[1,2,3,4].map((item)=>(
-        <div className="col-md-3" key={item}>
+      {products.slice(0, 4).map((item, i) => (
+        <div className="col-md-3" key={item.id || i}>
 
-          <div className="product-card-new">
+          <div className="product-card-pro">
 
-            <div className="product-img">
-              <img src="/abk.png" />
+            <div className="product-img-pro">
+              <img src={item.image || "/no-image.png"} />
             </div>
 
             <div className="product-body text-start">
-              <h6>Albumin BCG Method Kit</h6>
+
+              <h6>{item.title}</h6>
 
               <div className="meta">
-                <span>20% / 100ml</span>
-                <span>Tablet</span>
-                <span>Infusion</span>
+                <span>{item.brand || "-"}</span>
+                <span>{item.size || "-"}</span>
+                <span>{item.usage || "-"}</span>
               </div>
 
-              <Link href="/products">
-                <button className="product-btn mt-3 w-100">
+              <Link href={`/products`}>
+                <button className="btn btn-success w-100 mt-3">
                   View Details
                 </button>
               </Link>
@@ -261,14 +295,19 @@ export default function Home() {
       </p>
 
       <div className="mt-4 d-flex justify-content-center gap-3">
-
-        <button className="cta-btn-primary">
+        <Link href="/contact">
+        <button className="cta-btn-primary"
+         >
+          
           Get in Touch
         </button>
-
-        <button className="cta-btn-outline">
+        </Link>
+        <Link href="/products">
+        <button className="cta-btn-outline"
+          >
           Request Quote
         </button>
+        </Link>
 
       </div>
 

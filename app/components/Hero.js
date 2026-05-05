@@ -1,6 +1,31 @@
+ "use client";
+ import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";   
     import Link from "next/link";
 
     export default function Hero() {
+         const [data, setData] = useState({
+  title: "Advanced Diagnostic Solutions.",
+  description: "Delivering high-quality medical equipment & consumables for hospitals, labs & healthcare professionals.",
+  button1Text: "Explore Services",
+  button2Text: "Contact Us",
+});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const snap = await getDoc(
+        doc(db, "websites", "globalbiomedical", "pages", "home")
+      );
+
+      if (snap.exists()) {
+        setData(snap.data());
+      }
+    };
+
+    fetchData();
+  }, []);
+
       return (
         <section className="hero-section text-white">
           <div className="container">
@@ -21,22 +46,21 @@
                 </span>
 
                 <h1 className="fw-bold display-4 hero-title">
-                  Advanced <span>Diagnostic</span> Solutions
+                  {data?.title}
                 </h1>
 
                 <p className="mt-3 hero-subtext">
-                  Delivering high-quality medical equipment & consumables
-                  for hospitals, labs & healthcare professionals.
+                  {data?.description}
                 </p>
 
                 <div className="mt-4 d-flex gap-3">
                   <Link href="/services" className="hero-btn-primary">
-                    Explore Services
+                    {data?.button1Text}
                   </Link>
 
                   <Link href="/contact">
                     <button className="btn hero-btn-outline">
-                      Contact Us
+                      {data?.button2Text}
                     </button>
                   </Link>
                 </div>
