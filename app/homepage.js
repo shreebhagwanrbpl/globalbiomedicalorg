@@ -10,7 +10,7 @@ export default function Home() {
   useEffect(() => {
   const fetchData = async () => {
     const snap = await getDoc(
-      doc(db, "websites", "globalbiomedical", "pages", "products")
+      doc(db, "websites", "globalbiomedicalorg", "pages", "products")
     );
 
     if (snap.exists()) {
@@ -26,7 +26,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       const snap = await getDoc(
-        doc(db, "websites", "globalbiomedical", "pages", "services")
+        doc(db, "websites", "globalbiomedicalorg", "pages", "services")
       );
 
       if (snap.exists()) {

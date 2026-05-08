@@ -27,7 +27,7 @@ export default function Contact() {
     const load = async () => {
       try {
         const snap = await getDoc(
-          doc(db, "websites", "globalbiomedical", "pages", "contact")
+          doc(db, "websites", "globalbiomedicalorg", "pages", "contact")
         );
 
         if (snap.exists()) {
@@ -60,7 +60,7 @@ const handleSubmit = async () => {
 
   try {
     await addDoc(
-      collection(db, "websitesQueries", "globalbiomedical", "contactQueries"),
+      collection(db, "websitesQueries", "globalbiomedicalorg", "contactQueries"),
       {
         ...form,
         createdAt: serverTimestamp()

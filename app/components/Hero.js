@@ -15,7 +15,7 @@ import { db } from "@/lib/firebase";
   useEffect(() => {
     const fetchData = async () => {
       const snap = await getDoc(
-        doc(db, "websites", "globalbiomedical", "pages", "home")
+        doc(db, "websites", "globalbiomedicalorg", "pages", "home")
       );
 
       if (snap.exists()) {

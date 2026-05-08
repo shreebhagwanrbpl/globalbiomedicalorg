@@ -52,7 +52,7 @@ useEffect(() => {
     const fetchProducts = async () => {
       try {
         const snap = await getDoc(
-          doc(db, "websites", "globalbiomedical", "pages", "products")
+          doc(db, "websites", "globalbiomedicalorg", "pages", "products")
         );
 
         if (snap.exists()) {
@@ -83,7 +83,7 @@ if (!form.email || !form.phone) {
 
   try {
     await addDoc(
-      collection(db, "websitesQueries", "globalbiomedical", "productQueries"),
+      collection(db, "websitesQueries", "globalbiomedicalorg", "productQueries"),
       {
         name: form.name,
         email: form.email,
