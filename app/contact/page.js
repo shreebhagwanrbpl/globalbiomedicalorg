@@ -1,8 +1,10 @@
 "use client";
+
 import toast, { Toaster } from "react-hot-toast";
 import "./contact.css";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
+
 import {
   addDoc,
   collection,
@@ -10,8 +12,10 @@ import {
   doc,
   getDoc
 } from "firebase/firestore";
-export default function Contact() {
-    const [loading, setLoading] = useState(true);
+
+export default function Contact({ city }) {
+
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     name: "",
@@ -23,204 +27,361 @@ export default function Contact() {
 
   const [contactInfo, setContactInfo] = useState([]);
 
-    useEffect(() => {
+  // current city
+  const currentCity = city || "jaipur";
+
+  // format city
+  const formatCity = (name = "") =>
+    name
+      .split("-")
+      .map(
+        (w) =>
+          w.charAt(0).toUpperCase() + w.slice(1)
+      )
+      .join(" ");
+
+  const citySlug = currentCity
+    ?.toLowerCase()
+    ?.replace(/\s+/g, "-");
+
+  const cityName = formatCity(currentCity);
+
+  // FETCH CONTACT INFO
+  useEffect(() => {
+
     const load = async () => {
+
       try {
+
         const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "pages", "contact")
+          doc(
+            db,
+            "websites",
+            "globalbiomedicalorg",
+            "pages",
+            "contact"
+          )
         );
 
         if (snap.exists()) {
-          setContactInfo(snap.data().contactInfo || []);
+          setContactInfo(
+            snap.data().contactInfo || []
+          );
         } else {
           setContactInfo([]);
         }
+
       } catch (err) {
         console.error(err);
       }
 
       setLoading(false);
+
     };
 
     load();
-  }, [])
-    const handleChange = (e) => {
+
+  }, []);
+
+  // HANDLE CHANGE
+  const handleChange = (e) => {
+
     setForm({
       ...form,
       [e.target.name]: e.target.value
     });
+
   };
 
-const handleSubmit = async () => {
-  const { name, email, phone, message } = form;
+  // SUBMIT
+  const handleSubmit = async () => {
 
-  if (!name || !email || !phone || !message) {
-    return toast.error("Fill all fields");
-  }
+    const {
+      name,
+      email,
+      phone,
+      message
+    } = form;
 
-  try {
-    await addDoc(
-      collection(db, "websitesQueries", "globalbiomedicalorg", "contactQueries"),
-      {
-        ...form,
-        createdAt: serverTimestamp()
-      }
-    );
+    if (
+      !name ||
+      !email ||
+      !phone ||
+      !message
+    ) {
+      return toast.error(
+        "Fill all fields"
+      );
+    }
 
-    toast.success("Message sent");
+    try {
 
-    setForm({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: ""
-    });
+      await addDoc(
+        collection(
+          db,
+          "websitesQueries",
+          "globalbiomedicalorg",
+          "contactQueries"
+        ),
+        {
+          ...form,
+          city: cityName,
+          createdAt: serverTimestamp()
+        }
+      );
 
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to send");
-  }
-};
+      toast.success("Message sent");
+
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: ""
+      });
+
+    } catch (err) {
+
+      console.error(err);
+
+      toast.error("Failed to send");
+
+    }
+
+  };
+
   return (
     <div className="contact-page">
+
       <Toaster position="top-right" />
-      {/* 🔥 HERO */}
+
+      {/* HERO */}
       <section className="contact-hero text-center">
+
         <div className="container">
+
           <h1 className="fw-bold display-4">
+
             Contact <span>Us</span>
+
+            {" "}
+
+            {cityName &&
+              `in ${cityName}`}
+
           </h1>
+
           <p className="mt-3">
-            Get in touch with us for medical solutions & support
+            Get in touch with us for
+            medical solutions & support
+            {" "}
+            {cityName &&
+              `in ${cityName}`}
           </p>
+
         </div>
+
       </section>
 
-      {/* 🔥 CONTACT SECTION */}
+      {/* CONTACT SECTION */}
       <section className="py-5">
+
         <div className="container">
+
           <div className="row g-5">
 
-            {/* 🔥 LEFT INFO */}
-            <div className="col-lg-5" data-aos="fade-right">
+            {/* LEFT INFO */}
+            <div
+              className="col-lg-5"
+              data-aos="fade-right"
+            >
 
-              <h4 className="fw-bold mb-3">Get In Touch</h4>
+              <h4 className="fw-bold mb-3">
+                Get In Touch
+              </h4>
 
               <p className="text-muted">
-                We are here to help you with all your diagnostic and medical needs.
+                We are here to help you
+                with all your diagnostic
+                and medical needs.
               </p>
 
               <div className="contact-info mt-4">
 
                 {loading ? (
-                  <p className="text-muted">Loading...</p>
-                ) : contactInfo.length === 0 ? (
-                  <p className="text-muted">No contact info added</p>
-                ) : (
-                  contactInfo.map((item, i) => (
-                    <div className="info-box" key={i}>
 
-                      <i className={
-                        item.label.toLowerCase().includes("address")
-                          ? "bi bi-geo-alt"
-                          : item.label.toLowerCase().includes("email")
-                          ? "bi bi-envelope"
-                          : item.label.toLowerCase().includes("phone")
-                          ? "bi bi-telephone"
-                          : "bi bi-info-circle"
-                      }></i>
+                  <p className="text-muted">
+                    Loading...
+                  </p>
+
+                ) : contactInfo.length === 0 ? (
+
+                  <p className="text-muted">
+                    No contact info added
+                  </p>
+
+                ) : (
+
+                  contactInfo.map((item, i) => (
+
+                    <div
+                      className="info-box"
+                      key={i}
+                    >
+
+                      <i
+                        className={
+                          item.label
+                            .toLowerCase()
+                            .includes("address")
+                            ? "bi bi-geo-alt"
+                            : item.label
+                                .toLowerCase()
+                                .includes("email")
+                            ? "bi bi-envelope"
+                            : item.label
+                                .toLowerCase()
+                                .includes("phone")
+                            ? "bi bi-telephone"
+                            : "bi bi-info-circle"
+                        }
+                      ></i>
 
                       <div>
-                        <strong>{item.label}</strong>
-                        <p>{item.value}</p>
+
+                        <strong>
+                          {item.label}
+                        </strong>
+
+                        <p>
+                          {
+                            item.label
+                              .toLowerCase()
+                              .includes(
+                                "address"
+                              )
+                              ? item.value ||
+                                `${cityName}, India`
+                              : item.value
+                          }
+                        </p>
+
                       </div>
 
                     </div>
+
                   ))
+
                 )}
 
               </div>
+
             </div>
 
-            {/* 🔥 RIGHT FORM */}
-            <div className="col-lg-7" data-aos="fade-left">
+            {/* RIGHT FORM */}
+            <div
+              className="col-lg-7"
+              data-aos="fade-left"
+            >
+
               <div className="contact-form">
+
                 <div className="row g-3">
-<div className="col-md-6">
-  <input
-    type="text"
-    name="name"
-    placeholder="Your Name"
-    className="input-field"
-    value={form.name}
-    onChange={handleChange}
-  />
-</div>
 
-<div className="col-md-6">
-  <input
-    type="email"
-    name="email"
-    placeholder="Email Address"
-    className="input-field"
-    value={form.email}
-    onChange={handleChange}
-  />
-</div>
+                  <div className="col-md-6">
 
-<div className="col-md-6">
-  <input
-    type="text"
-    name="phone"
-    placeholder="Phone Number"
-    className="input-field"
-    value={form.phone}
-    onChange={handleChange}
-  />
-</div>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Your Name"
+                      className="input-field"
+                      value={form.name}
+                      onChange={handleChange}
+                    />
 
-<div className="col-md-6">
-  <input
-    type="text"
-    name="subject"
-    placeholder="Subject"
-    className="input-field"
-    value={form.subject}
-    onChange={handleChange}
-  />
-</div>
+                  </div>
 
-<div className="col-12">
-  <textarea
-    name="message"
-    rows="4"
-    placeholder="Your Message"
-    value={form.message}
-    onChange={handleChange}
-  ></textarea>
-</div>
+                  <div className="col-md-6">
+
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email Address"
+                      className="input-field"
+                      value={form.email}
+                      onChange={handleChange}
+                    />
+
+                  </div>
+
+                  <div className="col-md-6">
+
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Phone Number"
+                      className="input-field"
+                      value={form.phone}
+                      onChange={handleChange}
+                    />
+
+                  </div>
+
+                  <div className="col-md-6">
+
+                    <input
+                      type="text"
+                      name="subject"
+                      placeholder="Subject"
+                      className="input-field"
+                      value={form.subject}
+                      onChange={handleChange}
+                    />
+
+                  </div>
 
                   <div className="col-12">
- <button
-  className="btn submit-btn w-100"
-  onClick={handleSubmit}
->
-  Send Message
-</button>
+
+                    <textarea
+                      name="message"
+                      rows="4"
+                      placeholder="Your Message"
+                      value={form.message}
+                      onChange={handleChange}
+                    ></textarea>
+
                   </div>
+
+                  <div className="col-12">
+
+                    <button
+                      className="btn submit-btn w-100"
+                      onClick={handleSubmit}
+                    >
+                      Send Message
+                    </button>
+
+                  </div>
+
                 </div>
+
               </div>
+
             </div>
+
           </div>
+
         </div>
+
       </section>
-      
+
+      {/* MAP */}
       <section className="map-section">
+
         <div className="container-fluid p-0">
 
           <iframe
-            src="https://maps.google.com/maps?q=Raj%20Biosis%20Pvt%20Ltd%20Jaipur&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            src={`https://maps.google.com/maps?q=${cityName},India&output=embed`}
             width="100%"
             height="400"
             style={{ border: 0 }}
@@ -228,11 +389,9 @@ const handleSubmit = async () => {
           ></iframe>
 
         </div>
+
       </section>
 
-      {/* 🔥 STYLES */}
-
-
-          </div>
-        );
-      }
+    </div>
+  );
+}

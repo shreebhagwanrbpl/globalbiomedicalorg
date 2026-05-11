@@ -1,10 +1,10 @@
 "use client";
-
+import Hero from "./components/Hero";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
-export default function Home() {
+export default function Home({ city }) {
     const [services, setServices] = useState([]);
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -48,6 +48,7 @@ export default function Home() {
 
   return (
     <>
+     <Hero city={city} />
     <section className="py-5 service-section">
   <div className="container-fluid px-5 text-center">
 
