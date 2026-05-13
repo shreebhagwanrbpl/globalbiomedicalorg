@@ -1,39 +1,109 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { usePathname } from "next/navigation";
+import { doc, onSnapshot, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
 
 export default function Hero({ city }) {
-
+  const [mounted, setMounted] = useState(false);
+  const [homeLoading, setHomeLoading] = useState(true);
+  
   const [data, setData] = useState({
-    title: "Advanced Diagnostic Solutions.",
-    description:
-      "Delivering high-quality medical equipment & consumables for hospitals, labs & healthcare professionals.",
-    button1Text: "Explore Services",
-    button2Text: "Contact Us",
+    // title: "Advanced Diagnostic Solutions",
+    // description:
+    //   "Delivering high-quality medical equipment & consumables for hospitals, labs & healthcare professionals",
+    // button1Text: "Explore Services",
+    // button2Text: "Contact Us",
   });
-
+  const pathname = usePathname();
+  const pathParts = pathname
+  .split("/")
+  .filter(Boolean);
   // current city
-  const currentCity = city || "jaipur";
+const [currentCity, setCurrentCity] =
+  useState("jaipur");
+  const [isValidCity, setIsValidCity] =
+  useState(false);
+const [loading, setLoading] =
+  useState(true);
+  useEffect(() => {
+
+  const checkDistrict =
+    async () => {
+
+      const slug =
+        pathParts[0];
+
+      if (!slug) {
+
+        setCurrentCity("jaipur");
+        setIsValidCity(false);
+         setLoading(false);
+
+        return;
+
+      }
+
+      try {
+
+        const snap = await getDoc(
+          doc(
+            db,
+            "websites",
+            "globalbiomedicalorg",
+            "districts",
+            slug
+          )
+        );
+
+        // valid city
+        if (snap.exists()) {
+
+          setCurrentCity(slug);
+          setIsValidCity(true);
+
+        } else {
+
+          // invalid city
+          setCurrentCity("jaipur");
+          setIsValidCity(false);
+
+        }
+
+      } catch {
+
+        setCurrentCity("jaipur");
+        setIsValidCity(false);
+
+      }
+  setLoading(false);
+    };
+
+  checkDistrict();
+
+}, [pathname]);
 
   // format city
-  const formatCity = (name = "") =>
-    name
-      .split("-")
-      .map(
-        (w) =>
-          w.charAt(0).toUpperCase() + w.slice(1)
-      )
-      .join(" ");
+const formatCity = (name = "") =>
+  name
+    .split("-")
+    .map(
+      (w) =>
+        w.charAt(0).toUpperCase() +
+        w.slice(1)
+    )
+    .join(" ");
 
   const citySlug = currentCity
     ?.toLowerCase()
     ?.replace(/\s+/g, "-");
 
   const cityName = formatCity(currentCity);
-
+useEffect(() => {
+  setMounted(true);
+}, []);
   useEffect(() => {
 
     const fetchData = async () => {
@@ -51,13 +121,25 @@ export default function Hero({ city }) {
       if (snap.exists()) {
         setData(snap.data());
       }
-
+setHomeLoading(false);
     };
 
     fetchData();
 
   }, []);
+if (!mounted || homeLoading || loading) {
 
+    return (
+<div className="page-loader">
+  <div className="loader-circle"></div>
+
+  <h2>Global Biomedical</h2>
+
+  <p>Loading amazing healthcare solutions...</p>
+</div>
+    );
+
+  }
   return (
     <section className="hero-section text-white">
 
@@ -91,8 +173,9 @@ export default function Hero({ city }) {
 
               {" "}
 
-              {cityName &&
-                `in ${cityName}`}
+    {isValidCity
+  ? ` in ${cityName}`
+  : ""}
 
             </h1>
 
@@ -102,8 +185,10 @@ export default function Hero({ city }) {
 
               {" "}
 
-              {cityName &&
-                `available in ${cityName}`}
+{" "}
+{isValidCity
+  ? ` available in ${cityName}`
+  : ""}
 
             </p>
 

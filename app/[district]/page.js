@@ -1,4 +1,4 @@
-import Home from "../homepage";
+import Home from "../page";
 
 export default async function Page({ params }) {
 

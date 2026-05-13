@@ -1,5 +1,5 @@
 "use client";
-
+import { usePathname,useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -15,7 +15,8 @@ import {
 } from "firebase/firestore";
 
 export default function Products({ city }) {
-
+const pathname = usePathname();
+const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
 
   const [selectedProduct, setSelectedProduct] =
@@ -44,27 +45,98 @@ export default function Products({ city }) {
     email: "",
     phone: ""
   });
-
+const pathParts = pathname
+  .split("/")
+  .filter(Boolean);
+  const [currentCity, setCurrentCity] =
+  useState("jaipur");
   // current city
-  const currentCity = city || "jaipur";
+const [isValidCity, setIsValidCity] =
+  useState(false);
+    const [mounted, setMounted] =
+  useState(false);
+const [loadingProducts, setLoadingProducts] =
+  useState(true);
+  const makeSlug = (text = "") =>
+  text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
 
   // format city
-  const formatCity = (name = "") =>
-    name
-      .split("-")
-      .map(
-        (w) =>
-          w.charAt(0).toUpperCase() +
-          w.slice(1)
-      )
-      .join(" ");
+const formatCity = (name = "") =>
+  name
+    .split("-")
+    .map(
+      (w) =>
+        w.charAt(0).toUpperCase() +
+        w.slice(1)
+    )
+    .join(" ");
 
-  const citySlug = currentCity
-    ?.toLowerCase()
-    ?.replace(/\s+/g, "-");
+const citySlug = currentCity
+  ?.toLowerCase()
+  ?.replace(/\s+/g, "-");
 
-  const cityName = formatCity(currentCity);
+const cityName =
+  formatCity(currentCity);
+  useEffect(() => {
 
+  const checkDistrict =
+    async () => {
+
+      const slug =
+        pathParts[0];
+
+      // no slug
+      if (!slug) {
+
+        setCurrentCity("jaipur");
+        setIsValidCity(false);
+
+        return;
+
+      }
+
+      try {
+
+        const snap = await getDoc(
+          doc(
+            db,
+            "websites",
+            "globalbiomedicalorg",
+            "districts",
+            slug
+          )
+        );
+
+        // valid city
+        if (snap.exists()) {
+
+          setCurrentCity(slug);
+          setIsValidCity(true);
+
+        } else {
+
+          // invalid city
+          setCurrentCity("jaipur");
+          setIsValidCity(false);
+
+        }
+
+      } catch {
+
+        setCurrentCity("jaipur");
+        setIsValidCity(false);
+
+      }
+
+    };
+
+  checkDistrict();
+
+}, [pathname]);
   // FILTER
   const filtered = products.filter((p) =>
     p.title
@@ -94,6 +166,11 @@ export default function Products({ city }) {
     Modal.setAppElement("body");
   }, []);
 
+  useEffect(() => {
+
+  setMounted(true);
+
+}, []);
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
@@ -136,7 +213,8 @@ export default function Products({ city }) {
 
       }
 
-      setLoading(false);
+     setLoading(false);
+setLoadingProducts(false);
 
     };
 
@@ -219,7 +297,17 @@ export default function Products({ city }) {
     }
 
   };
+if (!mounted || loadingProducts) {
+  return (
+    <div className="page-loader">
+      <div className="loader-circle"></div>
 
+      <h2>Global Biomedical</h2>
+
+      <p>Loading amazing healthcare solutions...</p>
+    </div>
+  );
+}
   return (
     <div className="products-page">
 
@@ -241,8 +329,9 @@ export default function Products({ city }) {
 
             {" "}
 
-            {cityName &&
-              `in ${cityName}`}
+   {isValidCity
+  ? ` in ${cityName}`
+  : ""}
 
           </h1>
 
@@ -253,8 +342,9 @@ export default function Products({ city }) {
 
             {" "}
 
-            {cityName &&
-              `available in ${cityName}`}
+{isValidCity
+  ? ` in ${cityName}`
+  : ""}
 
           </p>
 
@@ -329,29 +419,31 @@ export default function Products({ city }) {
                         {item.desc}
                       </p>
 
-                      <Link
-                        href={`/${citySlug}/${
-                          item.title
-                            ?.toLowerCase()
-                            .trim()
-                            .replace(
-                              /[^a-z0-9\s-]/g,
-                              ""
-                            )
-                            .replace(
-                              /\s+/g,
-                              "-"
-                            )
-                        }`}
-                      >
+<button
+  className="btn btn-dark product-btn"
 
-                        <button className="btn btn-success w-100">
+  onClick={() => {
 
-                          View Details
+    setSelected(item);
 
-                        </button>
+    setSelectedProduct(item);
 
-                      </Link>
+    setShowForm(false);
+
+    window.history.replaceState(
+      {},
+      "",
+      isValidCity
+        ? `/${citySlug}/products/${makeSlug(item.title)}`
+        : `/products/${makeSlug(item.title)}`
+    );
+
+  }}
+>
+
+  View
+
+</button>
 
                     </div>
 

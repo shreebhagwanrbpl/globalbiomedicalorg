@@ -29,18 +29,34 @@ export default function Navbar() {
   // district slug
   const district =
     pathParts[0] &&
-    !reservedRoutes.includes(pathParts[0])
+    !reservedRoutes.includes(
+      pathParts[0]
+    )
       ? pathParts[0]
-      : "jaipur";
+      : "";
 
   // dynamic links
-  const makeLink = (path = "") => {
+    const makeLink = (
+    path = ""
+  ) => {
 
-    if (!path) {
-      return `/${district}`;
+    // no district
+    if (!district) {
+
+      return path || "/";
+
     }
 
+    // homepage
+    if (!path) {
+
+      return `/${district}`;
+
+    }
+
+    // other pages
     return `/${district}${path}`;
+
   };
 
   return (
@@ -54,7 +70,7 @@ export default function Navbar() {
           className="navbar-brand"
         >
           <Image
-            src="/logo.png"
+            src="/globallogo.png"
             alt="Raj Biosis"
             width={140}
             height={50}
@@ -85,40 +101,52 @@ export default function Navbar() {
 
           <ul className="navbar-nav ms-auto align-items-center gap-4">
 
-            <li>
-              <Link
-                href={makeLink("/about")}
-                className="nav-link"
-              >
-                About
-              </Link>
-            </li>
+            <Link
+            className={
+              pathname.includes("/about")
+                ? "active"
+                : ""
+            }
+              href={makeLink("/about")}
+            >
+              About
+            </Link>
 
             <li>
-              <Link
-                href={makeLink("/services")}
-                className="nav-link"
-              >
-                Services
-              </Link>
+         <Link
+            className={
+              pathname.includes("/services")
+                ? "active"
+                : ""
+            }
+              href={makeLink("/services")}
+            >
+              Service
+            </Link>
             </li>
 
-            <li>
-              <Link
-                href={makeLink("/items")}
-                className="nav-link"
-              >
-                Products
-              </Link>
-            </li>
+            <Link
+            className={
+              pathname.includes("/products")
+                ? "active"
+                : ""
+            }
+              href={makeLink("/products")}
+            >
+              Products
+            </Link>
 
             <li>
-              <Link
-                href={makeLink("/contact")}
-                className="nav-link"
-              >
-                Contact
-              </Link>
+            <Link
+            className={
+              pathname.includes("/contact")
+                ? "active"
+                : ""
+            }
+              href={makeLink("/contact")}
+            >
+              Contact
+            </Link>
             </li>
 
             {/* <li>

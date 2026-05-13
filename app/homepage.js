@@ -1,51 +1,137 @@
 "use client";
 import Hero from "./components/Hero";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
 export default function Home({ city }) {
-    const [services, setServices] = useState([]);
+  const [homeLoading, setHomeLoading] = useState(true);
+  const [services, setServices] = useState([]);
   const [products, setProducts] = useState([]);
+    const pathname = usePathname();
+    const pathParts = pathname
+      .split("/")
+  .filter(Boolean);
+  const [currentCity, setCurrentCity] =
+  useState("");
+  const [isValidCity, setIsValidCity] =
+  useState(false);
+const [pageLoading, setPageLoading] = useState(false);
+const [animating, setAnimating] = useState(true);
   useEffect(() => {
-  const fetchData = async () => {
-    const snap = await getDoc(
-      doc(db, "websites", "globalbiomedicalorg", "pages", "products")
-    );
-
-    if (snap.exists()) {
-      const data = snap.data().products || [];
-      const visible = data.filter((p) => p.isPublished !== false);
-      setProducts(visible);
-    }
-  };
-
-  fetchData();
+  setMounted(true);
 }, []);
+useEffect(() => {
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = async () => {
+
+    try {
+
       const snap = await getDoc(
-        doc(db, "websites", "globalbiomedicalorg", "pages", "services")
+        doc(
+          db,
+          "websites",
+          "globalbiomedicalorg",
+          "pages",
+          "products"
+        )
       );
 
       if (snap.exists()) {
-        const data = snap.data().services || [];
 
-        // 🔥 sirf first 3
-        setServices(data.slice(0, 3));
+        const data =
+          snap.data().products || [];
+
+        const visible = data.filter(
+          (p) => p.isPublished !== false
+        );
+
+        setProducts(visible);
+
       }
-    };
 
-    fetchData();
-  }, []);
+    } catch (err) {
+
+      console.error(err);
+
+    } finally {
+
+      setHomeLoading(false);
+
+    }
+
+  };
+
+  fetchData();
+
+}, []);
+const formatCity = (name = "") =>
+  name
+    .split("-")
+    .map(
+      (w) =>
+        w.charAt(0).toUpperCase() +
+        w.slice(1)
+    )
+    .join(" ");
+const citySlug = currentCity
+  ?.toLowerCase()
+  ?.replace(/\s+/g, "-");
+
+  const cityName =
+  formatCity(currentCity);
+  const [mounted, setMounted] = useState(false);
+
+
+
+//   useEffect(() => {
+//   const fetchData = async () => {
+//   const snap = await getDoc(
+//   doc(db, "websites", "globalbiomedicalorg", "pages", "products")
+//   );
+
+//     if (snap.exists()) {
+//       const data = snap.data().products || [];
+//       const visible = data.filter((p) => p.isPublished !== false);
+//       setProducts(visible);
+//     }
+//     setHomeLoading(false);
+//   };
+
+//   fetchData();
+// }, []);
+
+
 
   const icons = [
     "bi-heart-pulse",
     "bi-capsule",
     "bi-tools",
   ];
+useEffect(() => {
 
+  const timer = setTimeout(() => {
+
+    setMounted(true);
+    setAnimating(false);
+
+  }, 500);
+
+  return () => clearTimeout(timer);
+
+}, []);
+if (!mounted || homeLoading || pageLoading || animating) {
+  return (
+    <div className="page-loader">
+      <div className="loader-circle"></div>
+
+      <h2>Global Biomedical</h2>
+
+      <p>Loading amazing healthcare solutions...</p>
+    </div>
+  );
+}
   return (
     <>
      <Hero city={city} />

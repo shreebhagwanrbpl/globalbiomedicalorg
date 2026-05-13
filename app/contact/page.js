@@ -4,7 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import "./contact.css";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-
+import { usePathname } from "next/navigation";
 import {
   addDoc,
   collection,
@@ -26,9 +26,23 @@ export default function Contact({ city }) {
   });
 
   const [contactInfo, setContactInfo] = useState([]);
-
+const [mounted, setMounted] =
+  useState(false);
   // current city
-  const currentCity = city || "jaipur";
+const pathname = usePathname();
+
+const pathParts = pathname
+  .split("/")
+  .filter(Boolean);
+
+const [currentCity, setCurrentCity] =
+  useState("");
+
+const [isValidCity, setIsValidCity] =
+  useState(false);
+
+const [stateName, setStateName] =
+  useState("");
 
   // format city
   const formatCity = (name = "") =>
@@ -45,7 +59,71 @@ export default function Contact({ city }) {
     ?.replace(/\s+/g, "-");
 
   const cityName = formatCity(currentCity);
+  useEffect(() => {
 
+  setMounted(true);
+
+}, []);
+useEffect(() => {
+
+  const checkDistrict = async () => {
+
+    const slug = pathParts[0];
+
+    setStateName("");
+
+    if (!slug) {
+
+      setCurrentCity("");
+      setIsValidCity(false);
+
+      return;
+
+    }
+
+    try {
+
+      const snap = await getDoc(
+        doc(
+          db,
+          "websites",
+          "globalbiomedicalorg",
+          "districts",
+          slug
+        )
+      );
+
+      if (snap.exists()) {
+
+        const data = snap.data();
+
+        setCurrentCity(slug);
+
+        setStateName(
+          data?.state || ""
+        );
+
+        setIsValidCity(true);
+
+      } else {
+
+        setCurrentCity("");
+        setIsValidCity(false);
+
+      }
+
+    } catch {
+
+      setCurrentCity("");
+      setIsValidCity(false);
+
+    }
+
+  };
+
+  checkDistrict();
+
+}, [pathname]);
   // FETCH CONTACT INFO
   useEffect(() => {
 
@@ -149,7 +227,17 @@ export default function Contact({ city }) {
     }
 
   };
+if (!mounted || loading) {
+  return (
+    <div className="page-loader">
+      <div className="loader-circle"></div>
 
+      <h2>Global Biomedical</h2>
+
+      <p>Loading amazing healthcare solutions...</p>
+    </div>
+  );
+}
   return (
     <div className="contact-page">
 
@@ -166,8 +254,9 @@ export default function Contact({ city }) {
 
             {" "}
 
-            {cityName &&
-              `in ${cityName}`}
+   {isValidCity
+  ? ` in ${cityName}`
+  : ""}
 
           </h1>
 
@@ -175,8 +264,9 @@ export default function Contact({ city }) {
             Get in touch with us for
             medical solutions & support
             {" "}
-            {cityName &&
-              `in ${cityName}`}
+            {isValidCity
+  ? ` in ${cityName}`
+  : ""}
           </p>
 
         </div>
@@ -253,18 +343,21 @@ export default function Contact({ city }) {
                           {item.label}
                         </strong>
 
-                        <p>
-                          {
-                            item.label
-                              .toLowerCase()
-                              .includes(
-                                "address"
-                              )
-                              ? item.value ||
-                                `${cityName}, India`
-                              : item.value
-                          }
-                        </p>
+<p>
+
+{
+  item.label
+    .toLowerCase()
+    .includes("address")
+
+    ? isValidCity
+      ? `${cityName}, ${stateName}, India`
+      : item.value
+
+    : item.value
+}
+
+</p>
 
                       </div>
 

@@ -1,6 +1,49 @@
 "use client";
-
+import { useEffect, useState } from "react";
 export default function About() {
+  const [mounted, setMounted] = useState(false);
+const [loading, setLoading] = useState(true);
+useEffect(() => {
+
+  setLoading(true);
+
+  const items =
+    document.querySelectorAll(".fade-up");
+
+  items.forEach((el, i) => {
+
+    el.classList.remove("active");
+
+    setTimeout(() => {
+      el.classList.add("active");
+    }, i * 150);
+
+  });
+
+  const timer = setTimeout(() => {
+
+    setMounted(true);
+
+    setLoading(false);
+
+  }, 600);
+
+  return () => clearTimeout(timer);
+
+}, []);
+    if (!mounted || loading) {
+
+    return (
+<div className="page-loader">
+  <div className="loader-circle"></div>
+
+  <h2>Global Biomedical</h2>
+
+  <p>Loading amazing healthcare solutions...</p>
+</div>
+    );
+
+  }
   return (
     <div className="about-page">
 
@@ -240,6 +283,44 @@ export default function About() {
   color: #555;
   margin: 0;
   font-size: 14px;
+}
+          .page-loader{
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #f7f7f7, #e6d7d7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.page-loader h2{
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.page-loader p{
+  color: #555;
+  font-size: 15px;
+  margin: 0;
+}
+
+.loader-circle{
+  width: 65px;
+  height: 65px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #111;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin{
+  100%{
+    transform: rotate(360deg);
+  }
 }
       `}</style>
     </div>

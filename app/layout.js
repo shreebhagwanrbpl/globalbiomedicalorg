@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 export const metadata = {
-  title: "Raj Biosis - Clinical Instruments",
+  title: "Global Biomedicals - Clinical Instruments",
   description: "Trusted partner for diagnostic & medical solutions.",
 };
 

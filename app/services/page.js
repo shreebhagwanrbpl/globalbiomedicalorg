@@ -4,14 +4,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-
+import { usePathname } from "next/navigation";
 export default function Services({ city }) {
-
+const [currentCity, setCurrentCity] = useState("");
+const [isValidCity, setIsValidCity] = useState(false);
   const [services, setServices] = useState([]);
-
+const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+const pathParts = pathname
+  .split("/")
+  .filter(Boolean);
   // current city
-  const currentCity = city || "jaipur";
-
+  // const currentCity = city || "jaipur";
+const [stateName, setStateName] = useState("");
   // format city
   const formatCity = (name = "") =>
     name
@@ -22,13 +27,83 @@ export default function Services({ city }) {
           w.slice(1)
       )
       .join(" ");
-
+const [loading, setLoading] =
+  useState(true);
   const citySlug = currentCity
     ?.toLowerCase()
     ?.replace(/\s+/g, "-");
 
-  const cityName = formatCity(currentCity);
+  const cityName =
+    formatCity(currentCity);
+    useEffect(() => {
+  setMounted(true);
+}, []);
+useEffect(() => {
 
+  const checkDistrict =
+    async () => {
+
+  const slug =
+  pathParts[0];
+
+setStateName("");
+
+      // no slug
+      if (!slug) {
+
+        setCurrentCity("");
+        setIsValidCity(false);
+
+        return;
+
+      }
+
+      try {
+
+        const snap = await getDoc(
+          doc(
+            db,
+            "websites",
+            "globalbiomedicalorg",
+            "districts",
+            slug
+          )
+        );
+
+        // valid city
+    if (snap.exists()) {
+
+  const data =
+    snap.data();
+
+  setCurrentCity(slug);
+
+  setStateName(
+    data?.state || ""
+  );
+
+  setIsValidCity(true);
+
+} else {
+
+          // invalid city
+          setCurrentCity("");
+          setIsValidCity(false);
+
+        }
+
+      } catch {
+
+        setCurrentCity("");
+        setIsValidCity(false);
+
+      }
+
+    };
+
+  checkDistrict();
+
+}, [pathname]);
   // FETCH DATA
   useEffect(() => {
 
@@ -78,7 +153,26 @@ export default function Services({ city }) {
     "bi-shield-check",
     "bi-person-check",
   ];
+    const timer = setTimeout(() => {
 
+    setMounted(true);
+
+    setLoading(false);
+
+  }, 500);
+if (!mounted || loading) {
+
+    return (
+<div className="page-loader">
+  <div className="loader-circle"></div>
+
+  <h2>Global Biomedical</h2>
+
+  <p>Loading amazing healthcare solutions...</p>
+</div>
+    );
+
+  }
   return (
     <div className="services-page">
 
@@ -93,9 +187,9 @@ export default function Services({ city }) {
 
             {" "}
 
-            {cityName &&
-              `in ${cityName}`}
-
+         {isValidCity
+  ? ` in ${cityName}`
+  : ""}
           </h1>
 
           <p className="mt-3">
@@ -105,9 +199,9 @@ export default function Services({ city }) {
             modern healthcare
 
             {" "}
-
-            {cityName &&
-              `in ${cityName}`}
+         {isValidCity
+  ? ` in ${cityName}`
+  : ""}
 
           </p>
 
