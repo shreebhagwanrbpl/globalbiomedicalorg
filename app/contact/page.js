@@ -474,7 +474,11 @@ if (!mounted || loading) {
         <div className="container-fluid p-0">
 
           <iframe
-            src={`https://maps.google.com/maps?q=${cityName},India&output=embed`}
+           src={`https://maps.google.com/maps?q=${
+  isValidCity
+    ? `${cityName}, ${stateName}, India`
+    : "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, Ajmer-Delhi Bypass Rd, Jaipur, Rajasthan 302021"
+}&z=16&output=embed`}
             width="100%"
             height="400"
             style={{ border: 0 }}
