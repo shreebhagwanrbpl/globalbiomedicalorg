@@ -117,7 +117,7 @@ useEffect(() => {
             ))
         );
 
-      })?.value || "-"
+      })?.value || "Amrapali , Vaishali Nagar , Jaipur Jaipur, India, 302021"
     );
 
   };
@@ -194,7 +194,7 @@ useEffect(() => {
               </li>
 
               <li>
-                <Link href={makeLink("/items")}>
+                <Link href={makeLink("/products")}>
                   Products
                 </Link>
               </li>
@@ -256,14 +256,14 @@ useEffect(() => {
 {district
   ? stateName
     ? `${city}, ${stateName}, India`
-    : "Loading..."
+    : getValue("address")
   : getValue("address")}
 
             </p>
 
             <p className="small mb-1">
               <i className="bi bi-envelope"></i>
-              info@rajbiosis.com
+              info@globalbiomedicalorg.com
             </p>
 
             <p className="small">
@@ -281,7 +281,7 @@ useEffect(() => {
           <p className="mb-0 small">
             © {new Date().getFullYear()}
             {" "}
-            Raj Biosis Pvt Ltd |
+            Global Biomedical |
             All Rights Reserved
           </p>
 

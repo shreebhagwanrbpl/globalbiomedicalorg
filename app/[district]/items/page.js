@@ -1,4 +1,4 @@
-import Products from "@/app/products/page";
+import ItemsPage from "@/app/items/page";
 
 export default function Page({
   params,
@@ -15,6 +15,6 @@ export default function Page({
     );
 
   return (
-    <Products city={city} />
+    <ItemsPage city={city} />
   );
 }

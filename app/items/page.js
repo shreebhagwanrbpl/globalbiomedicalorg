@@ -14,7 +14,7 @@ import {
   serverTimestamp
 } from "firebase/firestore";
 
-export default function Products({ city }) {
+export default function ItemsPage({ city }) {
 const pathname = usePathname();
 const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
@@ -53,8 +53,8 @@ const pathParts = pathname
   // current city
 const [isValidCity, setIsValidCity] =
   useState(false);
-    const [mounted, setMounted] =
-  useState(false);
+  //   const [mounted, setMounted] =
+  // useState(false);
 const [loadingProducts, setLoadingProducts] =
   useState(true);
   const makeSlug = (text = "") =>
@@ -220,11 +220,10 @@ const generateKeywords = (
     Modal.setAppElement("body");
   }, []);
 
-  useEffect(() => {
+//   useEffect(() => {
+//   setMounted(true);
+// }, []);
 
-  setMounted(true);
-
-}, []);
   useEffect(() => {
     setCurrentPage(1);
   }, [search]);
@@ -267,35 +266,35 @@ const generateKeywords = (
 
   }, []);
 
-  useEffect(() => {
+//   useEffect(() => {
 
-  const parts =
-    pathname.split("/").filter(Boolean);
+//   const parts =
+//     pathname.split("/").filter(Boolean);
 
-  const slug =
-    parts.length >= 3
-      ? parts[parts.length - 1]
-      : null;
+//   const slug =
+//     parts.length >= 3
+//       ? parts[parts.length - 1]
+//       : null;
 
-  if (!slug) {
-    setSelectedProduct(null);
-    return;
-  }
+//   if (!slug) {
+//     setSelectedProduct(null);
+//     return;
+//   }
 
-  const foundProduct =
-    products.find(
-      (p) =>
-        makeSlug(p.title) === slug
-    );
+//   const foundProduct =
+//     products.find(
+//       (p) =>
+//         makeSlug(p.title) === slug
+//     );
 
-  if (foundProduct) {
+//   if (foundProduct) {
 
-    setSelectedProduct(
-      foundProduct
-    );
-  }
+//     setSelectedProduct(
+//       foundProduct
+//     );
+//   }
 
-}, [pathname, products]);
+// }, [pathname, products]);
 
 
   // PRODUCT SEO
@@ -610,12 +609,14 @@ useEffect(() => {
     }
 
   };
-if (!mounted || loadingProducts) {
+// if (!mounted || loadingProducts) {
+if (loadingProducts){
   return (
     <div className="page-loader">
       <div className="loader-circle"></div>
 
-      <h2>Global Biomedical</h2>#c88379
+      {/* <h2>Global Biomedical</h2>#c88379 */}
+      <h2>Global Biomedical</h2>
 
       <p>Loading amazing healthcare solutions...</p>
     </div>

@@ -477,7 +477,7 @@ if (!mounted || loading) {
            src={`https://maps.google.com/maps?q=${
   isValidCity
     ? `${cityName}, ${stateName}, India`
-    : "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, Ajmer-Delhi Bypass Rd, Jaipur, Rajasthan 302021"
+    : "Amrapali , Vaishali Nagar , Jaipur Jaipur, India, 302021"
 }&z=16&output=embed`}
             width="100%"
             height="400"

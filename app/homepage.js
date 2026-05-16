@@ -222,7 +222,7 @@
     </div>
 
     {/* View All Button */}
-    <div className="mt-5 text-center">
+    {/* <div className="mt-5 text-center">
       <Link
         href={
           citySlug
@@ -243,7 +243,7 @@
           View All
         </button>
       </Link>
-    </div>
+    </div> */}
 
   </div>
 </section>
