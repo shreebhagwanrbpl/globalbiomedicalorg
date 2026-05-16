@@ -247,34 +247,55 @@ const generateKeywords = (
         );
 
         if (snap.exists()) {
-
           const data =
             snap.data().products || [];
-
           const visibleProducts =
             data.filter(
               (p) =>
                 p.isPublished !== false
             );
-
           setProducts(visibleProducts);
-
         }
-
       } catch (err) {
-
         console.error(err);
-
       }
-
      setLoading(false);
-setLoadingProducts(false);
-
+    setLoadingProducts(false);
     };
 
     fetchProducts();
 
   }, []);
+
+  useEffect(() => {
+
+  const parts =
+    pathname.split("/").filter(Boolean);
+
+  const slug =
+    parts.length >= 3
+      ? parts[parts.length - 1]
+      : null;
+
+  if (!slug) {
+    setSelectedProduct(null);
+    return;
+  }
+
+  const foundProduct =
+    products.find(
+      (p) =>
+        makeSlug(p.title) === slug
+    );
+
+  if (foundProduct) {
+
+    setSelectedProduct(
+      foundProduct
+    );
+  }
+
+}, [pathname, products]);
 
 
   // PRODUCT SEO
@@ -283,8 +304,7 @@ useEffect(() => {
   if (!selectedProduct?.title)
     return;
 
-  const productName =
-    selectedProduct.title;
+  const productName =selectedProduct.title;
 
   const keywords =
     generateKeywords(
@@ -595,7 +615,7 @@ if (!mounted || loadingProducts) {
     <div className="page-loader">
       <div className="loader-circle"></div>
 
-      <h2>Global Biomedical</h2>
+      <h2>Global Biomedical</h2>#c88379
 
       <p>Loading amazing healthcare solutions...</p>
     </div>
@@ -712,31 +732,28 @@ if (!mounted || loadingProducts) {
                         {item.desc}
                       </p>
 
-<button
-  className="btn btn-dark product-btn"
+                      <button
+                        className="btn btn-dark product-btn"
+                   onClick={(e) => {
+                    e.stopPropagation();
+                    setSelected(item);
+                    setSelectedProduct(item);
+                    setShowForm(false);
+                    const productPath =
+                      isValidCity
+                        ? `/${citySlug}/items/${makeSlug(item.title)}`
+                        : `/items/${makeSlug(item.title)}`;
+                    window.history.replaceState(
+                      {},
+                      "",
+                      productPath
+                    );
+                  }}
+                      >
 
-  onClick={() => {
+                        View
 
-    setSelected(item);
-
-    setSelectedProduct(item);
-
-    setShowForm(false);
-
-    window.history.replaceState(
-      {},
-      "",
-      isValidCity
-        ? `/${citySlug}/products/${makeSlug(item.title)}`
-        : `/products/${makeSlug(item.title)}`
-    );
-
-  }}
->
-
-  View
-
-</button>
+                      </button>
 
                     </div>
 
@@ -856,20 +873,42 @@ if (!mounted || loadingProducts) {
 
           <div className="modal-box">
 
-            <span
+            {/* <span
               className="close"
               onClick={() => {
-
                 setSelectedProduct(
                   null
                 );
-
                 setShowForm(false);
-
               }}
             >
               ×
-            </span>
+            </span> */}
+
+            <span
+  className="close"
+  onClick={() => {
+
+    setSelectedProduct(
+      null
+    );
+
+    setShowForm(false);
+
+    const basePath =
+      isValidCity
+        ? `/${citySlug}/items`
+        : "/items";
+
+    window.history.replaceState(
+      {},
+      "",
+      basePath
+    );
+  }}
+>
+  ×
+</span>
 
             <div className="row align-items-center">
 
@@ -1044,11 +1083,8 @@ if (!mounted || loadingProducts) {
           >
             Submit Request
           </button>
-
         </div>
-
       </Modal>
-
     </div>
   );
 }

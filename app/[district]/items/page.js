@@ -1,17 +1,20 @@
 import Products from "@/app/products/page";
 
-export default async function Page({ params }) {
-
-  const resolvedParams = await params;
-
+export default function Page({
+  params,
+}) {
   const district =
-    resolvedParams?.district || "jaipur";
+    params?.district || "jaipur";
 
   const city = district
     .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) =>
-      char.toUpperCase()
+    .replace(
+      /\b\w/g,
+      (char) =>
+        char.toUpperCase()
     );
 
-  return <Products city={city} />;
+  return (
+    <Products city={city} />
+  );
 }

@@ -60,110 +60,99 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg custom-navbar">
+<nav className="navbar navbar-expand-lg custom-navbar">
 
-      <div className="w-100 px-5 d-flex align-items-center justify-content-between">
+  <div className="container-fluid px-lg-5 px-3">
 
-        {/* LOGO */}
-        <Link
-          href={makeLink("")}
-          className="navbar-brand"
-        >
-          <Image
-            src="/globallogo.png"
-            alt="Raj Biosis"
-            width={140}
-            height={50}
-            style={{ objectFit: "contain" }}
-            priority
-          />
-        </Link>
+    {/* LOGO */}
+    <Link
+      href={makeLink("")}
+      className="navbar-brand"
+    >
+      <Image
+        src="/globallogo.png"
+        alt="Global Biomedical"
+        width={110}
+        height={45}
+        priority
+      />
+    </Link>
 
-        {/* TOGGLE */}
-        <button
-          className="navbar-toggler"
-          data-bs-toggle="collapse"
-          data-bs-target="#nav"
-          onClick={() =>
-            setMenuOpen(!menuOpen)
-          }
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+    {/* TOGGLE */}
+    <button
+      className="navbar-toggler"
+      type="button"
+      onClick={() =>
+        setMenuOpen(!menuOpen)
+      }
+    >
+      <span className="navbar-toggler-icon"></span>
+    </button>
 
-        {/* MENU */}
-        <div
-          className={`collapse navbar-collapse ${
-            menuOpen ? "show" : ""
-          }`}
-          id="nav"
-        >
+    {/* MENU */}
+    <div
+      className={`collapse navbar-collapse justify-content-end ${
+        menuOpen ? "show" : ""
+      }`}
+    >
+      <ul className="navbar-nav align-items-lg-center gap-lg-4 gap-3">
 
-          <ul className="navbar-nav ms-auto align-items-center gap-4">
-
-            <Link
-            className={
+        <li className="nav-item">
+          <Link
+            href={makeLink("/about")}
+            className={`nav-link ${
               pathname.includes("/about")
                 ? "active"
                 : ""
-            }
-              href={makeLink("/about")}
-            >
-              About
-            </Link>
+            }`}
+          >
+            About
+          </Link>
+        </li>
 
-            <li>
-         <Link
-            className={
+        <li className="nav-item">
+          <Link
+            href={makeLink("/services")}
+            className={`nav-link ${
               pathname.includes("/services")
                 ? "active"
                 : ""
-            }
-              href={makeLink("/services")}
-            >
-              Service
-            </Link>
-            </li>
+            }`}
+          >
+            Services
+          </Link>
+        </li>
 
-            <Link
-            className={
-              pathname.includes("/products")
+        <li className="nav-item">
+          <Link
+            href={makeLink("/items")}
+            className={`nav-link ${
+              pathname.includes("/items")
                 ? "active"
                 : ""
-            }
-              href={makeLink("/products")}
-            >
-              Products
-            </Link>
+            }`}
+          >
+            Items
+          </Link>
+        </li>
 
-            <li>
-            <Link
-            className={
+        <li className="nav-item">
+          <Link
+            href={makeLink("/contact")}
+            className={`nav-link ${
               pathname.includes("/contact")
                 ? "active"
                 : ""
-            }
-              href={makeLink("/contact")}
-            >
-              Contact
-            </Link>
-            </li>
+            }`}
+          >
+            Contact
+          </Link>
+        </li>
 
-            {/* <li>
-              <Link
-                href={makeLink("/contact")}
-                className="btn px-3"
-              >
-                Get Details
-              </Link>
-            </li> */}
+      </ul>
+    </div>
 
-          </ul>
-
-        </div>
-
-      </div>
-
-    </nav>
+  </div>
+</nav>
   );
 }

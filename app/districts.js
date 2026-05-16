@@ -3,8 +3,6 @@ import Home from "../Home/page";
 export default function Page({ params }) {
 
   const district = params?.district || "jaipur";
-
-  // format city
   const city = district
     .replace(/-/g, " ")
     .replace(/\b\w/g, (char) =>
@@ -17,9 +15,7 @@ export default function Page({ params }) {
 }
 
 export async function generateMetadata({ params }) {
-
   const district = params?.district || "jaipur";
-
   const city = district
     .replace(/-/g, " ")
     .replace(/\b\w/g, (char) =>

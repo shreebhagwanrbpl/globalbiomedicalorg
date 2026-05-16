@@ -8,13 +8,13 @@
       }
       /* BUTTON */
       .btn-primary {
-        background: #0f5132 !important;
+        background: #be9290 !important;
         border: none;
       }
 
       /* REMOVE BLUE LINKS */
       a {
-        color: #000 !important;
+        color: #fff !important;
       }
 
       /* NAVBAR */
@@ -135,6 +135,26 @@
         transition: 0.4s;
       }
 
+      .product-view-btn {
+      width: 100%;
+      margin-top: 16px;
+      background: #d38c6f;
+      color: #fff;
+      border: none;
+      height: 48px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(211, 140, 111, 0.25);
+    }
+
+    .product-view-btn:hover {
+      background: #bf7759;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(211, 140, 111, 0.35);
+    }
+
 
       .product-img-pro img {
         width: 100%;
@@ -159,7 +179,7 @@
 
       /* PRICE */
       .price {
-        color: #198754;
+        color: #be9290;
         font-weight: 700;
       }
 
@@ -181,17 +201,18 @@
       /* META */
       .meta {
         display: flex;
-        gap: 8px;
+          gap: 10px;
         flex-wrap: wrap;
-        margin-top: 5px;
+        margin-top: 12px;
       }
 
-      .meta span {
-        background: #f1f1f1;
-          padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-      }
+    .meta span {
+      background: #f4f4f4;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-size: 14px;
+      color: #555;
+    }
 
       .product-btn {
         background: #111;
@@ -209,7 +230,7 @@
       /* BUTTON */
       .btn-quote {
         margin-top: 10px;
-        background: #198754;
+        background: #be9290;
         color: #fff;
         border-radius: 8px;
         padding: 8px;
@@ -217,7 +238,7 @@
       }
 
       .btn-quote:hover {
-        background: #146c43;
+        background: #be9290;
       }
 
       .logo-slider {
@@ -292,6 +313,7 @@
 
       .hero-section img {
         animation: float 4s ease-in-out infinite;
+        margin-top: 59px;
       }
       .service-section {
         background: #ffffff;
@@ -332,7 +354,7 @@
         content: "";
         width: 60px;
         height: 3px;
-        background: #198754;
+        background: #be9290;
         display: block;
         margin: 10px auto 0;
         border-radius: 10px;
@@ -539,7 +561,7 @@
         position: absolute;
         width: 250px;
         height: 250px;
-        background: #00ffae;
+        background: #be9290;
         filter: blur(120px);
         bottom: -50px;
         right: -50px;
@@ -641,40 +663,40 @@
 
            
         .page-loader{
-  height: 100vh;
-  width: 100%;
-  background: linear-gradient(135deg, #f7f7f7, #e6d7d7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 14px;
-}
+        height: 100vh;
+        width: 100%;
+        background: linear-gradient(135deg, #f7f7f7, #e6d7d7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 14px;
+      }
 
-.page-loader h2{
-  font-size: 32px;
-  font-weight: 700;
-  color: #111;
-  margin: 0;
-}
+      .page-loader h2{
+        font-size: 32px;
+        font-weight: 700;
+        color: #111;
+        margin: 0;
+      }
 
-.page-loader p{
-  color: #555;
-  font-size: 15px;
-  margin: 0;
-}
+      .page-loader p{
+        color: #555;
+        font-size: 15px;
+        margin: 0;
+      }
 
-.loader-circle{
-  width: 65px;
-  height: 65px;
-  border: 5px solid #ddd;
-  border-top: 5px solid #111;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+      .loader-circle{
+        width: 65px;
+        height: 65px;
+        border: 5px solid #ddd;
+        border-top: 5px solid #111;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
 
-@keyframes spin{
-  100%{
-    transform: rotate(360deg);
-  }
-}
+      @keyframes spin{
+        100%{
+          transform: rotate(360deg);
+        }
+      }

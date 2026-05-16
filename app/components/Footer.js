@@ -168,7 +168,7 @@ useEffect(() => {
           <div className="col-lg-4">
 
             <h4 className="fw-bold text-white">
-              Raj Biosis
+             Global Biomedical inc.
             </h4>
 
             <p className="small">
