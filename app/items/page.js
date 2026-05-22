@@ -741,9 +741,9 @@ if (loadingProducts){
                     setSelectedProduct(item);
                     setShowForm(false);
                     const productPath =
-                      isValidCity
-                        ? `/${citySlug}/items/${makeSlug(item.title)}`
-                        : `/items/${makeSlug(item.title)}`;
+                    isValidCity
+                      ? `/${citySlug}/items`
+                      : "/items";
                     window.history.replaceState(
                       {},
                       "",

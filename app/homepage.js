@@ -258,7 +258,7 @@
         <div className="col-lg-6" data-aos="fade-right">
 
           <h2 className="fw-bold mb-4 display-5">
-            Why Choose <span style={{color:"#198754"}}>Raj Biosis?</span>
+            Why Choose <span style={{color:"#198754"}}>Global Biomedical?</span>
           </h2>
 
           <p className="text-muted fs-5">
@@ -324,7 +324,7 @@
         <div className="col-lg-6" data-aos="fade-left">
 
           <h2 className="why-title">
-            Why Choose <span>Raj Biosis?</span>
+            Why Choose <span>Global Biomedical?</span>
           </h2>
 
           <p className="why-text">

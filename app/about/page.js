@@ -51,7 +51,7 @@ useEffect(() => {
       <section className="about-hero text-center">
         <div className="container">
           <h1 className="about-title">
-            About <span>Raj Biosis</span>
+            About <span>Global Biomedical</span>
           </h1>
 
           <p className="about-subtext">
@@ -83,7 +83,7 @@ useEffect(() => {
               </h3>
 
               <p className="about-text">
-                Raj Biosis has been providing high-quality diagnostic instruments,
+                Global Biomedical has been providing high-quality diagnostic instruments,
                 lab equipment, and medical consumables across India.
               </p>
 

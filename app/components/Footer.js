@@ -194,7 +194,7 @@ useEffect(() => {
               </li>
 
               <li>
-                <Link href={makeLink("/products")}>
+                <Link href={makeLink("/items")}>
                   Products
                 </Link>
               </li>
