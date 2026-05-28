@@ -26,7 +26,7 @@ const [stateName, setStateName] = useState("");
           w.charAt(0).toUpperCase() +
           w.slice(1)
       )
-      .join(" ");
+      .join(" "); 
 const [loading, setLoading] =
   useState(true);
   const citySlug = currentCity
@@ -161,13 +161,10 @@ setStateName("");
 
   }, 500);
 if (!mounted || loading) {
-
     return (
 <div className="page-loader">
   <div className="loader-circle"></div>
-
   <h2>Global Biomedical</h2>
-
   <p>Loading amazing healthcare solutions...</p>
 </div>
     );
@@ -175,49 +172,33 @@ if (!mounted || loading) {
   }
   return (
     <div className="services-page">
-
       {/* HERO */}
       <section className="services-hero text-center">
-
         <div className="container">
-
           <h1 className="fw-bold display-4">
-
             Our <span>Services</span>
-
             {" "}
-
          {isValidCity
-  ? ` in ${cityName}`
-  : ""}
+          ? ` in ${cityName}`
+          : ""}
           </h1>
-
           <p className="mt-3">
-
             Comprehensive medical and
             diagnostic solutions for
             modern healthcare
-
             {" "}
          {isValidCity
   ? ` in ${cityName}`
   : ""}
-
           </p>
-
         </div>
-
       </section>
 
       {/* SERVICES */}
       <section className="py-5">
-
         <div className="container">
-
           <div className="row g-4">
-
             {services.length === 0 ? (
-
               <p className="text-center">
                 No Services Found
               </p>

@@ -81,8 +81,6 @@ const citySlug = currentCity
 
 const cityName = formatCity(currentCity);
 
-
-// SEO KEYWORDS GENERATOR
 const generateKeywords = (
   productName = "",
   city = ""
@@ -90,9 +88,7 @@ const generateKeywords = (
 
   const base =
     productName.toLowerCase();
-
   const keywords = [
-
     base,
     `${base} price`,
     `${base} best price`,
@@ -129,12 +125,8 @@ const generateKeywords = (
     `${base} service`,
     `${base} installation`
   ];
-
   return keywords.slice(0, 35);
 };
-
-
-
 
   useEffect(() => {
   const checkDistrict =
@@ -298,241 +290,7 @@ const generateKeywords = (
 
 
   // PRODUCT SEO
-useEffect(() => {
-
-  if (!selectedProduct?.title)
-    return;
-
-  const productName =selectedProduct.title;
-
-  const keywords =
-    generateKeywords(
-      productName,
-      cityName
-    );
-
-  console.log(
-    "SEO KEYWORDS 👉",
-    keywords
-  );
-
-  // PAGE TITLE
-  document.title =
-    `${productName} in ${cityName} | Best Price | Global Biomedical`;
-
-  // META DESCRIPTION
-  let metaDescription =
-    document.querySelector(
-      'meta[name="description"]'
-    );
-
-  if (!metaDescription) {
-
-    metaDescription =
-      document.createElement(
-        "meta"
-      );
-
-    metaDescription.name =
-      "description";
-
-    document.head.appendChild(
-      metaDescription
-    );
-  }
-
-  metaDescription.content =
-    `Buy ${productName} in ${cityName} at best price. Trusted supplier of diagnostic and biomedical equipment. Contact us today for quote and details.`;
-
-  // META KEYWORDS
-  let metaKeywords =
-    document.querySelector(
-      'meta[name="keywords"]'
-    );
-
-  if (!metaKeywords) {
-
-    metaKeywords =
-      document.createElement(
-        "meta"
-      );
-
-    metaKeywords.name =
-      "keywords";
-
-    document.head.appendChild(
-      metaKeywords
-    );
-  }
-
-  metaKeywords.content =
-    keywords.join(", ");
-
-  // OPEN GRAPH TITLE
-  let ogTitle =
-    document.querySelector(
-      'meta[property="og:title"]'
-    );
-
-  if (!ogTitle) {
-
-    ogTitle =
-      document.createElement(
-        "meta"
-      );
-
-    ogTitle.setAttribute(
-      "property",
-      "og:title"
-    );
-
-    document.head.appendChild(
-      ogTitle
-    );
-  }
-
-  ogTitle.content =
-    `${productName} in ${cityName}`;
-
-  // OG DESCRIPTION
-  let ogDescription =
-    document.querySelector(
-      'meta[property="og:description"]'
-    );
-
-  if (!ogDescription) {
-
-    ogDescription =
-      document.createElement(
-        "meta"
-      );
-
-    ogDescription.setAttribute(
-      "property",
-      "og:description"
-    );
-
-    document.head.appendChild(
-      ogDescription
-    );
-  }
-
-  ogDescription.content =
-    `Buy ${productName} in ${cityName} with best pricing and trusted quality.`;
-
-  // OG IMAGE
-  let ogImage =
-    document.querySelector(
-      'meta[property="og:image"]'
-    );
-
-  if (!ogImage) {
-
-    ogImage =
-      document.createElement(
-        "meta"
-      );
-
-    ogImage.setAttribute(
-      "property",
-      "og:image"
-    );
-
-    document.head.appendChild(
-      ogImage
-    );
-  }
-
-  ogImage.content =
-    selectedProduct.image ||
-    "/no-image.png";
-
-  // CANONICAL URL
-  let canonical =
-    document.querySelector(
-      'link[rel="canonical"]'
-    );
-
-  if (!canonical) {
-
-    canonical =
-      document.createElement(
-        "link"
-      );
-
-    canonical.rel =
-      "canonical";
-
-    document.head.appendChild(
-      canonical
-    );
-  }
-
-  canonical.href =
-    window.location.href;
-
-  // SCHEMA JSON
-  const schema = {
-
-    "@context":
-      "https://schema.org",
-
-    "@type":
-      "Product",
-
-    name:
-      productName,
-
-    image:
-      selectedProduct.image,
-
-    description:
-      selectedProduct.desc,
-
-    brand: {
-      "@type":
-        "Brand",
-
-      name:
-        "Global Biomedical"
-    },
-
-    offers: {
-      "@type":
-        "Offer",
-
-      availability:
-        "https://schema.org/InStock"
-    }
-  };
-
-  let script =
-    document.getElementById(
-      "schema-json"
-    );
-
-  if (script)
-    script.remove();
-
-  script =
-    document.createElement(
-      "script"
-    );
-
-  script.id =
-    "schema-json";
-
-  script.type =
-    "application/ld+json";
-
-  script.innerHTML =
-    JSON.stringify(schema);
-
-  document.head.appendChild(
-    script
-  );
-
-}, [selectedProduct]);
+// 
 
   // FORM
   const handleChange = (e) => {
@@ -637,30 +395,22 @@ if (loadingProducts){
 
         <div className="container">
 
-          <h1 className="fw-bold display-4">
+       <h1 className="fw-bold display-4">
+        Biomedical & Diagnostic Products
 
-            Our Products
+        {isValidCity
+        ? ` in ${cityName}`
+        : ""}
+        </h1>
 
-            {" "}
+       <p className="text-muted">
+        Explore biomedical, pathology, diagnostic
+        machines and laboratory equipment
 
-   {isValidCity
-  ? ` in ${cityName}`
-  : ""}
-
-          </h1>
-
-          <p className="text-muted">
-
-            Explore our wide range
-            of diagnostic products
-
-            {" "}
-
-{isValidCity
-  ? ` in ${cityName}`
-  : ""}
-
-          </p>
+        {isValidCity
+        ? ` in ${cityName}`
+        : ""}
+        </p>
 
           <div className="search-box mt-4">
 
@@ -721,13 +471,14 @@ if (loadingProducts){
                         "/no-image.png"
                       }
                       className="product-img-top"
+                      alt={item.title}
                     />
 
                     <div className="p-3">
 
-                      <h5>
+                      <h2 className="h5">
                         {item.title}
-                      </h5>
+                      </h2>
 
                       <p className="text-muted small">
                         {item.desc}
@@ -741,9 +492,9 @@ if (loadingProducts){
                     setSelectedProduct(item);
                     setShowForm(false);
                     const productPath =
-                      isValidCity
-                        ? `/${citySlug}/items/${makeSlug(item.title)}`
-                        : `/items/${makeSlug(item.title)}`;
+                    isValidCity
+                      ? `/${citySlug}/items`
+                      : "/items";
                     window.history.replaceState(
                       {},
                       "",
@@ -887,29 +638,29 @@ if (loadingProducts){
             </span> */}
 
             <span
-  className="close"
-  onClick={() => {
+              className="close"
+              onClick={() => {
 
-    setSelectedProduct(
-      null
-    );
+                setSelectedProduct(
+                  null
+                );
 
-    setShowForm(false);
+                setShowForm(false);
 
-    const basePath =
-      isValidCity
-        ? `/${citySlug}/items`
-        : "/items";
+                const basePath =
+                  isValidCity
+                    ? `/${citySlug}/items`
+                    : "/items";
 
-    window.history.replaceState(
-      {},
-      "",
-      basePath
-    );
-  }}
->
-  ×
-</span>
+                window.history.replaceState(
+                  {},
+                  "",
+                  basePath
+                );
+              }}
+            >
+              ×
+            </span>
 
             <div className="row align-items-center">
 
@@ -923,6 +674,7 @@ if (loadingProducts){
                       selectedProduct.image ||
                       "/no-image.png"
                     }
+                    alt={selectedProduct.title}
                     onError={(e) =>
                       (e.target.src =
                         "/no-image.png")

@@ -1,4 +1,4 @@
-import Home from "../Home/page";
+import Home from "../app/homepage";
 
 export default function Page({ params }) {
 
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
     );
 
   return {
-    title: `Diagnostic Lab in ${city} | Raj Biosis`,
+    title: `Diagnostic Lab in ${city} | Global Biomedical`,
     description: `Best diagnostic lab services in ${city}. Medical equipment, analyzers, reagents and healthcare solutions.`,
 
     keywords: [

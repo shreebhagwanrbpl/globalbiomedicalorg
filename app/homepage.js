@@ -188,7 +188,6 @@
           ))
         )}
       </div>
-
     </div>
   </section>
 
@@ -197,7 +196,6 @@
  <section className="py-5 product-section">
   <div className="container-fluid px-5 text-center">
     <h2 className="section-title">Our Products</h2>
-
     <div className="row g-4">
       {products.slice(0, 4).map((item, i) => (
         <div className="col-md-3" key={item.id || i}>
@@ -258,7 +256,7 @@
         <div className="col-lg-6" data-aos="fade-right">
 
           <h2 className="fw-bold mb-4 display-5">
-            Why Choose <span style={{color:"#198754"}}>Raj Biosis?</span>
+            Why Choose <span style={{color:"#198754"}}>Global Biomedical?</span>
           </h2>
 
           <p className="text-muted fs-5">
@@ -324,7 +322,7 @@
         <div className="col-lg-6" data-aos="fade-left">
 
           <h2 className="why-title">
-            Why Choose <span>Raj Biosis?</span>
+            Why Choose <span>Global Biomedical?</span>
           </h2>
 
           <p className="why-text">
