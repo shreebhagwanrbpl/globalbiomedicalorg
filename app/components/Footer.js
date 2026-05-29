@@ -23,11 +23,11 @@ export default function Footer() {
   ];
 
   // district slug
-const district =
-  pathParts[0] &&
-  !reservedRoutes.includes(pathParts[0])
-    ? pathParts[0]
-    : "";
+  const district =
+    pathParts[0] &&
+      !reservedRoutes.includes(pathParts[0])
+      ? pathParts[0]
+      : "";
 
   // format city
   const formatCity = (name = "") =>
@@ -43,64 +43,64 @@ const district =
 
   const city = formatCity(citySlug);
   const [stateName, setStateName] =
-  useState("");
+    useState("");
 
   // dynamic links
-const makeLink = (path = "") => {
+  const makeLink = (path = "") => {
 
-  // no district
-  if (!citySlug) {
+    // no district
+    if (!citySlug) {
 
-    return path || "/";
-
-  }
-
-  // homepage
-  if (!path) {
-
-    return `/${citySlug}`;
-
-  }
-  // other pages
-  return `/${citySlug}${path}`;
-};
-useEffect(() => {
-
-  const loadDistrict = async () => {
-
-    if (!citySlug) return;
-
-    try {
-
-      const snap = await getDoc(
-        doc(
-          db,
-          "websites",
-          "globalbiomedicalorg",
-          "districts",
-          citySlug
-        )
-      );
-
-      if (snap.exists()) {
-
-        setStateName(
-          snap.data()?.state || ""
-        );
-
-      }
-
-    } catch (err) {
-
-      console.log(err);
+      return path || "/";
 
     }
 
+    // homepage
+    if (!path) {
+
+      return `/${citySlug}`;
+
+    }
+    // other pages
+    return `/${citySlug}${path}`;
   };
+  useEffect(() => {
 
-  loadDistrict();
+    const loadDistrict = async () => {
 
-}, [citySlug]);
+      if (!citySlug) return;
+
+      try {
+
+        const snap = await getDoc(
+          doc(
+            db,
+            "websites",
+            "globalbiomedicalorg",
+            "districts",
+            citySlug
+          )
+        );
+
+        if (snap.exists()) {
+
+          setStateName(
+            snap.data()?.state || ""
+          );
+
+        }
+
+      } catch (err) {
+
+        console.log(err);
+
+      }
+
+    };
+
+    loadDistrict();
+
+  }, [citySlug]);
   const getValue = (key) => {
 
     return (
@@ -117,46 +117,48 @@ useEffect(() => {
             ))
         );
 
+
+
       })?.value || "Amrapali , Vaishali Nagar , Jaipur Jaipur, India, 302021"
     );
 
   };
   useEffect(() => {
 
-  const fetchContact =
-    async () => {
+    const fetchContact =
+      async () => {
 
-      try {
+        try {
 
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "globalbiomedicalorg",
-            "pages",
-            "contact"
-          )
-        );
-
-        if (snap.exists()) {
-
-          setContactInfo(
-            snap.data().contactInfo || []
+          const snap = await getDoc(
+            doc(
+              db,
+              "websites",
+              "globalbiomedicalorg",
+              "pages",
+              "contact"
+            )
           );
+
+          if (snap.exists()) {
+
+            setContactInfo(
+              snap.data().contactInfo || []
+            );
+
+          }
+
+        } catch (err) {
+
+          console.log(err);
 
         }
 
-      } catch (err) {
+      };
 
-        console.log(err);
+    fetchContact();
 
-      }
-
-    };
-
-  fetchContact();
-
-}, []);
+  }, []);
   return (
     <footer className="footer">
 
@@ -168,7 +170,7 @@ useEffect(() => {
           <div className="col-lg-4">
 
             <h4 className="fw-bold text-white">
-             Global Biomedical inc.
+              Global Biomedical inc.
             </h4>
 
             <p className="small">
@@ -253,11 +255,11 @@ useEffect(() => {
               <i className="bi bi-geo-alt"></i>
 
 
-{district
-  ? stateName
-    ? `${city}, ${stateName}, India`
-    : getValue("address")
-  : getValue("address")}
+              {district
+                ? stateName
+                  ? `${city}, ${stateName}, India`
+                  : getValue("address")
+                : getValue("address")}
 
             </p>
 
