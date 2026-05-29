@@ -168,7 +168,6 @@
           services.slice(0, 3).map((item, i) => (
             <div className="col-md-4" key={i}>
               <div className="p-4 rounded-4 service-card h-100">
-
                 <i
                   className={`bi ${
                     icons[i] || "bi-heart-pulse"

@@ -338,29 +338,21 @@ if (!mounted || loading) {
                       ></i>
 
                       <div>
-
                         <strong>
                           {item.label}
                         </strong>
-
-<p>
-
-{
-  item.label
-    .toLowerCase()
-    .includes("address")
-
-    ? isValidCity
-      ? `${cityName}, ${stateName}, India`
-      : item.value
-
-    : item.value
-}
-
-</p>
-
+                          <p>
+                          {
+                            item.label
+                              .toLowerCase()
+                              .includes("address")
+                              ? isValidCity
+                                ? `${cityName}, ${stateName}, India`
+                                : item.value
+                              : item.value
+                          }
+                          </p>
                       </div>
-
                     </div>
 
                   ))
