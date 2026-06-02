@@ -26,23 +26,23 @@ export default function Contact({ city }) {
   });
 
   const [contactInfo, setContactInfo] = useState([]);
-const [mounted, setMounted] =
-  useState(false);
+  const [mounted, setMounted] =
+    useState(false);
   // current city
-const pathname = usePathname();
+  const pathname = usePathname();
 
-const pathParts = pathname
-  .split("/")
-  .filter(Boolean);
+  const pathParts = pathname
+    .split("/")
+    .filter(Boolean);
 
-const [currentCity, setCurrentCity] =
-  useState("");
+  const [currentCity, setCurrentCity] =
+    useState("");
 
-const [isValidCity, setIsValidCity] =
-  useState(false);
+  const [isValidCity, setIsValidCity] =
+    useState(false);
 
-const [stateName, setStateName] =
-  useState("");
+  const [stateName, setStateName] =
+    useState("");
 
   // format city
   const formatCity = (name = "") =>
@@ -61,69 +61,69 @@ const [stateName, setStateName] =
   const cityName = formatCity(currentCity);
   useEffect(() => {
 
-  setMounted(true);
+    setMounted(true);
 
-}, []);
-useEffect(() => {
+  }, []);
+  useEffect(() => {
 
-  const checkDistrict = async () => {
+    const checkDistrict = async () => {
 
-    const slug = pathParts[0];
+      const slug = pathParts[0];
 
-    setStateName("");
+      setStateName("");
 
-    if (!slug) {
+      if (!slug) {
 
-      setCurrentCity("");
-      setIsValidCity(false);
+        setCurrentCity("");
+        setIsValidCity(false);
 
-      return;
+        return;
 
-    }
+      }
 
-    try {
+      try {
 
-      const snap = await getDoc(
-        doc(
-          db,
-          "websites",
-          "globalbiomedicalorg",
-          "districts",
-          slug
-        )
-      );
-
-      if (snap.exists()) {
-
-        const data = snap.data();
-
-        setCurrentCity(slug);
-
-        setStateName(
-          data?.state || ""
+        const snap = await getDoc(
+          doc(
+            db,
+            "websites",
+            "globalbiomedicalorg",
+            "districts",
+            slug
+          )
         );
 
-        setIsValidCity(true);
+        if (snap.exists()) {
 
-      } else {
+          const data = snap.data();
+
+          setCurrentCity(slug);
+
+          setStateName(
+            data?.state || ""
+          );
+
+          setIsValidCity(true);
+
+        } else {
+
+          setCurrentCity("");
+          setIsValidCity(false);
+
+        }
+
+      } catch {
 
         setCurrentCity("");
         setIsValidCity(false);
 
       }
 
-    } catch {
+    };
 
-      setCurrentCity("");
-      setIsValidCity(false);
+    checkDistrict();
 
-    }
-
-  };
-
-  checkDistrict();
-
-}, [pathname]);
+  }, [pathname]);
   // FETCH CONTACT INFO
   useEffect(() => {
 
@@ -227,17 +227,17 @@ useEffect(() => {
     }
 
   };
-if (!mounted || loading) {
-  return (
-    <div className="page-loader">
-      <div className="loader-circle"></div>
+  if (!mounted || loading) {
+    return (
+      <div className="page-loader">
+        <div className="loader-circle"></div>
 
-      <h2>Global Biomedical</h2>
+        <h2>Global Biomedical</h2>
 
-      <p>Loading amazing healthcare solutions...</p>
-    </div>
-  );
-}
+        <p>Loading amazing healthcare solutions...</p>
+      </div>
+    );
+  }
   return (
     <div className="contact-page">
 
@@ -254,9 +254,9 @@ if (!mounted || loading) {
 
             {" "}
 
-   {isValidCity
-  ? ` in ${cityName}`
-  : ""}
+            {isValidCity
+              ? ` in ${cityName}`
+              : ""}
 
           </h1>
 
@@ -265,8 +265,8 @@ if (!mounted || loading) {
             medical solutions & support
             {" "}
             {isValidCity
-  ? ` in ${cityName}`
-  : ""}
+              ? ` in ${cityName}`
+              : ""}
           </p>
 
         </div>
@@ -326,14 +326,14 @@ if (!mounted || loading) {
                             .includes("address")
                             ? "bi bi-geo-alt"
                             : item.label
-                                .toLowerCase()
-                                .includes("email")
-                            ? "bi bi-envelope"
-                            : item.label
+                              .toLowerCase()
+                              .includes("email")
+                              ? "bi bi-envelope"
+                              : item.label
                                 .toLowerCase()
                                 .includes("phone")
-                            ? "bi bi-telephone"
-                            : "bi bi-info-circle"
+                                ? "bi bi-telephone"
+                                : "bi bi-info-circle"
                         }
                       ></i>
 
@@ -341,7 +341,7 @@ if (!mounted || loading) {
                         <strong>
                           {item.label}
                         </strong>
-                          <p>
+                        <p>
                           {
                             item.label
                               .toLowerCase()
@@ -351,7 +351,7 @@ if (!mounted || loading) {
                                 : item.value
                               : item.value
                           }
-                          </p>
+                        </p>
                       </div>
                     </div>
 
@@ -466,16 +466,17 @@ if (!mounted || loading) {
         <div className="container-fluid p-0">
 
           <iframe
-           src={`https://maps.google.com/maps?q=${
-  isValidCity
-    ? `${cityName}, ${stateName}, India`
-    : "Amrapali , Vaishali Nagar , Jaipur Jaipur, India, 302021"
-}&z=16&output=embed`}
+            src={`https://www.google.com/maps?q=${encodeURIComponent(
+              isValidCity
+                ? `${cityName}, ${stateName}, India`
+                : "Amrapali, Vaishali Nagar, Jaipur, Rajasthan, India"
+            )
+              }&z=12&output=embed`}
             width="100%"
             height="400"
             style={{ border: 0 }}
             loading="lazy"
-          ></iframe>
+          />
 
         </div>
 

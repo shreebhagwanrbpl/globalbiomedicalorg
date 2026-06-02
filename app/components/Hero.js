@@ -9,7 +9,7 @@ import Link from "next/link";
 export default function Hero({ city }) {
   const [mounted, setMounted] = useState(false);
   const [homeLoading, setHomeLoading] = useState(true);
-  
+
   const [data, setData] = useState({
     // title: "Advanced Diagnostic Solutions",
     // description:
@@ -19,91 +19,91 @@ export default function Hero({ city }) {
   });
   const pathname = usePathname();
   const pathParts = pathname
-  .split("/")
-  .filter(Boolean);
+    .split("/")
+    .filter(Boolean);
   // current city
-const [currentCity, setCurrentCity] =
-  useState("jaipur");
+  const [currentCity, setCurrentCity] =
+    useState("");
   const [isValidCity, setIsValidCity] =
-  useState(false);
-const [loading, setLoading] =
-  useState(true);
+    useState(false);
+  const [loading, setLoading] =
+    useState(true);
   useEffect(() => {
 
-  const checkDistrict =
-    async () => {
+    const checkDistrict =
+      async () => {
 
-      const slug =
-        pathParts[0];
+        const slug =
+          pathParts[0];
 
-      if (!slug) {
+        if (!slug) {
 
-        setCurrentCity("jaipur");
-        setIsValidCity(false);
-         setLoading(false);
-
-        return;
-
-      }
-
-      try {
-
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "globalbiomedicalorg",
-            "districts",
-            slug
-          )
-        );
-
-        // valid city
-        if (snap.exists()) {
-
-          setCurrentCity(slug);
-          setIsValidCity(true);
-
-        } else {
-
-          // invalid city
-          setCurrentCity("jaipur");
+          setCurrentCity("");
           setIsValidCity(false);
+          setLoading(false);
+
+          return;
 
         }
 
-      } catch {
+        try {
 
-        setCurrentCity("jaipur");
-        setIsValidCity(false);
+          const snap = await getDoc(
+            doc(
+              db,
+              "websites",
+              "globalbiomedicalorg",
+              "districts",
+              slug
+            )
+          );
 
-      }
-  setLoading(false);
-    };
+          // valid city
+          if (snap.exists()) {
 
-  checkDistrict();
+            setCurrentCity(slug);
+            setIsValidCity(true);
 
-}, [pathname]);
+          } else {
+
+            // invalid city
+            setCurrentCity("");
+            setIsValidCity(false);
+
+          }
+
+        } catch {
+
+          setCurrentCity("");
+          setIsValidCity(false);
+
+        }
+        setLoading(false);
+      };
+
+    checkDistrict();
+
+  }, [pathname]);
 
   // format city
-const formatCity = (name = "") =>
-  name
-    .split("-")
-    .map(
-      (w) =>
-        w.charAt(0).toUpperCase() +
-        w.slice(1)
-    )
-    .join(" ");
+  const formatCity = (name = "") =>
+    name
+      .split("-")
+      .map(
+        (w) =>
+          w.charAt(0).toUpperCase() +
+          w.slice(1)
+      )
+      .join(" ");
 
   const citySlug = currentCity
     ?.toLowerCase()
     ?.replace(/\s+/g, "-");
 
   const cityName = formatCity(currentCity);
-useEffect(() => {
-  setMounted(true);
-}, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
 
     const fetchData = async () => {
@@ -121,22 +121,22 @@ useEffect(() => {
       if (snap.exists()) {
         setData(snap.data());
       }
-setHomeLoading(false);
+      setHomeLoading(false);
     };
 
     fetchData();
 
   }, []);
-if (!mounted || homeLoading || loading) {
+  if (!mounted || homeLoading || loading) {
 
     return (
-<div className="page-loader">
-  <div className="loader-circle"></div>
+      <div className="page-loader">
+        <div className="loader-circle"></div>
 
-  <h2>Global Biomedical</h2>
+        <h2>Global Biomedical</h2>
 
-  <p>Loading amazing healthcare solutions...</p>
-</div>
+        <p>Loading amazing healthcare solutions...</p>
+      </div>
     );
 
   }
@@ -173,9 +173,9 @@ if (!mounted || homeLoading || loading) {
 
               {" "}
 
-    {isValidCity
-  ? ` in ${cityName}`
-  : ""}
+              {isValidCity
+                ? ` in ${cityName}`
+                : ""}
 
             </h1>
 
@@ -185,19 +185,19 @@ if (!mounted || homeLoading || loading) {
 
               {" "}
 
-{" "}
-{isValidCity
-  ? ` available in ${cityName}`
-  : ""}
+              {" "}
+              {isValidCity
+                ? ` available in ${cityName}`
+                : ""}
 
             </p>
-
             <div className="mt-4 d-flex gap-3">
-
               <Link
                 href={
                   data?.button1Link ||
-                  `/${citySlug}/services`
+                  (isValidCity
+                    ? `/${citySlug}/services`
+                    : "/services")
                 }
                 className="hero-btn-primary"
               >
@@ -207,14 +207,15 @@ if (!mounted || homeLoading || loading) {
               <Link
                 href={
                   data?.button2Link ||
-                  `/${citySlug}/contact`
+                  (isValidCity
+                    ? `/${citySlug}/contact`
+                    : "/contact")
                 }
               >
                 <button className="btn hero-btn-outline">
                   {data?.button2Text}
                 </button>
               </Link>
-
             </div>
 
           </div>

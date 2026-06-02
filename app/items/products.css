@@ -11,7 +11,7 @@
 }
 
 .contactt-hero p {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .product-title {
@@ -46,7 +46,7 @@
 
 .search-box input:focus {
   border-color: #8e6a8f;
-  box-shadow: 0 0 10px rgba(142,106,143,0.2);
+  box-shadow: 0 0 10px rgba(142, 106, 143, 0.2);
 }
 
 /* 🔥 GRID FIX (IMPORTANT) */
@@ -90,7 +90,7 @@
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* IMAGE */
@@ -294,6 +294,43 @@
   object-fit: contain;
 }
 
+.desc-scroll {
+  max-height: 90px;
+  overflow-y: auto;
+  line-height: 1.7;
+  padding-right: 8px;
+  color: #666;
+}
+
+/* .spec-value-scroll {
+  display: block;
+  max-height: 80px;
+  overflow-y: auto;
+  word-break: break-word;
+  line-height: 1.6;
+  text-align: left;
+  font-weight: 600;
+  padding-right: 6px;
+} */
+
+.capacity-scroll {
+  display: block;
+  max-height: 100px;
+  overflow-y: auto;
+  text-align: left;
+  line-height: 1.5;
+  font-weight: 600;
+  padding-right: 6px;
+  word-break: break-word;
+}
+
+.spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
 /* CLOSE */
 .close {
   position: absolute;
@@ -339,13 +376,14 @@
   cursor: pointer;
   margin-bottom: 6px;
 }
+
 /* CARD */
 .pagination-card {
   background: #fff;
   border-radius: 14px;
   padding: 12px 18px;
   margin-top: 25px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
 }
 
 /* WRAPPER */
@@ -402,10 +440,11 @@
   font-size: 14px;
   font-weight: 500;
 }
+
 .quote-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -420,9 +459,11 @@
   max-width: 400px;
   outline: none;
 }
-.container-fluid{
-    min-height: 50vh;
+
+.container-fluid {
+  min-height: 50vh;
 }
+
 #react-hot-toast {
   z-index: 9999999 !important;
 }
@@ -430,6 +471,7 @@
 .react-hot-toast {
   z-index: 9999999 !important;
 }
+
 .custom-modal {
   z-index: 9999;
 }
