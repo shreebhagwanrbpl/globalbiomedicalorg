@@ -102,27 +102,40 @@ export default function Footer() {
 
   }, [citySlug]);
   const getValue = (key) => {
-
     return (
       contactInfo.find((x) => {
-
-        const label =
-          x.label?.toLowerCase();
+        const label = x.label?.toLowerCase();
 
         return (
           label?.includes(key) ||
           (key === "address" &&
-            label?.includes(
-              "location"
-            ))
+            label?.includes("location"))
         );
-
-
-
-      })?.value || "Amrapali , Vaishali Nagar , Jaipur Jaipur, India, 302021"
+      })?.value || ""
     );
-
   };
+  // const getValue = (key) => {
+
+  //   return (
+  //     contactInfo.find((x) => {
+
+  //       const label =
+  //         x.label?.toLowerCase();
+
+  //       return (
+  //         label?.includes(key) ||
+  //         (key === "address" &&
+  //           label?.includes(
+  //             "location"
+  //           ))
+  //       );
+
+
+
+  //     })?.value || "Amrapali , Vaishali Nagar , Jaipur Jaipur, India, 302021"
+  //   );
+
+  // };
   useEffect(() => {
 
     const fetchContact =
@@ -265,14 +278,13 @@ export default function Footer() {
 
             <p className="small mb-1">
               <i className="bi bi-envelope"></i>
-              info@globalbiomedicalorg.com
+              {getValue("email")}
             </p>
 
             <p className="small">
               <i className="bi bi-telephone"></i>
-              +91 XXXXX XXXXX
+              {getValue("contact")}
             </p>
-
           </div>
 
         </div>
@@ -292,69 +304,127 @@ export default function Footer() {
       </div>
 
       <style jsx>{`
-        .footer {
-          background: #111;
-          color: #fff;
-        }
+  .footer {
+    background: linear-gradient(
+      135deg,
+      #0f172a,
+      #111827
+    );
+    color: #fff;
+  }
 
-        .footer-title {
-          font-weight: 600;
-          margin-bottom: 12px;
-          position: relative;
-        }
+  .footer-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 22px;
+    position: relative;
+    padding-bottom: 10px;
+  }
 
-        .footer-title::after {
-          content: "";
-          width: 40px;
-          height: 2px;
-          background: #198754;
-          display: block;
-          margin-top: 6px;
-        }
+  .footer-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 55px;
+    height: 3px;
+    background: #198754;
+    border-radius: 20px;
+  }
 
-        .footer-links {
-          list-style: none;
-          padding: 0;
-        }
+  .footer p {
+    color: #cbd5e1;
+    line-height: 1.8;
+  }
 
-        .footer-links li {
-          margin-bottom: 10px;
-        }
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-        .footer-links a {
-          color: #fff !important;
-          text-decoration: none;
-          font-size: 14px;
-          transition: 0.3s;
-          display: inline-block;
-        }
+  .footer-links li {
+    margin-bottom: 14px;
+  }
 
-        .footer-links a:hover {
-          color: #198754 !important;
-          transform: translateX(6px);
-        }
+  .footer-links a {
+    color: #e5e7eb !important;
+    text-decoration: none !important;
+    font-size: 15px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
 
-        .footer-links a::before {
-          content: "›";
-          margin-right: 6px;
-          color: #198754;
-          transition: 0.3s;
-        }
+  .footer-links a::before {
+    content: "→";
+    color: #198754;
+    margin-right: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
 
-        .footer-links a:hover::before {
-          margin-right: 10px;
-        }
+  .footer-links a:hover {
+    color: #22c55e !important;
+    transform: translateX(6px);
+  }
 
-        .footer-bottom {
-          border-top: 1px solid #333;
-        }
+  .footer-links a:hover::before {
+    margin-right: 14px;
+  }
 
-        i {
-          margin-right: 6px;
-          color: #198754;
-        }
+  .footer-links li:not(:has(a)) {
+    color: #cbd5e1;
+    font-size: 14px;
+    padding-left: 2px;
+  }
 
-      `}</style>
+  .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 30px;
+  }
+
+  .footer-bottom p {
+    color: #94a3b8;
+    letter-spacing: 0.3px;
+  }
+
+  i {
+    margin-right: 10px;
+    color: #22c55e;
+    font-size: 16px;
+  }
+
+  .small {
+    color: #cbd5e1;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      text-align: center;
+    }
+
+    .footer-title::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .footer-links a {
+      justify-content: center;
+    }
+  }
+    
+.footer-links a,
+.footer-links a:link,
+.footer-links a:visited,
+.footer-links a:hover,
+.footer-links a:active {
+  text-decoration: none !important;
+}
+`}</style>
 
     </footer>
   );

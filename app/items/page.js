@@ -1,5 +1,5 @@
 "use client";
-import { usePathname,useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -15,8 +15,8 @@ import {
 } from "firebase/firestore";
 
 export default function ItemsPage({ city }) {
-const pathname = usePathname();
-const [selected, setSelected] = useState(null);
+  const pathname = usePathname();
+  const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
 
   const [selectedProduct, setSelectedProduct] =
@@ -45,144 +45,144 @@ const [selected, setSelected] = useState(null);
     email: "",
     phone: ""
   });
-const pathParts = pathname
-  .split("/")
-  .filter(Boolean);
+  const pathParts = pathname
+    .split("/")
+    .filter(Boolean);
   const [currentCity, setCurrentCity] =
-  useState("jaipur");
+    useState("jaipur");
   // current city
-const [isValidCity, setIsValidCity] =
-  useState(false);
+  const [isValidCity, setIsValidCity] =
+    useState(false);
   //   const [mounted, setMounted] =
   // useState(false);
-const [loadingProducts, setLoadingProducts] =
-  useState(true);
+  const [loadingProducts, setLoadingProducts] =
+    useState(true);
   const makeSlug = (text = "") =>
-  text
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-");
 
   // format city
-const formatCity = (name = "") =>
-  name
-    .split("-")
-    .map(
-      (w) =>
-        w.charAt(0).toUpperCase() +
-        w.slice(1)
-    )
-    .join(" ");
+  const formatCity = (name = "") =>
+    name
+      .split("-")
+      .map(
+        (w) =>
+          w.charAt(0).toUpperCase() +
+          w.slice(1)
+      )
+      .join(" ");
 
-const citySlug = currentCity
-  ?.toLowerCase()
-  ?.replace(/\s+/g, "-");
+  const citySlug = currentCity
+    ?.toLowerCase()
+    ?.replace(/\s+/g, "-");
 
-const cityName = formatCity(currentCity);
+  const cityName = formatCity(currentCity);
 
-const generateKeywords = (
-  productName = "",
-  city = ""
-) => {
+  const generateKeywords = (
+    productName = "",
+    city = ""
+  ) => {
 
-  const base =
-    productName.toLowerCase();
-  const keywords = [
-    base,
-    `${base} price`,
-    `${base} best price`,
-    `${base} supplier`,
-    `${base} manufacturer`,
-    `${base} distributor`,
-    `${base} exporter`,
-    `${base} dealer`,
-    `${base} online`,
-    `${base} buy online`,
-    `${base} near me`,
-    `${base} in india`,
-    `${base} in ${city}`,
-    `${base} machine`,
-    `${base} medical equipment`,
-    `${base} diagnostic equipment`,
-    `${base} biomedical equipment`,
-    `${base} pathology equipment`,
-    `${base} laboratory equipment`,
-    `${base} hospital equipment`,
-    `${base} for hospital`,
-    `${base} for clinic`,
-    `${base} healthcare equipment`,
-    `${base} specifications`,
-    `${base} quotation`,
-    `${base} details`,
-    `${base} testing machine`,
-    `${base} latest model`,
-    `${base} trusted supplier`,
-    `best ${base}`,
-    `cheap ${base}`,
-    `top ${base}`,
-    `${base} available in ${city}`,
-    `${base} service`,
-    `${base} installation`
-  ];
-  return keywords.slice(0, 35);
-};
+    const base =
+      productName.toLowerCase();
+    const keywords = [
+      base,
+      `${base} price`,
+      `${base} best price`,
+      `${base} supplier`,
+      `${base} manufacturer`,
+      `${base} distributor`,
+      `${base} exporter`,
+      `${base} dealer`,
+      `${base} online`,
+      `${base} buy online`,
+      `${base} near me`,
+      `${base} in india`,
+      `${base} in ${city}`,
+      `${base} machine`,
+      `${base} medical equipment`,
+      `${base} diagnostic equipment`,
+      `${base} biomedical equipment`,
+      `${base} pathology equipment`,
+      `${base} laboratory equipment`,
+      `${base} hospital equipment`,
+      `${base} for hospital`,
+      `${base} for clinic`,
+      `${base} healthcare equipment`,
+      `${base} specifications`,
+      `${base} quotation`,
+      `${base} details`,
+      `${base} testing machine`,
+      `${base} latest model`,
+      `${base} trusted supplier`,
+      `best ${base}`,
+      `cheap ${base}`,
+      `top ${base}`,
+      `${base} available in ${city}`,
+      `${base} service`,
+      `${base} installation`
+    ];
+    return keywords.slice(0, 35);
+  };
 
   useEffect(() => {
-  const checkDistrict =
-    async () => {
+    const checkDistrict =
+      async () => {
 
-      const slug =
-        pathParts[0];
+        const slug =
+          pathParts[0];
 
-      // no slug
-      if (!slug) {
+        // no slug
+        if (!slug) {
 
-        setCurrentCity("jaipur");
-        setIsValidCity(false);
+          setCurrentCity("jaipur");
+          setIsValidCity(false);
 
-        return;
+          return;
 
-      }
+        }
 
-      try {
+        try {
 
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "globalbiomedicalorg",
-            "districts",
-            slug
-          )
-        );
+          const snap = await getDoc(
+            doc(
+              db,
+              "websites",
+              "globalbiomedicalorg",
+              "districts",
+              slug
+            )
+          );
 
-        // valid city
-        if (snap.exists()) {
+          // valid city
+          if (snap.exists()) {
 
-          setCurrentCity(slug);
-          setIsValidCity(true);
+            setCurrentCity(slug);
+            setIsValidCity(true);
 
-        } else {
+          } else {
 
-          // invalid city
+            // invalid city
+            setCurrentCity("jaipur");
+            setIsValidCity(false);
+
+          }
+
+        } catch {
+
           setCurrentCity("jaipur");
           setIsValidCity(false);
 
         }
 
-      } catch {
+      };
 
-        setCurrentCity("jaipur");
-        setIsValidCity(false);
+    checkDistrict();
 
-      }
-
-    };
-
-  checkDistrict();
-
-}, [pathname]);
+  }, [pathname]);
   // FILTER
   const filtered = products.filter((p) =>
     p.title
@@ -195,26 +195,26 @@ const generateKeywords = (
     itemsPerPage === "all"
       ? 1
       : Math.ceil(
-          filtered.length / itemsPerPage
-        );
+        filtered.length / itemsPerPage
+      );
 
   // PAGINATION
   const paginatedProducts =
     itemsPerPage === "all"
       ? filtered
       : filtered.slice(
-          (currentPage - 1) *
-            itemsPerPage,
-          currentPage * itemsPerPage
-        );
+        (currentPage - 1) *
+        itemsPerPage,
+        currentPage * itemsPerPage
+      );
 
   useEffect(() => {
     Modal.setAppElement("body");
   }, []);
 
-//   useEffect(() => {
-//   setMounted(true);
-// }, []);
+  //   useEffect(() => {
+  //   setMounted(true);
+  // }, []);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -250,47 +250,47 @@ const generateKeywords = (
       } catch (err) {
         console.error(err);
       }
-     setLoading(false);
-    setLoadingProducts(false);
+      setLoading(false);
+      setLoadingProducts(false);
     };
 
     fetchProducts();
 
   }, []);
 
-//   useEffect(() => {
+  //   useEffect(() => {
 
-//   const parts =
-//     pathname.split("/").filter(Boolean);
+  //   const parts =
+  //     pathname.split("/").filter(Boolean);
 
-//   const slug =
-//     parts.length >= 3
-//       ? parts[parts.length - 1]
-//       : null;
+  //   const slug =
+  //     parts.length >= 3
+  //       ? parts[parts.length - 1]
+  //       : null;
 
-//   if (!slug) {
-//     setSelectedProduct(null);
-//     return;
-//   }
+  //   if (!slug) {
+  //     setSelectedProduct(null);
+  //     return;
+  //   }
 
-//   const foundProduct =
-//     products.find(
-//       (p) =>
-//         makeSlug(p.title) === slug
-//     );
+  //   const foundProduct =
+  //     products.find(
+  //       (p) =>
+  //         makeSlug(p.title) === slug
+  //     );
 
-//   if (foundProduct) {
+  //   if (foundProduct) {
 
-//     setSelectedProduct(
-//       foundProduct
-//     );
-//   }
+  //     setSelectedProduct(
+  //       foundProduct
+  //     );
+  //   }
 
-// }, [pathname, products]);
+  // }, [pathname, products]);
 
 
   // PRODUCT SEO
-// 
+  // 
 
   // FORM
   const handleChange = (e) => {
@@ -335,8 +335,7 @@ const generateKeywords = (
             selectedProduct?.title || "",
 
           message:
-            `Enquiry for product: ${
-              selectedProduct?.title || ""
+            `Enquiry for product: ${selectedProduct?.title || ""
             }`,
 
           createdAt:
@@ -367,19 +366,19 @@ const generateKeywords = (
     }
 
   };
-// if (!mounted || loadingProducts) {
-if (loadingProducts){
-  return (
-    <div className="page-loader">
-      <div className="loader-circle"></div>
+  // if (!mounted || loadingProducts) {
+  if (loadingProducts) {
+    return (
+      <div className="page-loader">
+        <div className="loader-circle"></div>
 
-      {/* <h2>Global Biomedical</h2>#c88379 */}
-      <h2>Global Biomedical</h2>
+        {/* <h2>Global Biomedical</h2>#c88379 */}
+        <h2>Global Biomedical</h2>
 
-      <p>Loading amazing healthcare solutions...</p>
-    </div>
-  );
-}
+        <p>Loading amazing healthcare solutions...</p>
+      </div>
+    );
+  }
   return (
     <div className="products-page">
 
@@ -395,22 +394,22 @@ if (loadingProducts){
 
         <div className="container">
 
-       <h1 className="fw-bold display-4">
-        Biomedical & Diagnostic Products
+          <h1 className="fw-bold display-4">
+            Biomedical & Diagnostic Products
 
-        {isValidCity
-        ? ` in ${cityName}`
-        : ""}
-        </h1>
+            {isValidCity
+              ? ` in ${cityName}`
+              : ""}
+          </h1>
 
-       <p className="text-muted">
-        Explore biomedical, pathology, diagnostic
-        machines and laboratory equipment
+          <p className="text-muted">
+            Explore biomedical, pathology, diagnostic
+            machines and laboratory equipment
 
-        {isValidCity
-        ? ` in ${cityName}`
-        : ""}
-        </p>
+            {isValidCity
+              ? ` in ${cityName}`
+              : ""}
+          </p>
 
           <div className="search-box mt-4">
 
@@ -477,30 +476,36 @@ if (loadingProducts){
                     <div className="p-3">
 
                       <h2 className="h5">
-                        {item.title}
+                        Product:  {item.title}
                       </h2>
 
                       <p className="text-muted small">
-                        {item.desc}
+                        Brand: {item.brand}
+                      </p>
+                      <p className="text-muted small">
+                        Throughput: {item.throughput}
+                      </p>
+                      <p className="text-muted small">
+                        Instrument: {item.instrument}
                       </p>
 
                       <button
                         className="btn btn-dark product-btn"
-                   onClick={(e) => {
-                    e.stopPropagation();
-                    setSelected(item);
-                    setSelectedProduct(item);
-                    setShowForm(false);
-                    const productPath =
-                    isValidCity
-                      ? `/${citySlug}/items`
-                      : "/items";
-                    window.history.replaceState(
-                      {},
-                      "",
-                      productPath
-                    );
-                  }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelected(item);
+                          setSelectedProduct(item);
+                          setShowForm(false);
+                          const productPath =
+                            isValidCity
+                              ? `/${citySlug}/items`
+                              : "/items";
+                          window.history.replaceState(
+                            {},
+                            "",
+                            productPath
+                          );
+                        }}
                       >
 
                         View
@@ -540,11 +545,11 @@ if (loadingProducts){
 
                 const value =
                   e.target.value ===
-                  "all"
+                    "all"
                     ? "all"
                     : Number(
-                        e.target.value
-                      );
+                      e.target.value
+                    );
 
                 setItemsPerPage(value);
 
@@ -676,8 +681,8 @@ if (loadingProducts){
                     }
                     alt={selectedProduct.title}
                     onError={(e) =>
-                      (e.target.src =
-                        "/no-image.png")
+                    (e.target.src =
+                      "/no-image.png")
                     }
                   />
 
@@ -692,7 +697,7 @@ if (loadingProducts){
                   {selectedProduct.title}
                 </h3>
 
-                <p className="text-muted">
+                <p className="text-muted desc-scroll">
                   {selectedProduct.desc}
                 </p>
 
@@ -732,7 +737,13 @@ if (loadingProducts){
                             {k}
                           </span>
 
-                          <strong>
+                          <strong
+                            className={
+                              k.toLowerCase() === "capacity"
+                                ? "capacity-scroll"
+                                : ""
+                            }
+                          >
                             {v}
                           </strong>
 
