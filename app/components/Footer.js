@@ -270,7 +270,7 @@ export default function Footer() {
 
             <p className="small">
               <i className="bi bi-telephone"></i>
-              +91 XXXXX XXXXX
+              08048890652
             </p>
 
           </div>

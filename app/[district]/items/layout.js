@@ -1,58 +1,11 @@
-// export async function generateMetadata({
-//   params,
-// }) {
-//   const district =
-//     decodeURIComponent(
-//       params.district
-//     )
-//       .replace(/-/g, " ")
-//       .replace(
-//         /\b\w/g,
-//         (char) =>
-//           char.toUpperCase()
-//       );
-
-//   const slug =
-//     params.district;
-
-//   return {
-//     title: `Biomedical Products in ${district} | Global Biomedical`,
-
-//     description: `Explore biomedical products, pathology equipment, diagnostic machines and laboratory instruments in ${district} with Global Biomedical.`,
-
-//     robots: {
-//       index: true,
-//       follow: true,
-//     },
-
-//     alternates: {
-//       canonical: `https://globalbiomedical.org/${slug}/items`,
-//     },
-
-//     openGraph: {
-//       title: `Biomedical Products in ${district} | Global Biomedical`,
-
-//       description: `Trusted biomedical equipment supplier in ${district}.`,
-
-//       url: `https://globalbiomedical.org/${slug}/items`,
-//     },
-//   };
-// }
-
-// export default function Layout({
-//   children,
-// }) {
-//   return children;
-// }
-
-
 export async function generateMetadata({
   params,
 }) {
+  const slug =
+    params?.district || "jaipur";
+
   const district =
-    decodeURIComponent(
-      params.district
-    )
+    decodeURIComponent(slug)
       .replace(/-/g, " ")
       .replace(
         /\b\w/g,
@@ -60,34 +13,49 @@ export async function generateMetadata({
           char.toUpperCase()
       );
 
-  const slug =
-    params.district;
+  const url = `https://globalbiomedical.org/${slug}/items`;
 
   return {
-    title: `Biomedical Products in ${district} | Diagnostic & Laboratory Equipment | Global Biomedical`,
+    metadataBase:
+      new URL(
+        "https://globalbiomedical.org"
+      ),
 
-    description: `Buy biomedical, pathology, diagnostic machines, CBC machines, laboratory and hospital equipment in ${district}. Trusted supplier with installation, support & best pricing from Global Biomedical.`,
+    title: `Biomedical Products in ${district} | Diagnostic & Laboratory Equipment`,
+
+    description: `Buy biomedical, pathology, CBC machines, laboratory and hospital equipment in ${district}. Trusted diagnostic equipment supplier with installation and support.`,
 
     keywords: [
       `Biomedical Products in ${district}`,
+      `Biomedical Supplier in ${district}`,
+      `Medical Equipment in ${district}`,
       `Diagnostic Equipment in ${district}`,
       `Laboratory Equipment in ${district}`,
       `Hospital Equipment in ${district}`,
-      `Medical Equipment Supplier ${district}`,
       `CBC Machine in ${district}`,
       `Pathology Equipment in ${district}`,
-      `Biomedical Supplier India`,
-      `Diagnostic Machine Supplier`,
-      `Global Biomedical`
+      `Diagnostic Machine in ${district}`,
+      `Medical Device Supplier ${district}`,
+      `Biomedical Products Near ${district}`,
+      `Global Biomedical ${district}`,
     ],
 
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        maxSnippet: -1,
+        maxImagePreview:
+          "large",
+        maxVideoPreview:
+          -1,
+      },
     },
 
     alternates: {
-      canonical: `https://globalbiomedical.org/${slug}/items`,
+      canonical: url,
     },
 
     openGraph: {
@@ -95,25 +63,21 @@ export async function generateMetadata({
 
       description: `Trusted supplier of biomedical, pathology, laboratory & diagnostic equipment in ${district}.`,
 
-      url: `https://globalbiomedical.org/${slug}/items`,
+      url,
 
       siteName:
         "Global Biomedical",
 
-      locale:
-        "en_IN",
+      locale: "en_IN",
 
-      type:
-        "website",
+      type: "website",
 
       images: [
         {
-          url:
-            "/logo.png",
+          url: "/logo.png",
           width: 1200,
           height: 630,
-          alt:
-            `Biomedical Products in ${district}`,
+          alt: `Biomedical Products in ${district}`,
         },
       ],
     },
@@ -122,13 +86,17 @@ export async function generateMetadata({
       card:
         "summary_large_image",
 
-      title:
-        `Biomedical Products in ${district} | Global Biomedical`,
+      title: `Biomedical Products in ${district}`,
 
-      description:
-        `Trusted biomedical equipment supplier in ${district}.`,
+      description: `Buy biomedical & laboratory equipment in ${district}.`,
 
       images: ["/logo.png"],
     },
   };
+}
+
+export default function Layout({
+  children,
+}) {
+  return children;
 }

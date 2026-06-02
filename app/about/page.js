@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+
+import Aboutt from "@/public/about_img.png";
+
 export default function About() {
   const [mounted, setMounted] = useState(false);
 const [loading, setLoading] = useState(true);
@@ -69,15 +72,15 @@ useEffect(() => {
             <div className="col-lg-6 text-center">
               <div className="about-img-wrapper">
                 <img
-                  src="https://images.unsplash.com/photo-1576086213369-97a306d36557"
-                  className="img-fluid"
-                />
+                      src={Aboutt.src}
+                    alt="About"
+                    className="img-fluid"
+                  />
               </div>
             </div>
 
             {/* RIGHT CONTENT */}
             <div className="col-lg-6">
-
               <h3 className="about-heading">
                 Delivering Quality Healthcare Solutions
               </h3>
@@ -94,7 +97,6 @@ useEffect(() => {
 
               {/* FEATURES */}
               <div className="mt-4">
-
                 <div className="about-feature">
                   <i className="bi bi-check-circle-fill"></i>
                   Trusted Medical Products
@@ -109,11 +111,8 @@ useEffect(() => {
                   <i className="bi bi-headset"></i>
                   24/7 Support Team
                 </div>
-
               </div>
-
             </div>
-
           </div>
         </div>
       </section>

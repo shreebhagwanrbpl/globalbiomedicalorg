@@ -128,6 +128,36 @@ const generateKeywords = (
   return keywords.slice(0, 35);
 };
 
+const getTextValue = (
+  value
+) => {
+  if (!value) return "";
+
+  if (
+    typeof value ===
+      "string" ||
+    typeof value ===
+      "number"
+  ) {
+    return String(value);
+  }
+
+  if (
+    typeof value ===
+    "object"
+  ) {
+    return String(
+      value.text ||
+      value.richText ||
+      value.value ||
+      value.label ||
+      ""
+    );
+  }
+
+  return "";
+};
+
   useEffect(() => {
   const checkDistrict =
     async () => {
@@ -184,29 +214,47 @@ const generateKeywords = (
 
 }, [pathname]);
   // FILTER
-  const filtered = products.filter((p) =>
-    p.title
-      ?.toLowerCase()
-      .includes(search.toLowerCase())
+ const filtered =
+  products.filter((p) =>
+    getTextValue(p.title)
+      .toLowerCase()
+      .includes(
+        search.toLowerCase()
+      )
   );
 
   // TOTAL PAGES
-  const totalPages =
-    itemsPerPage === "all"
-      ? 1
-      : Math.ceil(
-          filtered.length / itemsPerPage
-        );
+// TOTAL PAGES + SAFE PAGINATION
+const safeItemsPerPage =
+  itemsPerPage === "all"
+    ? filtered.length
+    : Number(itemsPerPage) || 10;
 
-  // PAGINATION
-  const paginatedProducts =
-    itemsPerPage === "all"
-      ? filtered
-      : filtered.slice(
-          (currentPage - 1) *
-            itemsPerPage,
-          currentPage * itemsPerPage
-        );
+const totalPages = Math.max(
+  1,
+  Math.ceil(
+    filtered.length /
+      safeItemsPerPage
+  )
+);
+
+const safeCurrentPage =
+  Math.min(
+    currentPage,
+    totalPages
+  );
+
+const paginatedProducts =
+  itemsPerPage === "all"
+    ? filtered
+    : filtered.slice(
+        (safeCurrentPage - 1) *
+          safeItemsPerPage,
+        safeCurrentPage *
+          safeItemsPerPage
+      );
+
+      
 
   useEffect(() => {
     Modal.setAppElement("body");
@@ -392,12 +440,9 @@ if (loadingProducts){
 
       {/* HERO */}
       <section className="contactt-hero text-center">
-
         <div className="container">
-
        <h1 className="fw-bold display-4">
         Biomedical & Diagnostic Products
-
         {isValidCity
         ? ` in ${cityName}`
         : ""}
@@ -406,7 +451,6 @@ if (loadingProducts){
        <p className="text-muted">
         Explore biomedical, pathology, diagnostic
         machines and laboratory equipment
-
         {isValidCity
         ? ` in ${cityName}`
         : ""}
@@ -424,11 +468,8 @@ if (loadingProducts){
                 )
               }
             />
-
           </div>
-
         </div>
-
       </section>
 
       {/* PRODUCTS */}
@@ -475,14 +516,40 @@ if (loadingProducts){
                     />
 
                     <div className="p-3">
-
                       <h2 className="h5">
                         {item.title}
                       </h2>
 
-                      <p className="text-muted small">
-                        {item.desc}
-                      </p>
+                    <div className="product-short-info">
+                      {item.modal && (
+                        <p>
+                          <strong>Model:</strong>{" "}
+                          {getTextValue(item.modal)}
+                        </p>
+                      )}
+
+                      {item.throughput && (
+                        <p>
+                          <strong>Throughput:</strong>{" "}
+                          {getTextValue(item.throughput)}
+                        </p>
+                      )}
+
+                      {item.brand && (
+                        <p>
+                          <strong>Brand:</strong>{" "}
+                          {getTextValue(item.brand)}
+                        </p>
+                      )}
+
+                      {item.parameters && (
+                        <p>
+                          <strong>Parameters:</strong>{" "}
+                          {getTextValue(item.parameters)}
+                        </p>
+                      )}
+
+                    </div>
 
                       <button
                         className="btn btn-dark product-btn"
@@ -536,21 +603,19 @@ if (loadingProducts){
 
             <select
               value={itemsPerPage}
-              onChange={(e) => {
+             onChange={(e) => {
+              const value =
+                e.target.value ===
+                "all"
+                  ? "all"
+                  : parseInt(
+                      e.target.value,
+                      10
+                    );
 
-                const value =
-                  e.target.value ===
-                  "all"
-                    ? "all"
-                    : Number(
-                        e.target.value
-                      );
-
-                setItemsPerPage(value);
-
-                setCurrentPage(1);
-
-              }}
+              setCurrentPage(1);
+              setItemsPerPage(value);
+            }}
             >
 
               <option value={10}>
@@ -581,9 +646,9 @@ if (loadingProducts){
           <div className="simple-pagination">
 
             <button
-              disabled={
-                currentPage === 1
-              }
+            disabled={
+            safeCurrentPage === 1
+          }
               onClick={() =>
                 setCurrentPage(
                   (p) => p - 1
@@ -594,15 +659,14 @@ if (loadingProducts){
             </button>
 
             <span>
-              {currentPage} /{" "}
-              {totalPages}
+              {safeCurrentPage} / {totalPages}
             </span>
 
             <button
-              disabled={
-                currentPage ===
-                totalPages
-              }
+            disabled={
+              safeCurrentPage ===
+              totalPages
+            }
               onClick={() =>
                 setCurrentPage(
                   (p) => p + 1
@@ -620,11 +684,9 @@ if (loadingProducts){
 
       {/* MODAL */}
       {selectedProduct && (
-
         <div className="custom-modal">
-
           <div className="modal-box">
-
+              <div className="modal-content-scroll">
             {/* <span
               className="close"
               onClick={() => {
@@ -636,22 +698,17 @@ if (loadingProducts){
             >
               ×
             </span> */}
-
             <span
               className="close"
               onClick={() => {
-
                 setSelectedProduct(
                   null
                 );
-
                 setShowForm(false);
-
                 const basePath =
                   isValidCity
                     ? `/${citySlug}/items`
                     : "/items";
-
                 window.history.replaceState(
                   {},
                   "",
@@ -692,8 +749,11 @@ if (loadingProducts){
                   {selectedProduct.title}
                 </h3>
 
+               
                 <p className="text-muted">
-                  {selectedProduct.desc}
+                  {getTextValue(
+                    selectedProduct.desc
+                  )}
                 </p>
 
                 {/* SPECS */}
@@ -722,69 +782,54 @@ if (loadingProducts){
                           ) && val
                       )
                       .map(([k, v]) => (
-
                         <div
                           key={k}
                           className="spec-item"
                         >
-
                           <span>
                             {k}
                           </span>
-
                           <strong>
-                            {v}
-                          </strong>
-
+                        {getTextValue(v)}
+                      </strong>
                         </div>
-
                       ))}
-
                   </div>
-
                 </div>
 
                 {/* BUTTONS */}
-                <div className="mt-4">
-
+                <div className="modal-footer-fixed">
                   {!showForm ? (
-
                     <div className="d-flex gap-2">
-
-                      <button
-                        className="btn btn-success w-100"
-                        onClick={() =>
-                          setQuoteModal(
-                            true
-                          )
-                        }
-                      >
-                        Get Quote
-                      </button>
-
+                 <button
+                  className="btn"
+                  style={{
+                    backgroundColor: "#C08081",
+                    borderColor: "#C08081",
+                    color: "#fff",
+                    width: "389px",
+                  }}
+                  onClick={() =>
+                    setQuoteModal(true)
+                  }
+                >
+                  Get Quote 
+                </button>
                       <Link
                         href={`/${citySlug}/contact`}
                       >
-
                         <button className="btn btn-outline-dark w-100">
-
                           Enquiry
-
                         </button>
-
                       </Link>
-
                     </div>
-
                   ) : null}
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
+          </div>
+
 
         </div>
 
@@ -799,13 +844,11 @@ if (loadingProducts){
         className="quote-modal-box"
         overlayClassName="quote-modal-overlay"
       >
-
         <h5 className="mb-3">
           Get Quote
         </h5>
 
         <div className="d-flex flex-column gap-2">
-
           <input
             name="name"
             placeholder="Your Name"
@@ -830,12 +873,17 @@ if (loadingProducts){
             onChange={handleChange}
           />
 
-          <button
-            className="btn btn-success mt-2"
-            onClick={handleSubmit}
-          >
-            Submit Request
-          </button>
+         <button
+          className="btn mt-2 w-100"
+          style={{
+            backgroundColor: "#C08081",
+            borderColor: "#C08081",
+            color: "#fff",
+          }}
+          onClick={handleSubmit}
+        >
+          Submit Request
+        </button>
         </div>
       </Modal>
     </div>

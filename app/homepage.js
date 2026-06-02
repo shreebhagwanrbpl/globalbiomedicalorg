@@ -168,11 +168,12 @@
           services.slice(0, 3).map((item, i) => (
             <div className="col-md-4" key={i}>
               <div className="p-4 rounded-4 service-card h-100">
-                <i
-                  className={`bi ${
-                    icons[i] || "bi-heart-pulse"
-                  } fs-1 text-success`}
-                ></i>
+              <i
+              className={`bi ${
+                icons[i] || "bi-heart-pulse"
+              } fs-1`}
+              style={{ color: "#C08081" }}
+            ></i>
 
                 <h5 className="mt-3">
                   {item.title}
@@ -206,11 +207,11 @@
             <div className="product-body text-start">
               <h6>{item.title}</h6>
 
-              <div className="meta">
+              {/* <div className="meta">
                 <span>{item.brand || "-"}</span>
                 <span>{item.size || "-"}</span>
                 <span>{item.usage || "-"}</span>
-              </div>
+              </div> */}
 
             </div>
           </div>
