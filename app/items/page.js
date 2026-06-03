@@ -128,35 +128,35 @@ export default function ItemsPage({ city }) {
     return keywords.slice(0, 35);
   };
 
-const getTextValue = (
-  value
-) => {
-  if (!value) return "";
+  const getTextValue = (
+    value
+  ) => {
+    if (!value) return "";
 
-  if (
-    typeof value ===
+    if (
+      typeof value ===
       "string" ||
-    typeof value ===
+      typeof value ===
       "number"
-  ) {
-    return String(value);
-  }
+    ) {
+      return String(value);
+    }
 
-  if (
-    typeof value ===
-    "object"
-  ) {
-    return String(
-      value.text ||
-      value.richText ||
-      value.value ||
-      value.label ||
-      ""
-    );
-  }
+    if (
+      typeof value ===
+      "object"
+    ) {
+      return String(
+        value.text ||
+        value.richText ||
+        value.value ||
+        value.label ||
+        ""
+      );
+    }
 
-  return "";
-};
+    return "";
+  };
 
   useEffect(() => {
     const checkDistrict =
@@ -214,47 +214,47 @@ const getTextValue = (
 
   }, [pathname]);
   // FILTER
- const filtered =
-  products.filter((p) =>
-    getTextValue(p.title)
-      .toLowerCase()
-      .includes(
-        search.toLowerCase()
-      )
-  );
+  const filtered =
+    products.filter((p) =>
+      getTextValue(p.title)
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        )
+    );
 
   // TOTAL PAGES
-// TOTAL PAGES + SAFE PAGINATION
-const safeItemsPerPage =
-  itemsPerPage === "all"
-    ? filtered.length
-    : Number(itemsPerPage) || 10;
+  // TOTAL PAGES + SAFE PAGINATION
+  const safeItemsPerPage =
+    itemsPerPage === "all"
+      ? filtered.length
+      : Number(itemsPerPage) || 10;
 
-const totalPages = Math.max(
-  1,
-  Math.ceil(
-    filtered.length /
+  const totalPages = Math.max(
+    1,
+    Math.ceil(
+      filtered.length /
       safeItemsPerPage
-  )
-);
-
-const safeCurrentPage =
-  Math.min(
-    currentPage,
-    totalPages
+    )
   );
 
-const paginatedProducts =
-  itemsPerPage === "all"
-    ? filtered
-    : filtered.slice(
+  const safeCurrentPage =
+    Math.min(
+      currentPage,
+      totalPages
+    );
+
+  const paginatedProducts =
+    itemsPerPage === "all"
+      ? filtered
+      : filtered.slice(
         (safeCurrentPage - 1) *
-          safeItemsPerPage,
+        safeItemsPerPage,
         safeCurrentPage *
-          safeItemsPerPage
+        safeItemsPerPage
       );
 
-      
+
 
   useEffect(() => {
     Modal.setAppElement("body");
@@ -584,51 +584,21 @@ const paginatedProducts =
 
             <select
               value={itemsPerPage}
-             onChange={(e) => {
-              const value =
-                e.target.value ===
-                "all"
-                  ? "all"
-                  : parseInt(
-                      e.target.value,
-                      10
-                    );
-
+              onChange={(e) => {
                 const value =
-                  e.target.value ===
-                    "all"
+                  e.target.value === "all"
                     ? "all"
-                    : Number(
-                      e.target.value
-                    );
+                    : Number(e.target.value);
 
                 setItemsPerPage(value);
-
                 setCurrentPage(1);
-
               }}
             >
-
-              <option value={10}>
-                10
-              </option>
-
-              <option value={25}>
-                25
-              </option>
-
-              <option value={50}>
-                50
-              </option>
-
-              <option value={100}>
-                100
-              </option>
-
-              <option value="all">
-                All
-              </option>
-
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value="all">All</option>
             </select>
 
           </div>
@@ -637,9 +607,9 @@ const paginatedProducts =
           <div className="simple-pagination">
 
             <button
-            disabled={
-            safeCurrentPage === 1
-          }
+              disabled={
+                safeCurrentPage === 1
+              }
               onClick={() =>
                 setCurrentPage(
                   (p) => p - 1
@@ -654,10 +624,10 @@ const paginatedProducts =
             </span>
 
             <button
-            disabled={
-              safeCurrentPage ===
-              totalPages
-            }
+              disabled={
+                safeCurrentPage ===
+                totalPages
+              }
               onClick={() =>
                 setCurrentPage(
                   (p) => p + 1
@@ -677,8 +647,8 @@ const paginatedProducts =
       {selectedProduct && (
         <div className="custom-modal">
           <div className="modal-box">
-              <div className="modal-content-scroll">
-            {/* <span
+            <div className="modal-content-scroll">
+              {/* <span
               className="close"
               onClick={() => {
                 setSelectedProduct(
@@ -689,141 +659,141 @@ const paginatedProducts =
             >
               ×
             </span> */}
-            <span
-              className="close"
-              onClick={() => {
-                setSelectedProduct(
-                  null
-                );
-                setShowForm(false);
-                const basePath =
-                  isValidCity
-                    ? `/${citySlug}/items`
-                    : "/items";
-                window.history.replaceState(
-                  {},
-                  "",
-                  basePath
-                );
-              }}
-            >
-              ×
-            </span>
+              <span
+                className="close"
+                onClick={() => {
+                  setSelectedProduct(
+                    null
+                  );
+                  setShowForm(false);
+                  const basePath =
+                    isValidCity
+                      ? `/${citySlug}/items`
+                      : "/items";
+                  window.history.replaceState(
+                    {},
+                    "",
+                    basePath
+                  );
+                }}
+              >
+                ×
+              </span>
 
-            <div className="row align-items-center">
+              <div className="row align-items-center">
 
-              {/* IMAGE */}
-              <div className="col-md-6 text-center">
+                {/* IMAGE */}
+                <div className="col-md-6 text-center">
 
-                <div className="img-wrapper">
+                  <div className="img-wrapper">
 
-                  <img
-                    src={
-                      selectedProduct.image ||
-                      "/no-image.png"
-                    }
-                    alt={selectedProduct.title}
-                    onError={(e) =>
-                    (e.target.src =
-                      "/no-image.png")
-                    }
-                  />
+                    <img
+                      src={
+                        selectedProduct.image ||
+                        "/no-image.png"
+                      }
+                      alt={selectedProduct.title}
+                      onError={(e) =>
+                      (e.target.src =
+                        "/no-image.png")
+                      }
+                    />
 
-                </div>
-
-              </div>
-
-              {/* DETAILS */}
-              <div className="col-md-6">
-
-                <h3 className="fw-bold">
-                  {selectedProduct.title}
-                </h3>
-
-                <p className="text-muted desc-scroll">
-                  {selectedProduct.desc}
-                </p>
-
-                {/* SPECS */}
-                <div className="spec-box">
-
-                  <h6>
-                    Specifications
-                  </h6>
-
-                  <div className="spec-grid">
-
-                    {Object.entries(
-                      selectedProduct
-                    )
-                      .filter(
-                        ([key, val]) =>
-                          ![
-                            "id",
-                            "title",
-                            "desc",
-                            "image",
-                            "createdAt",
-                            "isPublished"
-                          ].includes(
-                            key
-                          ) && val
-                      )
-                      .map(([k, v]) => (
-                        <div
-                          key={k}
-                          className="spec-item"
-                        >
-                          <span>
-                            {k}
-                          </span>
-
-                          <strong
-                            className={
-                              k.toLowerCase() === "capacity"
-                                ? "capacity-scroll"
-                                : ""
-                            }
-                          >
-                            {v}
-                          </strong>
-
-                        </div>
-                      ))}
                   </div>
+
                 </div>
 
-                {/* BUTTONS */}
-                <div className="modal-footer-fixed">
-                  {!showForm ? (
-                    <div className="d-flex gap-2">
-                 <button
-                  className="btn"
-                  style={{
-                    backgroundColor: "#C08081",
-                    borderColor: "#C08081",
-                    color: "#fff",
-                    width: "389px",
-                  }}
-                  onClick={() =>
-                    setQuoteModal(true)
-                  }
-                >
-                  Get Quote 
-                </button>
-                      <Link
-                        href={`/${citySlug}/contact`}
-                      >
-                        <button className="btn btn-outline-dark w-100">
-                          Enquiry
-                        </button>
-                      </Link>
+                {/* DETAILS */}
+                <div className="col-md-6">
+
+                  <h3 className="fw-bold">
+                    {selectedProduct.title}
+                  </h3>
+
+                  <p className="text-muted desc-scroll">
+                    {selectedProduct.desc}
+                  </p>
+
+                  {/* SPECS */}
+                  <div className="spec-box">
+
+                    <h6>
+                      Specifications
+                    </h6>
+
+                    <div className="spec-grid">
+
+                      {Object.entries(
+                        selectedProduct
+                      )
+                        .filter(
+                          ([key, val]) =>
+                            ![
+                              "id",
+                              "title",
+                              "desc",
+                              "image",
+                              "createdAt",
+                              "isPublished"
+                            ].includes(
+                              key
+                            ) && val
+                        )
+                        .map(([k, v]) => (
+                          <div
+                            key={k}
+                            className="spec-item"
+                          >
+                            <span>
+                              {k}
+                            </span>
+
+                            <strong
+                              className={
+                                k.toLowerCase() === "capacity"
+                                  ? "capacity-scroll"
+                                  : ""
+                              }
+                            >
+                              {v}
+                            </strong>
+
+                          </div>
+                        ))}
                     </div>
-                  ) : null}
+                  </div>
+
+                  {/* BUTTONS */}
+                  <div className="modal-footer-fixed">
+                    {!showForm ? (
+                      <div className="d-flex gap-2">
+                        <button
+                          className="btn"
+                          style={{
+                            backgroundColor: "#C08081",
+                            borderColor: "#C08081",
+                            color: "#fff",
+                            width: "389px",
+                          }}
+                          onClick={() =>
+                            setQuoteModal(true)
+                          }
+                        >
+                          Get Quote
+                        </button>
+                        <Link
+                          href={`/${citySlug}/contact`}
+                        >
+                          <button className="btn btn-outline-dark w-100">
+                            Enquiry
+                          </button>
+                        </Link>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
 
 
@@ -869,17 +839,17 @@ const paginatedProducts =
             onChange={handleChange}
           />
 
-         <button
-          className="btn mt-2 w-100"
-          style={{
-            backgroundColor: "#C08081",
-            borderColor: "#C08081",
-            color: "#fff",
-          }}
-          onClick={handleSubmit}
-        >
-          Submit Request
-        </button>
+          <button
+            className="btn mt-2 w-100"
+            style={{
+              backgroundColor: "#C08081",
+              borderColor: "#C08081",
+              color: "#fff",
+            }}
+            onClick={handleSubmit}
+          >
+            Submit Request
+          </button>
         </div>
       </Modal>
     </div>
