@@ -16,14 +16,7 @@ import {
 
 export default function ItemsPage({ city }) {
   const pathname = usePathname();
-  const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
-
-  const [selectedProduct, setSelectedProduct] =
-    useState(null);
-
-  const [showForm, setShowForm] =
-    useState(false);
 
   const [products, setProducts] =
     useState([]);
@@ -534,27 +527,22 @@ export default function ItemsPage({ city }) {
 
                       <button
                         className="btn btn-dark product-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelected(item);
-                          setSelectedProduct(item);
-                          setShowForm(false);
-                          const productPath =
-                            isValidCity
-                              ? `/${citySlug}/items`
-                              : "/items";
-                          window.history.replaceState(
-                            {},
-                            "",
-                            productPath
-                          );
+                        onClick={() => {
+
+                          const productSlug = item.title
+                            ?.toLowerCase()
+                            .trim()
+                            .replace(/[^a-z0-9\s-]/g, "")
+                            .replace(/\s+/g, "-");
+
+                          window.location.href = isValidCity
+                            ? `/${citySlug}/items/${productSlug}`
+                            : `/items/${productSlug}`;
+
                         }}
                       >
-
                         View
-
                       </button>
-
                     </div>
 
                   </div>
@@ -643,215 +631,6 @@ export default function ItemsPage({ city }) {
 
       </div>
 
-      {/* MODAL */}
-      {selectedProduct && (
-        <div className="custom-modal">
-          <div className="modal-box">
-            <div className="modal-content-scroll">
-              {/* <span
-              className="close"
-              onClick={() => {
-                setSelectedProduct(
-                  null
-                );
-                setShowForm(false);
-              }}
-            >
-              ×
-            </span> */}
-              <span
-                className="close"
-                onClick={() => {
-                  setSelectedProduct(
-                    null
-                  );
-                  setShowForm(false);
-                  const basePath =
-                    isValidCity
-                      ? `/${citySlug}/items`
-                      : "/items";
-                  window.history.replaceState(
-                    {},
-                    "",
-                    basePath
-                  );
-                }}
-              >
-                ×
-              </span>
-
-              <div className="row align-items-center">
-
-                {/* IMAGE */}
-                <div className="col-md-6 text-center">
-
-                  <div className="img-wrapper">
-
-                    <img
-                      src={
-                        selectedProduct.image ||
-                        "/no-image.png"
-                      }
-                      alt={selectedProduct.title}
-                      onError={(e) =>
-                      (e.target.src =
-                        "/no-image.png")
-                      }
-                    />
-
-                  </div>
-
-                </div>
-
-                {/* DETAILS */}
-                <div className="col-md-6">
-
-                  <h3 className="fw-bold">
-                    {selectedProduct.title}
-                  </h3>
-
-                  <p className="text-muted desc-scroll">
-                    {selectedProduct.desc}
-                  </p>
-
-                  {/* SPECS */}
-                  <div className="spec-box">
-
-                    <h6>
-                      Specifications
-                    </h6>
-
-                    <div className="spec-grid">
-
-                      {Object.entries(
-                        selectedProduct
-                      )
-                        .filter(
-                          ([key, val]) =>
-                            ![
-                              "id",
-                              "title",
-                              "desc",
-                              "image",
-                              "createdAt",
-                              "isPublished"
-                            ].includes(
-                              key
-                            ) && val
-                        )
-                        .map(([k, v]) => (
-                          <div
-                            key={k}
-                            className="spec-item"
-                          >
-                            <span>
-                              {k}
-                            </span>
-
-                            <strong
-                              className={
-                                k.toLowerCase() === "capacity"
-                                  ? "capacity-scroll"
-                                  : ""
-                              }
-                            >
-                              {v}
-                            </strong>
-
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-
-                  {/* BUTTONS */}
-                  <div className="modal-footer-fixed">
-                    {!showForm ? (
-                      <div className="d-flex gap-2">
-                        <button
-                          className="btn"
-                          style={{
-                            backgroundColor: "#C08081",
-                            borderColor: "#C08081",
-                            color: "#fff",
-                            width: "389px",
-                          }}
-                          onClick={() =>
-                            setQuoteModal(true)
-                          }
-                        >
-                          Get Quote
-                        </button>
-                        <Link
-                          href={`/${citySlug}/contact`}
-                        >
-                          <button className="btn btn-outline-dark w-100">
-                            Enquiry
-                          </button>
-                        </Link>
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-
-      )}
-
-      {/* QUOTE MODAL */}
-      <Modal
-        isOpen={quoteModal}
-        onRequestClose={() =>
-          setQuoteModal(false)
-        }
-        className="quote-modal-box"
-        overlayClassName="quote-modal-overlay"
-      >
-        <h5 className="mb-3">
-          Get Quote
-        </h5>
-
-        <div className="d-flex flex-column gap-2">
-          <input
-            name="name"
-            placeholder="Your Name"
-            className="form-control"
-            value={form.name}
-            onChange={handleChange}
-          />
-
-          <input
-            name="email"
-            placeholder="Your Email"
-            className="form-control"
-            value={form.email}
-            onChange={handleChange}
-          />
-
-          <input
-            name="phone"
-            placeholder="Your Phone"
-            className="form-control"
-            value={form.phone}
-            onChange={handleChange}
-          />
-
-          <button
-            className="btn mt-2 w-100"
-            style={{
-              backgroundColor: "#C08081",
-              borderColor: "#C08081",
-              color: "#fff",
-            }}
-            onClick={handleSubmit}
-          >
-            Submit Request
-          </button>
-        </div>
-      </Modal>
     </div>
   );
 }

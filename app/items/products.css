@@ -269,6 +269,7 @@
     opacity: 0;
     transform: translateY(20px) scale(.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -460,7 +461,10 @@
   outline: none;
 }
 
-.container-fluid {
+/* .container-fluid {
+  min-height: 50vh;
+} */
+.products-page .container-fluid {
   min-height: 50vh;
 }
 
