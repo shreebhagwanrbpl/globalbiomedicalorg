@@ -23,11 +23,27 @@ export default async function sitemap() {
   }));
 
   try {
-    const districtSnapshot =
-      await adminDb
+    const websiteRef =
+      adminDb
         .collection("websites")
-        .doc("globalbiomedicalorg")
-        .collection("districts")
+        .doc(
+          "globalbiomedicalorg"
+        );
+
+    // check document exists
+    const websiteDoc =
+      await websiteRef.get();
+
+    console.log(
+      "Website Exists:",
+      websiteDoc.exists
+    );
+
+    const districtSnapshot =
+      await websiteRef
+        .collection(
+          "districts"
+        )
         .get();
 
     console.log(
@@ -39,7 +55,6 @@ export default async function sitemap() {
       const districtSlug =
         districtDoc.id;
 
-      // district pages
       urls.push(
         {
           url: `${baseUrl}/${districtSlug}`,
@@ -63,42 +78,26 @@ export default async function sitemap() {
         }
       );
 
-      // items fetch
-      try {
-        const itemsSnapshot =
-          await adminDb
-            .collection("websites")
-            .doc(
-              "globalbiomedicalorg"
-            )
-            .collection(
-              "districts"
-            )
-            .doc(
-              districtSlug
-            )
-            .collection("items")
-            .get();
+      // items
+      const itemsSnapshot =
+        await websiteRef
+          .collection(
+            "districts"
+          )
+          .doc(
+            districtSlug
+          )
+          .collection("items")
+          .get();
 
-        console.log(
-          `${districtSlug} items:`,
-          itemsSnapshot.size
-        );
-
-        itemsSnapshot.docs.forEach(
-          (itemDoc) => {
-            urls.push({
-              url: `${baseUrl}/${districtSlug}/items/${itemDoc.id}`,
-              lastModified: now,
-            });
-          }
-        );
-      } catch (error) {
-        console.error(
-          `Error in ${districtSlug}`,
-          error
-        );
-      }
+      itemsSnapshot.forEach(
+        (itemDoc) => {
+          urls.push({
+            url: `${baseUrl}/${districtSlug}/items/${itemDoc.id}`,
+            lastModified: now,
+          });
+        }
+      );
     }
 
     console.log(
