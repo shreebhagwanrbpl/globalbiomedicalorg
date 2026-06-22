@@ -50,7 +50,7 @@ export const metadata = {
 
   title: {
     default:
-       "Global Biomedical | Diagnostic & Laboratory Equipment Supplier in India",
+       "Biomedical, Hospital & Laboratory Equipment Supplier in India | Global Biomedical",
     template:
       "%s | Global Biomedical",
   },
@@ -89,11 +89,12 @@ keywords: [
     "Global Biomedical",
 
   alternates: {
-    canonical:
-      "https://globalbiomedical.org",
+    canonical:"https://globalbiomedical.org"
   },
 
-  robots: {
+     referrer:"origin-when-cross-origin",
+  
+     robots: {
     index: true,
     follow: true,
     googleBot: {
@@ -107,6 +108,10 @@ keywords: [
         -1,
     },
   },
+
+  formatDetection:{
+telephone:false
+},
 
 openGraph: {
   title:
@@ -152,12 +157,21 @@ openGraph: {
   images: ["/logo.png"],
 },
 
-  verification: {
-    google:
-      "GOOGLE_VERIFICATION_CODE",
-  },
+icons: {
+  icon: "/favicon.ico",
+  shortcut: "/favicon.ico",
+  apple: "/apple-touch-icon.png",
+},
+
+
   category:
     "Medical Equipment",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
