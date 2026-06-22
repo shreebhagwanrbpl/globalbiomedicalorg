@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import Image from "next/image";
 import Aboutt from "@/public/about_img.png";
+import AboutBanner from "./About.png";
 
 export default function About() {
   const [mounted, setMounted] = useState(false);
@@ -51,17 +52,16 @@ useEffect(() => {
     <div className="about-page">
 
       {/* HERO */}
-      <section className="about-hero text-center">
-        <div className="container">
-          <h1 className="about-title">
-            About <span>Global Biomedical</span>
-          </h1>
+ <section className="about-hero">
+  <Image
+    src={AboutBanner}
+    alt="About Global Biomedical"
+    fill
+    priority
+    className="about-banner"
+  />
 
-          <p className="about-subtext">
-            Empowering healthcare with advanced diagnostic solutions
-          </p>
-        </div>
-      </section>
+</section>
 
       {/* CONTENT */}
       <section className="py-5">
@@ -186,24 +186,16 @@ useEffect(() => {
         }
 
         /* HERO */
-        .about-hero {
-          padding: 100px 0;
-         background: linear-gradient(3deg, #945c8dd6, #db8a64, #462c647d);
-          color: #fff;
-        }
+     .about-hero{
+    position: relative;
+    width: 100%;
+    height: 580px;
+    overflow: hidden;
+}
 
-        .about-title {
-          font-size: 48px;
-          font-weight: 700;
-        }
-
-        .about-title span {
-          color: #f5e6d3;
-        }
-
-        .about-subtext {
-          color: rgba(255,255,255,0.8);
-        }
+.about-banner{
+    object-fit: cover;
+}
 
         /* CONTENT */
         .about-heading {

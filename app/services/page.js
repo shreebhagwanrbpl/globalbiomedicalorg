@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import OS from "../services/os.png";
+
+
+
+
+
 export default function Services({ city }) {
 const [currentCity, setCurrentCity] = useState("");
 const [isValidCity, setIsValidCity] = useState(false);
@@ -172,27 +179,16 @@ if (!mounted || loading) {
   }
   return (
     <div className="services-page">
-      {/* HERO */}
-      <section className="services-hero text-center">
-        <div className="container">
-          <h1 className="fw-bold display-4">
-            Our <span>Services</span>
-            {" "}
-         {isValidCity
-          ? ` in ${cityName}`
-          : ""}
-          </h1>
-          <p className="mt-3">
-            Comprehensive medical and
-            diagnostic solutions for
-            modern healthcare
-            {" "}
-         {isValidCity
-  ? ` in ${cityName}`
-  : ""}
-          </p>
-        </div>
-      </section>
+
+   <section className="services-heroo">
+  <Image
+    src={OS}
+    alt="Our Services"
+    fill
+    priority
+    className="services-banner"
+  />
+</section>
 
       {/* SERVICES */}
       <section className="py-5">
@@ -310,6 +306,18 @@ if (!mounted || loading) {
 
         .services-hero p {
           color: rgba(255,255,255,0.8);
+        }
+          
+        .services-heroo{
+          position: relative;
+          width:100%;
+          height:510px;
+          overflow:hidden;
+          margin-top:25px;
+        }
+
+        .services-banner{
+          object-fit:cover;
         }
 
         /* CARDS */

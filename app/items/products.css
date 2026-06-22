@@ -4,14 +4,45 @@
 }
 
 /* HERO */
-.contactt-hero {
-  padding: 100px 0;
-  background: linear-gradient(3deg, #945c8dd6, #db8a64, #462c647d);
-  color: #fff;
+.contactt-hero{
+    position: relative;
+    height: 670px;
+    overflow: hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
-.contactt-hero p {
-  color: rgba(255, 255, 255, 0.8);
+.hero-banner{
+    object-fit: cover;
+    z-index:1;
+}
+
+.hero-overlay{
+    position:relative;
+    z-index:2;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.search-box{
+    width:100%;
+    max-width:1250px;
+    margin-top: 300px;
+}
+
+.search-box input{
+    width:100%;
+    height:60px;
+    border:none;
+    outline:none;
+    border-radius:50px;
+    padding:0 28px;
+    font-size:20px;
+    background:#fff;
+    box-shadow:0 15px 40px rgba(0,0,0,.18);
 }
 
 .product-title {

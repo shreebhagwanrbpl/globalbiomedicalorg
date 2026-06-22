@@ -5,6 +5,8 @@ import "./contact.css";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { usePathname } from "next/navigation";
+import ContactBanner from "./Contact.png";
+import Image from "next/image";
 import {
   addDoc,
   collection,
@@ -244,34 +246,22 @@ export default function Contact({ city }) {
       <Toaster position="top-right" />
 
       {/* HERO */}
-      <section className="contact-hero text-center">
+<section className="contact-hero">
+  <Image
+    src={ContactBanner}
+    alt="Contact Us"
+    fill
+    priority
+    className="contact-banner"
+  />
 
-        <div className="container">
+  {isValidCity && (
+    <div className="hero-overlay">
+      <h1>React out Us in {cityName}</h1>
+    </div>
+  )}
 
-          <h1 className="fw-bold display-4">
-
-            Contact <span>Us</span>
-
-            {" "}
-
-            {isValidCity
-              ? ` in ${cityName}`
-              : ""}
-
-          </h1>
-
-          <p className="mt-3">
-            Get in touch with us for
-            medical solutions & support
-            {" "}
-            {isValidCity
-              ? ` in ${cityName}`
-              : ""}
-          </p>
-
-        </div>
-
-      </section>
+</section>
 
       {/* CONTACT SECTION */}
       <section className="py-5">
