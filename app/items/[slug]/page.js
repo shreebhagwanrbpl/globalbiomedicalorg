@@ -11,8 +11,6 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import toast, { Toaster } from "react-hot-toast";
-
-
 import "../products.css";
 
 export default function ItemDetailPage() {
@@ -25,6 +23,12 @@ export default function ItemDetailPage() {
         email: "",
         phone: "",
     });
+
+useEffect(() => {
+    import("bootstrap/dist/js/bootstrap.bundle.min.js");
+}, []);
+
+
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -129,6 +133,7 @@ export default function ItemDetailPage() {
             </div>
         );
     }
+    
 
     return (
         <>
