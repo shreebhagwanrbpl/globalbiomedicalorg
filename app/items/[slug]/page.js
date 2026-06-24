@@ -12,6 +12,9 @@ import {
 import { db } from "@/lib/firebase";
 import toast, { Toaster } from "react-hot-toast";
 
+
+import "../products.css";
+
 export default function ItemDetailPage() {
     const { slug } = useParams();
 
@@ -130,7 +133,6 @@ export default function ItemDetailPage() {
     return (
         <>
             <Toaster position="top-right" />
-
             <section
                 style={{
                     paddingTop: "120px",
@@ -139,45 +141,105 @@ export default function ItemDetailPage() {
                     minHeight: "100vh",
                 }}
             >
-                <div className="container">
-
-                    <div className="row g-4 align-items-center">
-
+                <div className="container product-detail-container">
+                    <div className="row g-4 align-items-start">
                         {/* IMAGE */}
-                        <div className="col-lg-5">
+                        {/* <div className="col-lg-5">
 
-                            <div
-                                className="bg-white p-4 shadow-sm rounded text-center h-100 d-flex align-items-center justify-content-center"
-                            >
+                          <div className="product-image-card">
                                 <img
                                     src={
                                         item.image ||
                                         "/no-image.png"
                                     }
                                     alt={`${item.title} | Biomedical Equipment Supplier in India`}
-                                    className="img-fluid"
-                                    style={{
-                                        maxHeight: "420px",
-                                        objectFit: "contain",
-                                    }}
+                                    className="product-main-image"
+                                 
                                 />
                             </div>
 
+                        </div> */}
+                        <div className="col-lg-4">
+                            <div className="left-side">
+                                {/* Product Image */}
+                                <div className="product-image-card">
+                                    <img
+                                        src={item.image || "/no-image.png"}
+                                        alt={`${item.title} | Biomedical Equipment Supplier in India`}
+                                        className="product-main-image"
+                                    />
+                                </div>
+                                {/* Quote Form */}
+
+                            <div className="quote-card">
+                                <h3 className="mb-4">
+                                    Get Quote
+                                </h3>
+                                <input
+                                    type="text"
+                                    placeholder="Name"
+                                    className="form-control mb-3"
+                                    value={form.name}
+                                    onChange={(e) =>
+                                        setForm({
+                                            ...form,
+                                            name: e.target.value,
+                                        })
+                                    }
+                                />
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    className="form-control mb-3"
+                                    value={form.email}
+                                    onChange={(e) =>
+                                        setForm({
+                                            ...form,
+                                            email: e.target.value,
+                                        })
+                                    }
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Phone Number"
+                                    className="form-control mb-4"
+                                    maxLength={10}
+                                    value={form.phone}
+                                    onChange={(e) =>
+                                        setForm({
+                                            ...form,
+                                            phone: e.target.value.replace(/\D/g, ""),
+                                        })
+                                    }
+                                />
+                                <button
+                                    className="btn w-100"
+                                    style={{
+                                        background: "#C08081",
+                                        color: "#fff",
+                                        border: "none",
+                                    }}
+                                    onClick={handleSubmit}
+                                >
+                                    Submit Quote Request
+                                </button>
+                            </div>
                         </div>
+                    </div>
 
                         {/* DETAILS */}
-                        <div className="col-lg-7">
+                        <div className="col-lg-8">
 
-                            <div className="bg-white p-4 shadow-sm rounded">
+                            <div className="product-detail-card">
 
-                                <h1 className="fw-bold mb-3">
+                                <h1 className="product-title">
                                     {item.title}
                                 </h1>
 
-                                <p className="text-muted mb-4">
+                                <p className="product-description">
                                     {item.desc}
                                 </p>
-                                <p className="mt-4 text-muted">
+                                <p className="product-description mt-4">
                                     {item.title} is a high-quality biomedical and
                                     diagnostic equipment designed for hospitals,
                                     pathology laboratories, diagnostic centres,
@@ -212,7 +274,7 @@ export default function ItemDetailPage() {
                                                     className="col-md-6 mb-3"
                                                 >
                                                     <div
-                                                        className="border rounded p-3 h-100"
+                                                        className="product-spec"
                                                     >
                                                         <strong
                                                             style={{
@@ -245,11 +307,11 @@ export default function ItemDetailPage() {
 
                     {/* QUOTE FORM */}
 
-                    <div className="row mt-5 justify-content-center">
+                    {/* <div className="row mt-5 justify-content-center">
 
-                        <div className="col-lg-6">
+                        <div className="8">
 
-                            <div className="bg-white p-4 shadow-sm rounded">
+                            <div className="quote-card">
 
                                 <h3 className="mb-4">
                                     Get Quote
@@ -314,29 +376,129 @@ export default function ItemDetailPage() {
 
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className="mt-5">
-  <h3>Frequently Asked Questions</h3>
+<div className="faq-section mt-5">
 
-  <div className="mt-3">
-    <h5>What is the price of {item.title}?</h5>
-    <p>
-      Contact Global Biomedical for the latest price and quotation.
-    </p>
+    <div className="text-center mb-5">
+        <span className="faq-badge">
+            Frequently Asked Questions
+        </span>
 
-    <h5>Do you provide installation?</h5>
-    <p>
-      Yes, installation and technical support are available.
-    </p>
+        <h2 className="faq-title mt-3">
+            Everything You Need To Know
+        </h2>
 
-    <h5>Is warranty available?</h5>
-    <p>
-      Yes, warranty depends on the manufacturer and product model.
-    </p>
-  </div>
+        <p className="faq-subtitle">
+            Find answers to the most common questions about{" "}
+            <strong>{item.title}</strong>.
+        </p>
+    </div>
+
+    <div
+        className="accordion accordion-flush faq-accordion"
+        id="faqAccordion"
+    >
+
+        <div className="accordion-item">
+            <h2 className="accordion-header">
+                <button
+                    className="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq1"
+                >
+                    What is the price of {item.title}?
+                </button>
+            </h2>
+
+            <div
+                id="faq1"
+                className="accordion-collapse collapse show"
+                data-bs-parent="#faqAccordion"
+            >
+                <div className="accordion-body">
+                    The price depends on the model and configuration.
+                    Contact us today for the latest quotation and
+                    best available offer.
+                </div>
+            </div>
+        </div>
+
+        <div className="accordion-item">
+            <h2 className="accordion-header">
+                <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq2"
+                >
+                    Do you provide installation & training?
+                </button>
+            </h2>
+
+            <div
+                id="faq2"
+                className="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+            >
+                <div className="accordion-body">
+                    Yes. We provide installation assistance,
+                    user training and complete technical support.
+                </div>
+            </div>
+        </div>
+
+        <div className="accordion-item">
+            <h2 className="accordion-header">
+                <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq3"
+                >
+                    Is warranty available?
+                </button>
+            </h2>
+
+            <div
+                id="faq3"
+                className="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+            >
+                <div className="accordion-body">
+                    Yes. Warranty is available according to the
+                    manufacturer and selected model.
+                </div>
+            </div>
+        </div>
+
+        <div className="accordion-item">
+            <h2 className="accordion-header">
+                <button
+                    className="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#faq4"
+                >
+                    Do you supply across India?
+                </button>
+            </h2>
+
+            <div
+                id="faq4"
+                className="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+            >
+                <div className="accordion-body">
+                    Yes. We supply biomedical and laboratory
+                    equipment to hospitals, laboratories and
+                    diagnostic centres all over India.
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
                 </div>
             </section>
         </>
