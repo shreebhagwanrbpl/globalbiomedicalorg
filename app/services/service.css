@@ -1,0 +1,214 @@
+        .services-page {
+            background: #f9fafb;
+        }
+
+        /* HERO */
+        .services-hero {
+            padding: 100px 0;
+            background: linear-gradient(3deg,
+                    #945c8dd6,
+                    #db8a64,
+                    #462c647d);
+            color: #fff;
+        }
+
+        .services-hero span {
+            color: #f5e6d3;
+        }
+
+        .services-hero p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .services-heroo {
+            position: relative;
+            width: 100%;
+            height: 510px;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .services-heroo {
+                height: 220px;
+                margin-top: 0;
+            }
+        }
+
+        .services-banner {
+            object-fit: cover;
+        }
+
+        @media(max-width:768px) {
+
+            .services-banner {
+                object-fit: contain;
+                background: white;
+            }
+
+        }
+
+        /* CARDS */
+        .service-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.4s;
+            border: 1px solid #eee;
+        }
+
+        @media(max-width:768px) {
+
+            .service-card {
+                padding: 22px;
+            }
+
+        }
+
+        @media(max-width:768px) {
+
+            .cta {
+                max-width: 95%;
+                padding: 35px 20px;
+            }
+
+            .cta h2 {
+                font-size: 34px;
+                line-height: 1.2;
+            }
+
+        }
+
+        .service-card i {
+            font-size: 40px;
+            color: #8e6a8f;
+            margin-bottom: 15px;
+        }
+
+        .service-card h5 {
+            color: #111;
+        }
+
+        .service-card p {
+            color: #666;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg,
+                    #f4d7cc,
+                    #ead6e2);
+            color: #111;
+            padding: 70px 0;
+            border-radius: 30px;
+            margin: 50px auto;
+            max-width: 90%;
+        }
+
+        .cta h2 {
+            font-weight: 700;
+        }
+
+        .cta p {
+            color: #555;
+        }
+
+        /* BUTTON */
+        .cta button {
+            background: #111;
+            color: #fff;
+            border-radius: 50px;
+            padding: 12px 28px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .cta button:hover {
+            background: #000;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+
+            .service-card {
+                padding: 25px 20px;
+                border-radius: 16px;
+            }
+
+            .service-card i {
+                font-size: 32px;
+            }
+
+            .service-card h5 {
+                font-size: 18px;
+                margin-top: 10px;
+            }
+
+            .service-card p {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .cta {
+                padding: 40px 20px;
+                border-radius: 20px;
+                margin: 30px auto;
+            }
+
+            .cta h2 {
+                font-size: 28px;
+            }
+
+            .cta p {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            .cta button {
+                width: 100%;
+                max-width: 220px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .container {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .page-loader h2 {
+                font-size: 24px;
+            }
+
+            .page-loader p {
+                font-size: 14px;
+                text-align: center;
+                padding: 0 20px;
+            }
+
+            .loader-circle {
+                width: 55px;
+                height: 55px;
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .services-heroo {
+                height: 220px;
+            }
+
+        }

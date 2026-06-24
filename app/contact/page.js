@@ -18,7 +18,7 @@ import {
 export default function Contact({ city }) {
 
   const [loading, setLoading] = useState(true);
-
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -165,36 +165,75 @@ export default function Contact({ city }) {
 
   // HANDLE CHANGE
   const handleChange = (e) => {
+    const { name, value } = e.target;
 
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
+    if (name === "name") {
+      const onlyLetters = value.replace(/[^A-Za-z\s]/g, "");
+      setForm((prev) => ({
+        ...prev,
+        [name]: onlyLetters
+      }));
+      return;
+    }
 
+    if (name === "phone") {
+      const onlyNumbers = value.replace(/\D/g, "").slice(0, 10);
+
+      setForm((prev) => ({
+        ...prev,
+        [name]: onlyNumbers
+      }));
+      return;
+    }
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   // SUBMIT
   const handleSubmit = async () => {
-
-    const {
-      name,
-      email,
-      phone,
-      message
-    } = form;
+    const { name, email, phone, subject, message } = form;
 
     if (
-      !name ||
-      !email ||
-      !phone ||
-      !message
+      !name.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !subject.trim() ||
+      !message.trim()
     ) {
-      return toast.error(
-        "Fill all fields"
-      );
+      return toast.error("Please fill all fields");
+    }
+
+    const nameRegex = /^[A-Za-z\s]+$/;
+
+    if (!nameRegex.test(name)) {
+      return toast.error("Name can contain only letters");
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return toast.error("Please enter a valid email");
+    }
+
+    const phoneRegex = /^[6-9]\d{9}$/;
+
+    if (!phoneRegex.test(phone)) {
+      return toast.error("Enter a valid 10-digit mobile number");
+    }
+
+    if (subject.trim().length < 3) {
+      return toast.error("Subject must be at least 3 characters");
+    }
+
+    if (message.trim().length < 10) {
+      return toast.error("Message must be at least 10 characters");
     }
 
     try {
+      setSubmitting(true);
 
       await addDoc(
         collection(
@@ -210,7 +249,7 @@ export default function Contact({ city }) {
         }
       );
 
-      toast.success("Message sent");
+      toast.success("Message sent successfully");
 
       setForm({
         name: "",
@@ -221,13 +260,11 @@ export default function Contact({ city }) {
       });
 
     } catch (err) {
-
       console.error(err);
-
-      toast.error("Failed to send");
-
+      toast.error("Failed to send message");
+    } finally {
+      setSubmitting(false);
     }
-
   };
   if (!mounted || loading) {
     return (
@@ -246,22 +283,22 @@ export default function Contact({ city }) {
       <Toaster position="top-right" />
 
       {/* HERO */}
-<section className="contact-hero">
-  <Image
-    src={ContactBanner}
-    alt="Contact Us"
-    fill
-    priority
-    className="contact-banner"
-  />
+      <section className="contact-hero">
+        <Image
+          src={ContactBanner}
+          alt="Contact Us"
+          fill
+          priority
+          className="contact-banner"
+        />
 
-  {isValidCity && (
-    <div className="hero-overlay">
-      <h1>React out Us in {cityName}</h1>
-    </div>
-  )}
+        {isValidCity && (
+          <div className="hero-overlay">
+            <h1>Reach Out To Us In {cityName}</h1>
+          </div>
+        )}
 
-</section>
+      </section>
 
       {/* CONTACT SECTION */}
       <section className="py-5">
@@ -360,11 +397,9 @@ export default function Contact({ city }) {
             >
 
               <div className="contact-form">
-
                 <div className="row g-3">
 
                   <div className="col-md-6">
-
                     <input
                       type="text"
                       name="name"
@@ -372,12 +407,12 @@ export default function Contact({ city }) {
                       className="input-field"
                       value={form.name}
                       onChange={handleChange}
+                      maxLength={50}
+                      required
                     />
-
                   </div>
 
                   <div className="col-md-6">
-
                     <input
                       type="email"
                       name="email"
@@ -385,25 +420,26 @@ export default function Contact({ city }) {
                       className="input-field"
                       value={form.email}
                       onChange={handleChange}
+                      maxLength={100}
+                      required
                     />
-
                   </div>
 
                   <div className="col-md-6">
-
                     <input
-                      type="text"
+                      type="tel"
                       name="phone"
                       placeholder="Phone Number"
                       className="input-field"
                       value={form.phone}
                       onChange={handleChange}
+                      maxLength={10}
+                      inputMode="numeric"
+                      required
                     />
-
                   </div>
 
                   <div className="col-md-6">
-
                     <input
                       type="text"
                       name="subject"
@@ -411,35 +447,34 @@ export default function Contact({ city }) {
                       className="input-field"
                       value={form.subject}
                       onChange={handleChange}
+                      maxLength={100}
+                      required
                     />
-
                   </div>
 
                   <div className="col-12">
-
                     <textarea
                       name="message"
                       rows="4"
                       placeholder="Your Message"
                       value={form.message}
                       onChange={handleChange}
+                      maxLength={1000}
+                      required
                     ></textarea>
-
                   </div>
 
                   <div className="col-12">
-
                     <button
                       className="btn submit-btn w-100"
                       onClick={handleSubmit}
+                      disabled={submitting}
                     >
-                      Send Message
+                      {submitting ? "Sending..." : "Send Message"}
                     </button>
-
                   </div>
 
                 </div>
-
               </div>
 
             </div>
@@ -453,7 +488,7 @@ export default function Contact({ city }) {
       {/* MAP */}
       <section className="map-section">
 
-        <div className="container-fluid p-0">
+        <div className="container">
 
           <iframe
             src={`https://www.google.com/maps?q=${encodeURIComponent(

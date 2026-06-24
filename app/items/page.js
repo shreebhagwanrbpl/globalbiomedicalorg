@@ -27,7 +27,7 @@ export default function ItemsPage({ city }) {
     useState(1);
 
   const [itemsPerPage, setItemsPerPage] =
-    useState(10);
+    useState(12);
 
   const [quoteModal, setQuoteModal] =
     useState(false);
@@ -223,7 +223,7 @@ export default function ItemsPage({ city }) {
   const safeItemsPerPage =
     itemsPerPage === "all"
       ? filtered.length
-      : Number(itemsPerPage) || 10;
+      : Number(itemsPerPage) || 12;
 
   const totalPages = Math.max(
     1,
@@ -433,30 +433,26 @@ export default function ItemsPage({ city }) {
       />
 
       {/* HERO */}
-     <section className="contactt-hero">
+      <section className="contactt-hero">
 
-  <Image
-    src={ProductsBanner}
-    alt="Biomedical & Diagnostic Products"
-    fill
-    priority
-    className="hero-banner"
-  />
+        <Image
+          src={ProductsBanner}
+          alt="Biomedical & Diagnostic Products"
+          fill
+          priority
+          className="hero-banner"
+        />
 
-  <div className="hero-overlay">
-    <div className="search-box">
+      </section>
 
-      <input
-        type="text"
-        placeholder="Search product..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-    </div>
-  </div>
-
-</section>
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="Search product..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
       {/* PRODUCTS */}
       <div className="container-fluid px-5 pb-5">
@@ -573,7 +569,7 @@ export default function ItemsPage({ city }) {
                 setCurrentPage(1);
               }}
             >
-              <option value={10}>10</option>
+              <option value={12}>12</option>
               <option value={25}>25</option>
               <option value={50}>50</option>
               <option value={100}>100</option>

@@ -1,5 +1,5 @@
 "use client";
-
+import "./service.css"
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -13,17 +13,17 @@ import OS from "../services/os.png";
 
 
 export default function Services({ city }) {
-const [currentCity, setCurrentCity] = useState("");
-const [isValidCity, setIsValidCity] = useState(false);
+  const [currentCity, setCurrentCity] = useState("");
+  const [isValidCity, setIsValidCity] = useState(false);
   const [services, setServices] = useState([]);
-const pathname = usePathname();
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-const pathParts = pathname
-  .split("/")
-  .filter(Boolean);
+  const pathParts = pathname
+    .split("/")
+    .filter(Boolean);
   // current city
   // const currentCity = city || "jaipur";
-const [stateName, setStateName] = useState("");
+  const [stateName, setStateName] = useState("");
   // format city
   const formatCity = (name = "") =>
     name
@@ -33,84 +33,84 @@ const [stateName, setStateName] = useState("");
           w.charAt(0).toUpperCase() +
           w.slice(1)
       )
-      .join(" "); 
-const [loading, setLoading] =
-  useState(true);
+      .join(" ");
+  const [loading, setLoading] =
+    useState(true);
   const citySlug = currentCity
     ?.toLowerCase()
     ?.replace(/\s+/g, "-");
 
   const cityName =
     formatCity(currentCity);
-    useEffect(() => {
-  setMounted(true);
-}, []);
-useEffect(() => {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  useEffect(() => {
 
-  const checkDistrict =
-    async () => {
+    const checkDistrict =
+      async () => {
 
-  const slug =
-  pathParts[0];
+        const slug =
+          pathParts[0];
 
-setStateName("");
+        setStateName("");
 
-      // no slug
-      if (!slug) {
+        // no slug
+        if (!slug) {
 
-        setCurrentCity("");
-        setIsValidCity(false);
+          setCurrentCity("");
+          setIsValidCity(false);
 
-        return;
+          return;
 
-      }
+        }
 
-      try {
+        try {
 
-        const snap = await getDoc(
-          doc(
-            db,
-            "websites",
-            "globalbiomedicalorg",
-            "districts",
-            slug
-          )
-        );
+          const snap = await getDoc(
+            doc(
+              db,
+              "websites",
+              "globalbiomedicalorg",
+              "districts",
+              slug
+            )
+          );
 
-        // valid city
-    if (snap.exists()) {
+          // valid city
+          if (snap.exists()) {
 
-  const data =
-    snap.data();
+            const data =
+              snap.data();
 
-  setCurrentCity(slug);
+            setCurrentCity(slug);
 
-  setStateName(
-    data?.state || ""
-  );
+            setStateName(
+              data?.state || ""
+            );
 
-  setIsValidCity(true);
+            setIsValidCity(true);
 
-} else {
+          } else {
 
-          // invalid city
+            // invalid city
+            setCurrentCity("");
+            setIsValidCity(false);
+
+          }
+
+        } catch {
+
           setCurrentCity("");
           setIsValidCity(false);
 
         }
 
-      } catch {
+      };
 
-        setCurrentCity("");
-        setIsValidCity(false);
+    checkDistrict();
 
-      }
-
-    };
-
-  checkDistrict();
-
-}, [pathname]);
+  }, [pathname]);
   // FETCH DATA
   useEffect(() => {
 
@@ -160,35 +160,38 @@ setStateName("");
     "bi-shield-check",
     "bi-person-check",
   ];
+  useEffect(() => {
+
     const timer = setTimeout(() => {
+      setMounted(true);
+      setLoading(false);
+    }, 500);
 
-    setMounted(true);
+    return () => clearTimeout(timer);
 
-    setLoading(false);
-
-  }, 500);
-if (!mounted || loading) {
+  }, []);
+  if (!mounted || loading) {
     return (
-<div className="page-loader">
-  <div className="loader-circle"></div>
-  <h2>Global Biomedical</h2>
-  <p>Loading amazing healthcare solutions...</p>
-</div>
+      <div className="page-loader">
+        <div className="loader-circle"></div>
+        <h2>Global Biomedical</h2>
+        <p>Loading amazing healthcare solutions...</p>
+      </div>
     );
 
   }
   return (
     <div className="services-page">
 
-   <section className="services-heroo">
-  <Image
-    src={OS}
-    alt="Our Services"
-    fill
-    priority
-    className="services-banner"
-  />
-</section>
+      <section className="services-heroo">
+        <Image
+          src={OS}
+          alt="Our Services"
+          fill
+          priority
+          className="services-banner"
+        />
+      </section>
 
       {/* SERVICES */}
       <section className="py-5">
@@ -203,20 +206,16 @@ if (!mounted || loading) {
 
               services.map((item, i) => (
 
-                <div
-                  className="col-md-4"
-                  key={i}
-                >
+                <div className="col-6 col-lg-4" key={i}>
 
                   <div className="service-card">
 
                     {/* ICON */}
                     <i
-                      className={`bi ${
-                        icons[
-                          i % icons.length
-                        ]
-                      }`}
+                      className={`bi ${icons[
+                        i % icons.length
+                      ]
+                        }`}
                     ></i>
 
                     {/* DATA */}
@@ -281,112 +280,6 @@ if (!mounted || loading) {
 
       </section>
 
-      {/* STYLES */}
-      <style jsx>{`
-
-        .services-page {
-          background: #f9fafb;
-        }
-
-        /* HERO */
-        .services-hero {
-          padding: 100px 0;
-          background: linear-gradient(
-            3deg,
-            #945c8dd6,
-            #db8a64,
-            #462c647d
-          );
-          color: #fff;
-        }
-
-        .services-hero span {
-          color: #f5e6d3;
-        }
-
-        .services-hero p {
-          color: rgba(255,255,255,0.8);
-        }
-          
-        .services-heroo{
-          position: relative;
-          width:100%;
-          height:510px;
-          overflow:hidden;
-          margin-top:25px;
-        }
-
-        .services-banner{
-          object-fit:cover;
-        }
-
-        /* CARDS */
-        .service-card {
-          background: #fff;
-          padding: 30px;
-          border-radius: 20px;
-          text-align: center;
-          transition: 0.4s;
-          border: 1px solid #eee;
-        }
-
-        .service-card i {
-          font-size: 40px;
-          color: #8e6a8f;
-          margin-bottom: 15px;
-        }
-
-        .service-card h5 {
-          color: #111;
-        }
-
-        .service-card p {
-          color: #666;
-        }
-
-        .service-card:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 25px 50px rgba(0,0,0,0.1);
-        }
-
-        /* CTA */
-        .cta {
-          background: linear-gradient(
-            135deg,
-            #f4d7cc,
-            #ead6e2
-          );
-          color: #111;
-          padding: 70px 0;
-          border-radius: 30px;
-          margin: 50px auto;
-          max-width: 90%;
-        }
-
-        .cta h2 {
-          font-weight: 700;
-        }
-
-        .cta p {
-          color: #555;
-        }
-
-        /* BUTTON */
-        .cta button {
-          background: #111;
-          color: #fff;
-          border-radius: 50px;
-          padding: 12px 28px;
-          border: none;
-          transition: 0.3s;
-        }
-
-        .cta button:hover {
-          background: #000;
-          transform: scale(1.05);
-        }
-
-      `}</style>
 
     </div>
   );

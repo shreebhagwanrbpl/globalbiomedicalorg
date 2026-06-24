@@ -190,33 +190,33 @@ export default function Home({ city }) {
     <>
       <Hero city={city} />
 
-<section className="trust-strip">
-  <div className="container-fluid px-5">
-    <div className="row text-center">
+      <section className="trust-strip">
+        <div className="container-fluid px-3 px-md-5">
+          <div className="row text-center">
 
-      <div className="col-md-3">
-        <h3>1000+</h3>
-        <p>Happy Clients</p>
-      </div>
+            <div className="col-md-3">
+              <h3>1000+</h3>
+              <p>Happy Clients</p>
+            </div>
 
-      <div className="col-md-3">
-        <h3>15+</h3>
-        <p>Years Experience</p>
-      </div>
+            <div className="col-md-3">
+              <h3>15+</h3>
+              <p>Years Experience</p>
+            </div>
 
-      <div className="col-md-3">
-        <h3>500+</h3>
-        <p>Products</p>
-      </div>
+            <div className="col-md-3">
+              <h3>500+</h3>
+              <p>Products</p>
+            </div>
 
-      <div className="col-md-3">
-        <h3>24/7</h3>
-        <p>Technical Support</p>
-      </div>
+            <div className="col-md-3">
+              <h3>24/7</h3>
+              <p>Technical Support</p>
+            </div>
 
-    </div>
-  </div>
-</section>
+          </div>
+        </div>
+      </section>
 
 
 
@@ -258,63 +258,63 @@ export default function Home({ city }) {
 
       {/* INDUSTRIES */}
 
-<section className="industry-section py-5">
+      <section className="industry-section py-5">
 
-<div className="container">
+        <div className="container">
 
-<h2 className="section-title">
-Industries We Serve
-</h2>
+          <h2 className="section-title">
+            Industries We Serve
+          </h2>
 
-<div className="row g-4 mt-3">
+          <div className="row g-4 mt-3">
 
-<div className="col-md-2">
-<div className="industry-card">
-<i className="bi bi-hospital"></i>
-<p>Hospitals</p>
-</div>
-</div>
+            <div className="col-md-2">
+              <div className="industry-card">
+                <i className="bi bi-hospital"></i>
+                <p>Hospitals</p>
+              </div>
+            </div>
 
-<div className="col-md-2">
-<div className="industry-card">
-<i className="bi bi-capsule"></i>
-<p>Labs</p>
-</div>
-</div>
+            <div className="col-md-2">
+              <div className="industry-card">
+                <i className="bi bi-capsule"></i>
+                <p>Labs</p>
+              </div>
+            </div>
 
-<div className="col-md-2">
-<div className="industry-card">
-<i className="bi bi-heart-pulse"></i>
-<p>Clinics</p>
-</div>
-</div>
+            <div className="col-md-2">
+              <div className="industry-card">
+                <i className="bi bi-heart-pulse"></i>
+                <p>Clinics</p>
+              </div>
+            </div>
 
-<div className="col-md-2">
-<div className="industry-card">
-<i className="bi bi-building"></i>
-<p>Medical Colleges</p>
-</div>
-</div>
+            <div className="col-md-2">
+              <div className="industry-card">
+                <i className="bi bi-building"></i>
+                <p>Medical Colleges</p>
+              </div>
+            </div>
 
-<div className="col-md-2">
-<div className="industry-card">
-<i className="bi bi-droplet"></i>
-<p>Blood Banks</p>
-</div>
-</div>
+            <div className="col-md-2">
+              <div className="industry-card">
+                <i className="bi bi-droplet"></i>
+                <p>Blood Banks</p>
+              </div>
+            </div>
 
-<div className="col-md-2">
-<div className="industry-card">
-<i className="bi bi-virus"></i>
-<p>Research</p>
-</div>
-</div>
+            <div className="col-md-2">
+              <div className="industry-card">
+                <i className="bi bi-virus"></i>
+                <p>Research</p>
+              </div>
+            </div>
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
 
@@ -373,78 +373,78 @@ Industries We Serve
 
       <section className="testimonial-section py-5">
 
-<div className="container">
+        <div className="container">
 
-<h2 className="section-title">
-Client Testimonials
-</h2>
+          <h2 className="section-title">
+            Client Testimonials
+          </h2>
 
-<div className="row mt-4">
+          <div className="row mt-4">
 
-<div className="col-md-4">
+            <div className="col-md-4">
 
-<div className="testimonial-card">
+              <div className="testimonial-card">
 
-★★★★★
+                ★★★★★
 
-<p>
+                <p>
 
-Excellent products and timely support.
+                  Excellent products and timely support.
 
-</p>
+                </p>
 
-<h6>AIIMS Hospital</h6>
+                <h6>AIIMS Hospital</h6>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-<div className="col-md-4">
+            <div className="col-md-4">
 
-<div className="testimonial-card">
+              <div className="testimonial-card">
 
-★★★★★
+                ★★★★★
 
-<p>
+                <p>
 
-Very reliable biomedical supplier.
+                  Very reliable biomedical supplier.
 
-</p>
+                </p>
 
-<h6>Private Lab</h6>
+                <h6>Private Lab</h6>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-<div className="col-md-4">
+            <div className="col-md-4">
 
-<div className="testimonial-card">
+              <div className="testimonial-card">
 
-★★★★★
+                ★★★★★
 
-<p>
+                <p>
 
-Professional installation and support.
+                  Professional installation and support.
 
-</p>
+                </p>
 
-<h6>Diagnostic Centre</h6>
+                <h6>Diagnostic Centre</h6>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
       {/* WHY CHOOSE US */}
       {/* <section className="py-5" style={{background:"#f8fafc"}}>
-    <div className="container-fluid px-5">
+    <div className="container-fluid px-3 px-md-5">
 
       <div className="row align-items-center gy-5">
 
@@ -571,87 +571,87 @@ Professional installation and support.
 
         </div>
       </section>
-<section className="certificate-section py-5">
+      <section className="certificate-section py-5">
 
-<div className="container">
+        <div className="container">
 
-<h2 className="section-title">
-Our Certifications
-</h2>
+          <h2 className="section-title">
+            Our Certifications
+          </h2>
 
 
 
-<div className="row g-4 mt-2">
+          <div className="row g-4 mt-2">
 
-<div className="col-lg-3 col-md-6">
+            <div className="col-lg-3 col-md-6">
 
-<div className="certificate-card">
+              <div className="certificate-card">
 
-<div className="certificate-icon">
-<i className="bi bi-patch-check-fill"></i>
-</div>
+                <div className="certificate-icon">
+                  <i className="bi bi-patch-check-fill"></i>
+                </div>
 
-<h5>ISO 9001</h5>
+                <h5>ISO 9001</h5>
 
-<p>Quality Management System</p>
+                <p>Quality Management System</p>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-<div className="col-lg-3 col-md-6">
+            <div className="col-lg-3 col-md-6">
 
-<div className="certificate-card">
+              <div className="certificate-card">
 
-<div className="certificate-icon">
-<i className="bi bi-award-fill"></i>
-</div>
+                <div className="certificate-icon">
+                  <i className="bi bi-award-fill"></i>
+                </div>
 
-<h5>CE Certified</h5>
+                <h5>CE Certified</h5>
 
-<p>European Safety Standard</p>
+                <p>European Safety Standard</p>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-<div className="col-lg-3 col-md-6">
+            <div className="col-lg-3 col-md-6">
 
-<div className="certificate-card">
+              <div className="certificate-card">
 
-<div className="certificate-icon">
-<i className="bi bi-shield-check"></i>
-</div>
+                <div className="certificate-icon">
+                  <i className="bi bi-shield-check"></i>
+                </div>
 
-<h5>FDA Approved</h5>
+                <h5>FDA Approved</h5>
 
-<p>Trusted Medical Compliance</p>
+                <p>Trusted Medical Compliance</p>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-<div className="col-lg-3 col-md-6">
+            <div className="col-lg-3 col-md-6">
 
-<div className="certificate-card">
+              <div className="certificate-card">
 
-<div className="certificate-icon">
-<i className="bi bi-file-earmark-check-fill"></i>
-</div>
+                <div className="certificate-icon">
+                  <i className="bi bi-file-earmark-check-fill"></i>
+                </div>
 
-<h5>IEC Standards</h5>
+                <h5>IEC Standards</h5>
 
-<p>International Safety Compliance</p>
+                <p>International Safety Compliance</p>
 
-</div>
+              </div>
 
-</div>
+            </div>
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
 
       {/* <section className="py-5 partner-section">
@@ -721,44 +721,44 @@ Our Certifications
         </div>
       </section>
 
-<section className="brands-section py-5">
+      <section className="brands-section py-5">
 
-<div className="container">
+        <div className="container">
 
-<h2 className="section-title">
-Brands We Deal In
-</h2>
+          <h2 className="section-title">
+            Brands We Deal In
+          </h2>
 
 
 
-<div className="row g-4 mt-2">
+          <div className="row g-4 mt-2">
 
-{[
-"Abbott",
-"Mindray",
-"Roche",
-"Erba",
-"Medica",
-"Transasia"
-].map((brand,i)=>(
+            {[
+              "Abbott",
+              "Mindray",
+              "Roche",
+              "Erba",
+              "Medica",
+              "Transasia"
+            ].map((brand, i) => (
 
-<div className="col-lg-2 col-md-4 col-6" key={i}>
+              <div className="col-lg-2 col-md-4 col-6" key={i}>
 
-<div className="brand-card">
+                <div className="brand-card">
 
-<h5>{brand}</h5>
+                  <h5>{brand}</h5>
 
-</div>
+                </div>
 
-</div>
+              </div>
 
-))}
+            ))}
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
     </>
   );

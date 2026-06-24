@@ -806,245 +806,337 @@
 
 
 
-      .trust-strip{
-padding:35px 0;
-background:#fff;
-box-shadow:0 8px 30px rgba(0,0,0,.05);
-}
+      .trust-strip {
+        padding: 35px 0;
+        background: #fff;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, .05);
+      }
 
-.trust-strip h3{
-font-size:38px;
-font-weight:700;
-color:#a56b97;
-}
+      .trust-strip h3 {
+        font-size: 38px;
+        font-weight: 700;
+        color: #a56b97;
+      }
 
-.trust-strip p{
-margin:0;
-color:#666;
-}
-
-
-.industry-card{
-
-padding:30px;
-
-background:#fff;
-
-border-radius:18px;
-
-transition:.4s;
-
-text-align:center;
-
-box-shadow:0 5px 20px rgba(0,0,0,.05);
-
-}
-
-.industry-card:hover{
-
-transform:translateY(-8px);
-
-}
-
-.industry-card i{
-
-font-size:40px;
-
-color:#a56b97;
-
-margin-bottom:15px;
-
-display:block;
-
-}
-
-.testimonial-card{
-
-padding:30px;
-
-background:#fff;
-
-border-radius:18px;
-
-box-shadow:0 5px 20px rgba(0,0,0,.05);
-
-}
+      .trust-strip p {
+        margin: 0;
+        color: #666;
+      }
 
 
-/*============================
+      .industry-card {
+
+        padding: 30px;
+
+        background: #fff;
+
+        border-radius: 18px;
+
+        transition: .4s;
+
+        text-align: center;
+
+        box-shadow: 0 5px 20px rgba(0, 0, 0, .05);
+
+      }
+
+      .industry-card:hover {
+
+        transform: translateY(-8px);
+
+      }
+
+      .industry-card i {
+
+        font-size: 40px;
+
+        color: #a56b97;
+
+        margin-bottom: 15px;
+
+        display: block;
+
+      }
+
+      .testimonial-card {
+
+        padding: 30px;
+
+        background: #fff;
+
+        border-radius: 18px;
+
+        box-shadow: 0 5px 20px rgba(0, 0, 0, .05);
+
+      }
+
+
+      /*============================
 
 COMMON
 
 ============================*/
 
-.section-subtitle{
+      .section-subtitle {
 
-max-width:650px;
+        max-width: 650px;
 
-margin:auto;
+        margin: auto;
 
-color:#666;
+        color: #666;
 
-font-size:16px;
+        font-size: 16px;
 
-margin-top:10px;
+        margin-top: 10px;
 
-margin-bottom:20px;
+        margin-bottom: 20px;
 
-}
+      }
 
-/*============================
+      /*============================
 
 CERTIFICATE
 
 ============================*/
 
-.certificate-section{
+      .certificate-section {
 
-background:#f8fafc;
+        background: #f8fafc;
 
-}
+      }
 
-.certificate-card{
+      .certificate-card {
 
-background:#fff;
+        background: #fff;
 
-padding:35px 25px;
+        padding: 35px 25px;
 
-border-radius:22px;
+        border-radius: 22px;
 
-text-align:center;
+        text-align: center;
 
-transition:.35s;
+        transition: .35s;
 
-height:100%;
+        height: 100%;
 
-border:1px solid #ececec;
+        border: 1px solid #ececec;
 
-box-shadow:0 15px 40px rgba(0,0,0,.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, .05);
 
-}
+      }
 
-.certificate-card:hover{
+      .certificate-card:hover {
 
-transform:translateY(-10px);
+        transform: translateY(-10px);
 
-box-shadow:0 25px 60px rgba(0,0,0,.12);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, .12);
 
-}
+      }
 
-.certificate-icon{
+      .certificate-icon {
 
-width:80px;
+        width: 80px;
 
-height:80px;
+        height: 80px;
 
-margin:auto;
+        margin: auto;
 
-border-radius:50%;
+        border-radius: 50%;
 
-background:linear-gradient(135deg,#f8dfd5,#ead8e7);
+        background: linear-gradient(135deg, #f8dfd5, #ead8e7);
 
-display:flex;
+        display: flex;
 
-justify-content:center;
+        justify-content: center;
 
-align-items:center;
+        align-items: center;
 
-margin-bottom:20px;
+        margin-bottom: 20px;
 
-}
+      }
 
-.certificate-icon i{
+      .certificate-icon i {
 
-font-size:34px;
+        font-size: 34px;
 
-color:#8e6a8f;
+        color: #8e6a8f;
 
-}
+      }
 
-.certificate-card h5{
+      .certificate-card h5 {
 
-font-weight:700;
+        font-weight: 700;
 
-margin-bottom:8px;
+        margin-bottom: 8px;
 
-}
+      }
 
-.certificate-card p{
+      .certificate-card p {
 
-margin:0;
+        margin: 0;
 
-font-size:14px;
+        font-size: 14px;
 
-color:#777;
+        color: #777;
 
-}
+      }
 
-/*============================
+      /*============================
 
 BRANDS
 
 ============================*/
 
-.brands-section{
+      .brands-section {
 
-background:#fff;
+        background: #fff;
 
-}
+      }
 
-.brand-card{
+      .brand-card {
 
-height:120px;
+        height: 120px;
 
-display:flex;
+        display: flex;
 
-justify-content:center;
+        justify-content: center;
 
-align-items:center;
+        align-items: center;
 
-border-radius:18px;
+        border-radius: 18px;
 
-background:#fff;
+        background: #fff;
 
-border:1px solid #ececec;
+        border: 1px solid #ececec;
 
-box-shadow:0 10px 35px rgba(0,0,0,.05);
+        box-shadow: 0 10px 35px rgba(0, 0, 0, .05);
 
-transition:.35s;
+        transition: .35s;
 
-cursor:pointer;
+        cursor: pointer;
 
-}
+      }
 
-.brand-card:hover{
+      .brand-card:hover {
 
-transform:translateY(-8px);
+        transform: translateY(-8px);
 
-border-color:#b87ea0;
+        border-color: #b87ea0;
 
-box-shadow:0 20px 45px rgba(0,0,0,.12);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
 
-}
+      }
 
-.brand-card h5{
+      .brand-card h5 {
 
-margin:0;
+        margin: 0;
 
-font-size:22px;
+        font-size: 22px;
 
-font-weight:700;
+        font-weight: 700;
 
-color:#555;
+        color: #555;
 
-transition:.35s;
+        transition: .35s;
 
-}
+      }
 
-.brand-card:hover h5{
+      .brand-card:hover h5 {
 
-color:#8e6a8f;
+        color: #8e6a8f;
 
-letter-spacing:1px;
+        letter-spacing: 1px;
 
-}
+      }
+
+      @media (max-width: 768px) {
+
+        .hero-section {
+          padding: 40px 0;
+          text-align: center;
+        }
+
+        .hero-title {
+          font-size: 32px !important;
+          line-height: 1.3;
+        }
+
+        .hero-subtext {
+          font-size: 14px;
+        }
+
+        .hero-section img {
+          width: 100%;
+          max-width: 320px;
+          margin: 20px auto 0;
+          display: block;
+        }
+      }
+
+      @media (max-width: 768px) {
+
+        .service-card {
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+
+        .service-card h5 {
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 768px) {
+
+        .product-card-pro {
+          margin-bottom: 20px;
+        }
+
+        .product-img-pro {
+          height: 180px;
+        }
+
+        .product-img-pro img {
+          max-width: 150px;
+          height: 150px;
+        }
+
+        .product-body h6 {
+          font-size: 14px;
+        }
+      }
+
+      @media (max-width: 768px) {
+
+        .industry-card {
+          padding: 20px;
+          margin-bottom: 15px;
+        }
+
+        .industry-card i {
+          font-size: 28px;
+        }
+      }
+
+      @media (max-width: 768px) {
+
+        .certificate-card {
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+
+        .certificate-icon {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      @media (max-width: 768px) {
+
+        footer {
+          text-align: center;
+        }
+
+        footer .row>div {
+          margin-bottom: 25px;
+        }
+      }
