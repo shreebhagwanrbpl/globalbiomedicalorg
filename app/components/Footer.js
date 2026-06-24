@@ -307,7 +307,7 @@ export default function Footer() {
   .footer {
     background: linear-gradient(
       135deg,
-      #0f172a,
+      #1b0f2a,
       #111827
     );
     color: #fff;
@@ -329,7 +329,7 @@ export default function Footer() {
     bottom: 0;
     width: 55px;
     height: 3px;
-    background: #198754;
+    background: #a56b97;;
     border-radius: 20px;
   }
 
@@ -367,7 +367,7 @@ export default function Footer() {
   }
 
   .footer-links a:hover {
-    color: #22c55e !important;
+    color: #a56b97 !important;
     transform: translateX(6px);
   }
 
@@ -393,7 +393,7 @@ export default function Footer() {
 
   i {
     margin-right: 10px;
-    color: #22c55e;
+    color: #a56b97;
     font-size: 16px;
   }
 

@@ -5,19 +5,33 @@
       }
 
       /* HERO */
-      .contact-hero {
-        padding: 100px 0;
-        background: linear-gradient(3deg, #945c8dd6, #db8a64, #462c647d);
-        color: #fff;
-      }
+        .contact-hero{
+            position: relative;
+            height:580px;
+            overflow:hidden;
+        }
 
-      .contact-hero span {
-        color: #f5e6d3;
-      }
+        .contact-banner{
+            object-fit:cover;
+        }
 
-      .contact-hero p {
-        color: rgba(255,255,255,0.8);
-      }
+        .hero-overlay{
+            position:absolute;
+            inset:0;
+            display:flex;
+            justify-content:center;
+            align-items:flex-end;
+            padding-bottom:45px;
+            z-index:2;
+          
+        }
+
+        .hero-overlay h1{
+              color: rgb(111, 83, 83);;
+            font-size:42px;
+            font-weight:700;
+            text-shadow:0 4px 15px rgba(0,0,0,.35);
+        }
 
       /* LEFT TEXT */
       .contact-info p {

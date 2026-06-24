@@ -154,7 +154,7 @@ export default function ItemDetailPage() {
                                         item.image ||
                                         "/no-image.png"
                                     }
-                                    alt={item.title}
+                                    alt={`${item.title} | Biomedical Equipment Supplier in India`}
                                     className="img-fluid"
                                     style={{
                                         maxHeight: "420px",
@@ -177,6 +177,16 @@ export default function ItemDetailPage() {
                                 <p className="text-muted mb-4">
                                     {item.desc}
                                 </p>
+                                <p className="mt-4 text-muted">
+                                    {item.title} is a high-quality biomedical and
+                                    diagnostic equipment designed for hospitals,
+                                    pathology laboratories, diagnostic centres,
+                                    medical colleges and healthcare institutions.
+                                    Global Biomedical supplies genuine products
+                                    across India with installation, technical
+                                    support and competitive pricing.
+
+                                    </p>
 
                                 <div className="row">
 
@@ -305,6 +315,27 @@ export default function ItemDetailPage() {
                         </div>
 
                     </div>
+
+                    <div className="mt-5">
+  <h3>Frequently Asked Questions</h3>
+
+  <div className="mt-3">
+    <h5>What is the price of {item.title}?</h5>
+    <p>
+      Contact Global Biomedical for the latest price and quotation.
+    </p>
+
+    <h5>Do you provide installation?</h5>
+    <p>
+      Yes, installation and technical support are available.
+    </p>
+
+    <h5>Is warranty available?</h5>
+    <p>
+      Yes, warranty depends on the manufacturer and product model.
+    </p>
+  </div>
+</div>
 
                 </div>
             </section>

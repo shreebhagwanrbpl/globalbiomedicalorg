@@ -189,6 +189,37 @@ export default function Home({ city }) {
   return (
     <>
       <Hero city={city} />
+
+<section className="trust-strip">
+  <div className="container-fluid px-5">
+    <div className="row text-center">
+
+      <div className="col-md-3">
+        <h3>1000+</h3>
+        <p>Happy Clients</p>
+      </div>
+
+      <div className="col-md-3">
+        <h3>15+</h3>
+        <p>Years Experience</p>
+      </div>
+
+      <div className="col-md-3">
+        <h3>500+</h3>
+        <p>Products</p>
+      </div>
+
+      <div className="col-md-3">
+        <h3>24/7</h3>
+        <p>Technical Support</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
       <section className="py-5 service-section">
         <div className="container-fluid px-5 text-center">
 
@@ -205,7 +236,7 @@ export default function Home({ city }) {
                   <div className="p-4 rounded-4 service-card h-100">
                     <i
                       className={`bi ${icons[i] || "bi-heart-pulse"
-                        } fs-1 text-success`}
+                        } fs-1`}
                     ></i>
 
                     <h5 className="mt-3">
@@ -223,6 +254,67 @@ export default function Home({ city }) {
           </div>
         </div>
       </section>
+
+
+      {/* INDUSTRIES */}
+
+<section className="industry-section py-5">
+
+<div className="container">
+
+<h2 className="section-title">
+Industries We Serve
+</h2>
+
+<div className="row g-4 mt-3">
+
+<div className="col-md-2">
+<div className="industry-card">
+<i className="bi bi-hospital"></i>
+<p>Hospitals</p>
+</div>
+</div>
+
+<div className="col-md-2">
+<div className="industry-card">
+<i className="bi bi-capsule"></i>
+<p>Labs</p>
+</div>
+</div>
+
+<div className="col-md-2">
+<div className="industry-card">
+<i className="bi bi-heart-pulse"></i>
+<p>Clinics</p>
+</div>
+</div>
+
+<div className="col-md-2">
+<div className="industry-card">
+<i className="bi bi-building"></i>
+<p>Medical Colleges</p>
+</div>
+</div>
+
+<div className="col-md-2">
+<div className="industry-card">
+<i className="bi bi-droplet"></i>
+<p>Blood Banks</p>
+</div>
+</div>
+
+<div className="col-md-2">
+<div className="industry-card">
+<i className="bi bi-virus"></i>
+<p>Research</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
 
 
 
@@ -278,6 +370,76 @@ export default function Home({ city }) {
 
         </div>
       </section>
+
+      <section className="testimonial-section py-5">
+
+<div className="container">
+
+<h2 className="section-title">
+Client Testimonials
+</h2>
+
+<div className="row mt-4">
+
+<div className="col-md-4">
+
+<div className="testimonial-card">
+
+★★★★★
+
+<p>
+
+Excellent products and timely support.
+
+</p>
+
+<h6>AIIMS Hospital</h6>
+
+</div>
+
+</div>
+
+<div className="col-md-4">
+
+<div className="testimonial-card">
+
+★★★★★
+
+<p>
+
+Very reliable biomedical supplier.
+
+</p>
+
+<h6>Private Lab</h6>
+
+</div>
+
+</div>
+
+<div className="col-md-4">
+
+<div className="testimonial-card">
+
+★★★★★
+
+<p>
+
+Professional installation and support.
+
+</p>
+
+<h6>Diagnostic Centre</h6>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
 
 
       {/* WHY CHOOSE US */}
@@ -409,8 +571,90 @@ export default function Home({ city }) {
 
         </div>
       </section>
+<section className="certificate-section py-5">
 
-      <section className="py-5 partner-section">
+<div className="container">
+
+<h2 className="section-title">
+Our Certifications
+</h2>
+
+
+
+<div className="row g-4 mt-2">
+
+<div className="col-lg-3 col-md-6">
+
+<div className="certificate-card">
+
+<div className="certificate-icon">
+<i className="bi bi-patch-check-fill"></i>
+</div>
+
+<h5>ISO 9001</h5>
+
+<p>Quality Management System</p>
+
+</div>
+
+</div>
+
+<div className="col-lg-3 col-md-6">
+
+<div className="certificate-card">
+
+<div className="certificate-icon">
+<i className="bi bi-award-fill"></i>
+</div>
+
+<h5>CE Certified</h5>
+
+<p>European Safety Standard</p>
+
+</div>
+
+</div>
+
+<div className="col-lg-3 col-md-6">
+
+<div className="certificate-card">
+
+<div className="certificate-icon">
+<i className="bi bi-shield-check"></i>
+</div>
+
+<h5>FDA Approved</h5>
+
+<p>Trusted Medical Compliance</p>
+
+</div>
+
+</div>
+
+<div className="col-lg-3 col-md-6">
+
+<div className="certificate-card">
+
+<div className="certificate-icon">
+<i className="bi bi-file-earmark-check-fill"></i>
+</div>
+
+<h5>IEC Standards</h5>
+
+<p>International Safety Compliance</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+      {/* <section className="py-5 partner-section">
         <div className="container-fluid px-5 text-center">
 
           <h2 className="partner-title">Our Trusted Partners</h2>
@@ -434,7 +678,7 @@ export default function Home({ city }) {
           </div>
 
         </div>
-      </section>
+      </section> */}
 
       {/* CTA */}
       <section className="py-5 cta-section">
@@ -476,6 +720,45 @@ export default function Home({ city }) {
 
         </div>
       </section>
+
+<section className="brands-section py-5">
+
+<div className="container">
+
+<h2 className="section-title">
+Brands We Deal In
+</h2>
+
+
+
+<div className="row g-4 mt-2">
+
+{[
+"Abbott",
+"Mindray",
+"Roche",
+"Erba",
+"Medica",
+"Transasia"
+].map((brand,i)=>(
+
+<div className="col-lg-2 col-md-4 col-6" key={i}>
+
+<div className="brand-card">
+
+<h5>{brand}</h5>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+</div>
+
+</section>
 
     </>
   );

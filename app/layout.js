@@ -1,39 +1,3 @@
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap-icons/font/bootstrap-icons.css";
-// import "aos/dist/aos.css";
-// import "./globals.css";
-
-// import AOSInit from "./components/AOSInit";
-// import Navbar from "./components/Navbar";
-// import Footer from "./components/Footer";
-
-// export const metadata = {
-//   title: "Global Biomedicals - Clinical Instruments",
-//   description: "Trusted partner for diagnostic & medical solutions.",
-// };
-
-// export default function RootLayout({ children }) {
-//   return (
-//     <html lang="en">
-//       <body>
-
-//         <AOSInit />
-
-//         {/* 🔥 NAVBAR */}
-//         <Navbar />
-
-//         {/* 🔥 PAGE CONTENT */}
-//         {children}
-
-//         {/* 🔥 FOOTER */}
-//         <Footer />
-
-//       </body>
-//     </html>
-//   );
-// } 
-
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "aos/dist/aos.css";
@@ -50,7 +14,7 @@ export const metadata = {
 
   title: {
     default:
-       "Global Biomedical | Diagnostic & Laboratory Equipment Supplier in India",
+       "Biomedical, Hospital & Laboratory Equipment Supplier in India | Global Biomedical",
     template:
       "%s | Global Biomedical",
   },
@@ -89,11 +53,12 @@ keywords: [
     "Global Biomedical",
 
   alternates: {
-    canonical:
-      "https://globalbiomedical.org",
+    canonical:"https://globalbiomedical.org"
   },
 
-  robots: {
+     referrer:"origin-when-cross-origin",
+  
+     robots: {
     index: true,
     follow: true,
     googleBot: {
@@ -107,6 +72,10 @@ keywords: [
         -1,
     },
   },
+
+  formatDetection:{
+telephone:false
+},
 
 openGraph: {
   title:
@@ -152,12 +121,21 @@ openGraph: {
   images: ["/logo.png"],
 },
 
-  verification: {
-    google:
-      "GOOGLE_VERIFICATION_CODE",
-  },
+icons: {
+  icon: "/favicon.ico",
+  shortcut: "/favicon.ico",
+  apple: "/apple-touch-icon.png",
+},
+
+
   category:
     "Medical Equipment",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({

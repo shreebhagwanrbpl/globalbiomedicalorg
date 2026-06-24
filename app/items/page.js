@@ -6,7 +6,9 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import "./products.css";
 import Modal from "react-modal";
+import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
+import ProductsBanner from "../items/AP.png";
 
 import {
   addDoc,
@@ -431,41 +433,30 @@ export default function ItemsPage({ city }) {
       />
 
       {/* HERO */}
-      <section className="contactt-hero text-center">
-        <div className="container">
+     <section className="contactt-hero">
 
-          <h1 className="fw-bold display-4">
-            Biomedical & Diagnostic Products
+  <Image
+    src={ProductsBanner}
+    alt="Biomedical & Diagnostic Products"
+    fill
+    priority
+    className="hero-banner"
+  />
 
-            {isValidCity
-              ? ` in ${cityName}`
-              : ""}
-          </h1>
+  <div className="hero-overlay">
+    <div className="search-box">
 
-          <p className="text-muted">
-            Explore biomedical, pathology, diagnostic
-            machines and laboratory equipment
+      <input
+        type="text"
+        placeholder="Search product..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
-            {isValidCity
-              ? ` in ${cityName}`
-              : ""}
-          </p>
+    </div>
+  </div>
 
-          <div className="search-box mt-4">
-
-            <input
-              type="text"
-              placeholder="Search product..."
-              value={search}
-              onChange={(e) =>
-                setSearch(
-                  e.target.value
-                )
-              }
-            />
-          </div>
-        </div>
-      </section>
+</section>
 
       {/* PRODUCTS */}
       <div className="container-fluid px-5 pb-5">

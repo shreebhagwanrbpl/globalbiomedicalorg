@@ -11,16 +11,38 @@ export default async function sitemap() {
 
   const now = new Date();
 
-  const urls = [
-    "",
-    "/about",
-    "/contact",
-    "/services",
-    "/items",
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
+const urls = [
+  {
+    url: `${baseUrl}`,
     lastModified: now,
-  }));
+    changeFrequency: "daily",
+    priority: 1,
+  },
+  {
+    url: `${baseUrl}/about`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
+    url: `${baseUrl}/contact`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  },
+  {
+    url: `${baseUrl}/services`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    url: `${baseUrl}/items`,
+    lastModified: now,
+    changeFrequency: "daily",
+    priority: 0.9,
+  },
+];
 
   try {
     const websiteRef =
@@ -55,28 +77,38 @@ export default async function sitemap() {
       const districtSlug =
         districtDoc.id;
 
-      urls.push(
-        {
-          url: `${baseUrl}/${districtSlug}`,
-          lastModified: now,
-        },
-        {
-          url: `${baseUrl}/${districtSlug}/items`,
-          lastModified: now,
-        },
-        {
-          url: `${baseUrl}/${districtSlug}/about`,
-          lastModified: now,
-        },
-        {
-          url: `${baseUrl}/${districtSlug}/contact`,
-          lastModified: now,
-        },
-        {
-          url: `${baseUrl}/${districtSlug}/services`,
-          lastModified: now,
-        }
-      );
+    urls.push(
+  {
+    url: `${baseUrl}/${districtSlug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    url: `${baseUrl}/${districtSlug}/items`,
+    lastModified: now,
+    changeFrequency: "daily",
+    priority: 0.9,
+  },
+  {
+    url: `${baseUrl}/${districtSlug}/about`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    url: `${baseUrl}/${districtSlug}/contact`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  },
+  {
+    url: `${baseUrl}/${districtSlug}/services`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }
+);
 
       // items
       const itemsSnapshot =
@@ -92,10 +124,12 @@ export default async function sitemap() {
 
       itemsSnapshot.forEach(
         (itemDoc) => {
-          urls.push({
-            url: `${baseUrl}/${districtSlug}/items/${itemDoc.id}`,
-            lastModified: now,
-          });
+         urls.push({
+          url: `${baseUrl}/${districtSlug}/items/${itemDoc.id}`,
+          lastModified: now,
+          changeFrequency: "weekly",
+          priority: 0.9,
+        });
         }
       );
     }
@@ -115,3 +149,7 @@ export default async function sitemap() {
     return urls;
   }
 }
+
+
+
+
