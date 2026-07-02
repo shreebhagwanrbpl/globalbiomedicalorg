@@ -32,6 +32,7 @@ export default function ItemsPage({ city }) {
   const [products, setProducts] =
     useState([]);
   const [showTopBtn, setShowTopBtn] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
   const [currentPage, setCurrentPage] =
     useState(1);
 
@@ -487,6 +488,33 @@ export default function ItemsPage({ city }) {
   // PRODUCT SEO
   // 
 
+  useEffect(() => {
+
+  const section = document.querySelector(".product-page");
+
+  const handleScroll = () => {
+
+    if (!section) return;
+
+    const rect = section.getBoundingClientRect();
+
+    if (rect.top <= 100 && rect.bottom > window.innerHeight) {
+      setIsSticky(true);
+    } else {
+      setIsSticky(false);
+    }
+
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  handleScroll();
+
+  return () =>
+    window.removeEventListener("scroll", handleScroll);
+
+}, []);
+
   // FORM
   const handleChange = (e) => {
 
@@ -581,6 +609,9 @@ export default function ItemsPage({ city }) {
       </div>
     );
   }
+
+
+
   return (
     <div className="products-page">
 
@@ -609,9 +640,20 @@ export default function ItemsPage({ city }) {
 
             {/* LEFT SIDEBAR */}
 
-            <div className="col-lg-3">
+            <div
+             className="col-lg-3"
+           
+          >
 
-              <div className="category-sidebar">
+              <div
+              className="category-sidebar"
+              style={{
+                position: isSticky ? "fixed" : "sticky",
+                top: "100px",
+                width: isSticky ? "100%" : "100%",
+                maxWidth: "320px",
+              }}
+            >
 
                 <div className="sidebar-title">
                   Categories
@@ -749,7 +791,12 @@ export default function ItemsPage({ city }) {
 
             {/* RIGHT SIDE */}
 
-            <div className="col-lg-9">
+            <div
+              className="col-lg-9"
+              style={{
+                marginLeft: isSticky ? "340px" : "",
+              }}
+            >
 
               <div className="filter-card">
 

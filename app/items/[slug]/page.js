@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import {
     doc,
@@ -9,6 +9,14 @@ import {
     collection,
     serverTimestamp,
 } from "firebase/firestore";
+import {
+    FaShareAlt,
+    FaWhatsapp,
+    FaFacebook,
+    FaInstagram,
+    FaLink,
+    FaPlay,
+} from "react-icons/fa";
 import { db } from "@/lib/firebase";
 import toast, { Toaster } from "react-hot-toast";
 import "../products.css";
@@ -17,7 +25,10 @@ export default function ItemDetailPage() {
     const { slug } = useParams();
 
     const [item, setItem] = useState(null);
-
+const [selectedImage, setSelectedImage] = useState("");
+const [selectedMedia, setSelectedMedia] = useState("image");
+const [showShare, setShowShare] = useState(false);
+const shareRef = useRef();
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -58,6 +69,16 @@ useEffect(() => {
                 });
 
                 setItem(found || null);
+
+                if (found) {
+    if (found.images?.length) {
+        setSelectedImage(found.images[0]);
+    } else {
+        setSelectedImage(found.image);
+    }
+
+    setSelectedMedia("image");
+}
             } catch (err) {
                 console.error(err);
             }
@@ -168,12 +189,88 @@ useEffect(() => {
                             <div className="left-side">
                                 {/* Product Image */}
                                 <div className="product-image-card">
+                                   {selectedMedia === "video" && item.video ? (
+                                    <video
+                                        controls
+                                        className="product-main-image"
+                                    >
+                                        <source
+                                            src={item.video}
+                                            type="video/mp4"
+                                        />
+                                    </video>
+
+                                ) : (
+
                                     <img
-                                        src={item.image || "/no-image.png"}
-                                        alt={`${item.title} | Biomedical Equipment Supplier in India`}
+                                        src={
+                                            selectedImage ||
+                                            item.image ||
+                                            "/no-image.png"
+                                        }
+                                        alt={item.title}
                                         className="product-main-image"
                                     />
+
+                                )}
                                 </div>
+<div className="d-flex gap-2 flex-wrap mt-3">
+
+    {(item.images?.length
+        ? item.images
+        : [item.image]
+    ).map((img, i) => (
+
+        <img
+            key={i}
+            src={img}
+            onClick={() => {
+                setSelectedImage(img);
+                setSelectedMedia("image");
+            }}
+            style={{
+                width: 70,
+                height: 70,
+                cursor: "pointer",
+                objectFit: "cover",
+                border:
+                    selectedImage === img
+                        ? "2px solid #0d6efd"
+                        : "1px solid #ddd",
+                borderRadius: 8,
+            }}
+        />
+
+    ))}
+
+    {item.video && (
+
+        <button
+            className="btn btn-light border"
+            onClick={() =>
+                setSelectedMedia("video")
+            }
+        >
+            ▶ Video
+        </button>
+
+    )}
+
+    {item.pdf && (
+
+        <a
+            href={item.pdf}
+            target="_blank"
+            className="btn btn-light border"
+        >
+            📄 PDF
+        </a>
+
+    )}
+
+</div>
+
+
                                 {/* Quote Form */}
 
                             <div className="quote-card">
@@ -234,13 +331,96 @@ useEffect(() => {
 
                         {/* DETAILS */}
                         <div className="col-lg-8">
-
                             <div className="product-detail-card">
+                           <div
+    className="d-flex justify-content-between align-items-start position-relative"
+>
 
-                                <h1 className="product-title">
-                                    {item.title}
-                                </h1>
+    <h1 className="product-title">
+        {item.title}
+    </h1>
 
+    <div
+        ref={shareRef}
+        style={{ position: "relative" }}
+    >
+
+       <button
+    className="btn btn-light border rounded-circle"
+    onClick={async () => {
+
+        if (navigator.share) {
+
+            try {
+                await navigator.share({
+                    title: item.title,
+                    text: item.desc,
+                    url: window.location.href,
+                });
+
+            } catch (err) {}
+
+        } else {
+
+            setShowShare(!showShare);
+
+        }
+
+    }}
+>
+    <FaShareAlt />
+</button>
+
+        {showShare && (
+
+            <div
+                className="shadow bg-white rounded p-2"
+                style={{
+                    position: "absolute",
+                    right: 0,
+                    top: 50,
+                    width: 220,
+                    zIndex: 1000,
+                }}
+            >
+
+                <button
+                    className="dropdown-item"
+                    onClick={() =>
+                        navigator.clipboard.writeText(
+                            window.location.href
+                        )
+                    }
+                >
+                    <FaLink className="me-2" />
+                    Copy Link
+                </button>
+
+                <a
+                    className="dropdown-item"
+                    target="_blank"
+                    href={`https://wa.me/?text=${encodeURIComponent(window.location.href)}`}
+                >
+                    <FaWhatsapp className="me-2 text-success" />
+                    WhatsApp
+                </a>
+
+                <a
+                    className="dropdown-item"
+                    target="_blank"
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                >
+                    <FaFacebook className="me-2 text-primary" />
+                    Facebook
+                </a>
+
+            </div>
+
+        )}
+
+    </div>
+
+</div>
                                 <p className="product-description">
                                     {item.desc}
                                 </p>
@@ -262,13 +442,16 @@ useEffect(() => {
 
                                             if (
                                                 [
-                                                    "id",
-                                                    "title",
-                                                    "desc",
-                                                    "image",
-                                                    "createdAt",
-                                                    "isPublished",
-                                                ].includes(key)
+    "id",
+    "title",
+    "desc",
+    "image",
+    "images",
+    "video",
+    "pdf",
+    "createdAt",
+    "isPublished",
+].includes(key)
                                             ) {
                                                 return null;
                                             }

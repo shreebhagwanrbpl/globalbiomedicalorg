@@ -859,8 +859,9 @@
   z-index: 10000;
 }
 
-
-
+.product-page{
+    position: relative;
+}
 /* FAQ */
 
 .faq-section {
