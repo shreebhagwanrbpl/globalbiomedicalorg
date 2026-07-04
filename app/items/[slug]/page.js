@@ -280,7 +280,7 @@ export default function ItemDetailPage() {
                                     {selectedMedia === "video" && item.video ? (
                                         <video
                                             controls
-                                            className="product-main-image"
+                                            className="product-video"
                                         >
                                             <source
                                                 src={item.video}
