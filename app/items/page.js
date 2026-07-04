@@ -409,7 +409,15 @@ export default function ItemsPage({ city }) {
                 uid: `other-${index}`,
                 category:
                   item.category ||
-                  "Other Products"
+                  "Other Products",
+
+                slug:
+                  item.slug ||
+                  item.title
+                    ?.toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-")
               }));
 
           allProducts.push(...oldProducts);
@@ -490,30 +498,30 @@ export default function ItemsPage({ city }) {
 
   useEffect(() => {
 
-  const section = document.querySelector(".product-page");
+    const section = document.querySelector(".product-page");
 
-  const handleScroll = () => {
+    const handleScroll = () => {
 
-    if (!section) return;
+      if (!section) return;
 
-    const rect = section.getBoundingClientRect();
+      const rect = section.getBoundingClientRect();
 
-    if (rect.top <= 100 && rect.bottom > window.innerHeight) {
-      setIsSticky(true);
-    } else {
-      setIsSticky(false);
-    }
+      if (rect.top <= 100 && rect.bottom > window.innerHeight) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
 
-  };
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  handleScroll();
+    handleScroll();
 
-  return () =>
-    window.removeEventListener("scroll", handleScroll);
+    return () =>
+      window.removeEventListener("scroll", handleScroll);
 
-}, []);
+  }, []);
 
   // FORM
   const handleChange = (e) => {
@@ -641,19 +649,19 @@ export default function ItemsPage({ city }) {
             {/* LEFT SIDEBAR */}
 
             <div
-             className="col-lg-3"
-           
-          >
+              className="col-lg-3"
+
+            >
 
               <div
-              className="category-sidebar"
-              style={{
-                position: isSticky ? "fixed" : "sticky",
-                top: "100px",
-                width: isSticky ? "100%" : "100%",
-                maxWidth: "320px",
-              }}
-            >
+                className="category-sidebar"
+                style={{
+                  position: isSticky ? "fixed" : "sticky",
+                  top: "100px",
+                  width: isSticky ? "100%" : "100%",
+                  maxWidth: "320px",
+                }}
+              >
 
                 <div className="sidebar-title">
                   Categories
@@ -872,12 +880,12 @@ export default function ItemsPage({ city }) {
 
                               <img
                                 src={
+                                  item.images?.[0] ||
                                   item.image ||
+                                  item.imageUrl ||
                                   "/no-image.png"
                                 }
-                                alt={
-                                  item.title
-                                }
+                                alt={item.title}
                               />
 
                             </div>
