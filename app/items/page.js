@@ -4,8 +4,12 @@ import ProductsClient from "./ProductsClient";
 export const revalidate = 3600; // Revalidate cache every hour
 
 export default async function ProductsPage({ district = null, city = null }) {
-  // Fetch full catalog from server cache
-  const allProducts = await fetchFullCatalog();
+  let allProducts = [];
+  try {
+    allProducts = await fetchFullCatalog();
+  } catch (err) {
+    console.error("[ProductsPage] Server fetch failed, falling back to client fetch:", err);
+  }
 
   return (
     <ProductsClient

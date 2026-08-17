@@ -6,6 +6,12 @@ const DOMAIN = "https://globalbiomedical.org";
 
 export async function GET() {
     try {
+        if (!adminDb) {
+            return new NextResponse("Global Biomedical - Medical Equipment Catalog", {
+                headers: { "Content-Type": "text/plain; charset=utf-8" }
+            });
+        }
+
         // Districts
         const districtSnap = await adminDb
             .collection("websites")

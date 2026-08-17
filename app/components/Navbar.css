@@ -61,7 +61,7 @@
 
 .nav-link:hover,
 .nav-link.active {
-  color: #c88379 !important;
+  color: #A56B97 !important;
 }
 
 /* underline */
@@ -72,7 +72,7 @@
   bottom: -8px;
   width: 0;
   height: 2px;
-  background: #c88379;
+  background: #A56B97;
   transition: width 0.3s ease;
 }
 

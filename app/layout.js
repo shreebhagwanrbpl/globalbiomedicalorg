@@ -8,148 +8,151 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 export const metadata = {
-  metadataBase: new URL(
-    "https://globalbiomedical.org"
-  ),
+  metadataBase: new URL("https://globalbiomedical.org"),
 
   title: {
-    default:
-       "Biomedical, Hospital & Laboratory Equipment Supplier in India | Global Biomedical",
-    template:
-      "%s | Global Biomedical",
+    default: "Biomedical, Hospital & Laboratory Equipment Supplier in India | Global Biomedical",
+    template: "%s | Global Biomedical",
   },
 
-  description:
-"Global Biomedical is a trusted supplier of diagnostic, pathology, biomedical, hospital and laboratory equipment in India. We provide CBC machines, Maglumi systems, medical consumables, installation, maintenance and expert support.",
-  
+  description: "Global Biomedical is a trusted supplier of diagnostic, pathology, biomedical, hospital and laboratory equipment in India. We provide CBC machines, Maglumi systems, medical consumables, installation, maintenance and expert support.",
 
-keywords: [
+  keywords: [
     "biomedical equipment",
-    "medical equipment",
+    "medical equipment supplier",
     "hospital equipment",
-    "pathology equipment",
-    "laboratory equipment",
+    "pathology lab equipment",
+    "laboratory equipment supplier india",
     "diagnostic equipment",
     "clinical instruments",
     "biomedical supplier india",
-    "medical equipment supplier",
-    "diagnostic machine supplier",
-    "cbc machine",
-    "maglumi machine",
-    "hospital machine supplier"
+    "cbc machine supplier",
+    "maglumi analyzer",
+    "biochemistry analyzer",
+    "electrolyte analyzer",
+    "global biomedical",
+    "rajbiosis"
   ],
 
-  authors: [
-    {
-      name:
-        "Global Biomedical",
-    },
-  ],
-
-  creator:
-    "Global Biomedical",
-
-  publisher:
-    "Global Biomedical",
+  authors: [{ name: "Global Biomedical Inc." }],
+  creator: "Global Biomedical Inc.",
+  publisher: "Global Biomedical Inc.",
 
   alternates: {
-    canonical:"https://globalbiomedical.org"
+    canonical: "https://globalbiomedical.org"
   },
 
-     referrer:"origin-when-cross-origin",
-  
-     robots: {
+  referrer: "origin-when-cross-origin",
+
+  robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      "max-image-preview":
-        "large",
-      "max-video-preview":
-        -1,
-      "max-snippet":
-        -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+      "max-snippet": -1,
     },
   },
 
-  formatDetection:{
-telephone:false
-},
+  formatDetection: {
+    telephone: false
+  },
 
-openGraph: {
-  title:
-    "Global Biomedical | Diagnostic & Laboratory Equipment Supplier in India",
-
-  description:
-    "Global Biomedical is a trusted supplier of biomedical, diagnostic, pathology, hospital & laboratory equipment in India. Get best pricing, installation, maintenance and expert support.",
-
-  url:
-    "https://globalbiomedical.org",
-
-  siteName:
-    "Global Biomedical",
-
-  locale:
-    "en_IN",
-
-  type:
-    "website",
-
-  images: [
-    {
-      url:
-        "/logo.png",
-      width: 1200,
-      height: 630,
-      alt:
-        "Global Biomedical Diagnostic Equipment",
-    },
-  ],
-},
+  openGraph: {
+    title: "Global Biomedical | Diagnostic & Laboratory Equipment Supplier in India",
+    description: "Global Biomedical is a trusted supplier of biomedical, diagnostic, pathology, hospital & laboratory equipment in India. Get best pricing, installation, maintenance and expert support.",
+    url: "https://globalbiomedical.org",
+    siteName: "Global Biomedical",
+    locale: "en_IN",
+    type: "website",
+    images: [
+      {
+        url: "/globallogo.png",
+        width: 1200,
+        height: 630,
+        alt: "Global Biomedical Diagnostic Equipment",
+      },
+    ],
+  },
 
   twitter: {
-  card:
-    "summary_large_image",
+    card: "summary_large_image",
+    title: "Global Biomedical | Diagnostic & Laboratory Equipment Supplier in India",
+    description: "Trusted supplier of biomedical, diagnostic, pathology, hospital & laboratory equipment in India.",
+    images: ["/globallogo.png"],
+  },
 
-  title:
-    "Global Biomedical | Diagnostic & Laboratory Equipment Supplier in India",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/globallogo.png",
+  },
 
-  description:
-    "Trusted supplier of biomedical, diagnostic, pathology, hospital & laboratory equipment in India.",
-
-  images: ["/logo.png"],
-},
-
-icons: {
-  icon: "/favicon.ico",
-  shortcut: "/favicon.ico",
-  apple: "/apple-touch-icon.png",
-},
-
-
-  category:
-    "Medical Equipment",
+  category: "Medical Equipment",
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#ffffff",
+  themeColor: "#2a1128",
 };
 
-export default function RootLayout({
-  children,
-}) {
+export default function RootLayout({ children }) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://globalbiomedical.org/#organization",
+        "name": "Global Biomedical Inc.",
+        "alternateName": ["Global Biomedical", "Rajbiosis Private Limited"],
+        "url": "https://globalbiomedical.org",
+        "logo": "https://globalbiomedical.org/globallogo.png",
+        "contactPoint": [
+          {
+            "@type": "ContactPoint",
+            "telephone": "+91-9257984336",
+            "contactType": "customer service",
+            "areaServed": "IN",
+            "availableLanguage": ["English", "Hindi"]
+          }
+        ],
+        "sameAs": [
+          "https://www.facebook.com/globalbiomedical",
+          "https://wa.me/919257984336"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://globalbiomedical.org/#website",
+        "url": "https://globalbiomedical.org",
+        "name": "Global Biomedical",
+        "publisher": {
+          "@id": "https://globalbiomedical.org/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://globalbiomedical.org/items?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+      </head>
       <body>
         <AOSInit />
-
         <Navbar />
-
         {children}
-
         <Footer />
       </body>
     </html>

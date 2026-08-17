@@ -74,13 +74,14 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg custom-navbar">
         <div className="container-fluid px-lg-5 px-3">
           {/* LOGO */}
-          <Link href={makeLink("")} className="navbar-brand">
+          <Link href={makeLink("")} className="navbar-brand d-flex align-items-center gap-2">
             <Image
               src="/globallogo.png"
-              alt="Global Biomedical"
-              width={110}
-              height={45}
+              alt="Global Biomedical Inc."
+              width={140}
+              height={55}
               priority
+              style={{ objectFit: "contain", height: "52px", width: "auto" }}
             />
           </Link>
 

@@ -139,6 +139,7 @@ const CategoryItem = memo(function CategoryItem({
 export default function ProductsClient({ initialProducts = [], district = null, city = null }) {
   const router = useRouter();
   const [products, setProducts] = useState(initialProducts);
+  const [loading, setLoading] = useState(!initialProducts || initialProducts.length === 0);
   const [categorySearch, setCategorySearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [productSearch, setProductSearch] = useState("");
@@ -148,21 +149,26 @@ export default function ProductsClient({ initialProducts = [], district = null, 
   const [pendingScroll, setPendingScroll] = useState(null);
   const [showTopButton, setShowTopButton] = useState(false);
   const [activeSubCategory, setActiveSubCategory] = useState("");
-  // Client-side fallback to fetch products if server cache is empty (e.g. built offline)
+
+  // Client-side fallback to fetch products if server cache is empty
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
       setProducts(initialProducts);
+      setLoading(false);
       return;
     }
 
     const loadProductsOnClient = async () => {
       try {
+        setLoading(true);
         const data = await fetchFullCatalog();
         if (data && data.length > 0) {
           setProducts(data);
         }
       } catch (err) {
         console.error("[ProductsClient] Error loading catalog on client:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -415,31 +421,40 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                   </div>
 
                   <div className="category-list custom-scrollbar">
-                    {Object.keys(sortedGroupedProducts)
-                      .filter((category) =>
-                        category.toLowerCase().includes(categorySearch.toLowerCase())
-                      )
-                      .map((category) => {
-                        const isOpened = openedCategory === category;
-                        const isActive = activeCategory === category;
-                        const subcategories = sortedGroupedProducts[category] || {};
-                        const count = getCategoryProductCount(category);
+                    {loading ? (
+                      <div className="p-3 space-y-3">
+                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
+                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
+                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
+                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
+                      </div>
+                    ) : (
+                      Object.keys(sortedGroupedProducts)
+                        .filter((category) =>
+                          category.toLowerCase().includes(categorySearch.toLowerCase())
+                        )
+                        .map((category) => {
+                          const isOpened = openedCategory === category;
+                          const isActive = activeCategory === category;
+                          const subcategories = sortedGroupedProducts[category] || {};
+                          const count = getCategoryProductCount(category);
 
-                        return (
-                          <CategoryItem
-                            key={category}
-                            category={category}
-                            isOpened={isOpened}
-                            isActive={isActive}
-                            subcategories={subcategories}
-                            categoryProductCount={count}
-                            toggleCategory={toggleCategory}
-                            toggleSubCategory={toggleSubCategory}
-                            openedSubCategories={openedSubCategories}
-                            scrollToProduct={scrollToProduct}
-                          />
-                        );
-                      })}
+                          return (
+                            <CategoryItem
+                              key={category}
+                              category={category}
+                              isOpened={isOpened}
+                              isActive={isActive}
+                              subcategories={subcategories}
+                              categoryProductCount={count}
+                              toggleCategory={toggleCategory}
+                              toggleSubCategory={toggleSubCategory}
+                              openedSubCategories={openedSubCategories}
+                              scrollToProduct={scrollToProduct}
+                            />
+                          );
+                        })
+                    )}
                   </div>
                 </div>
               </div>
@@ -477,7 +492,18 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                 </div>
               </div>
 
-              {filteredProducts.length === 0 ? (
+              {loading ? (
+                <div className="space-y-6">
+                  <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
+                    <div className="h-6 w-1/3 bg-slate-200 rounded-lg"></div>
+                    <div className="h-40 bg-slate-100 rounded-2xl"></div>
+                  </div>
+                  <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
+                    <div className="h-6 w-1/3 bg-slate-200 rounded-lg"></div>
+                    <div className="h-40 bg-slate-100 rounded-2xl"></div>
+                  </div>
+                </div>
+              ) : filteredProducts.length === 0 ? (
                 <div className="product-not-found">
                   <h2>Product Not Found</h2>
                   <p>
@@ -492,7 +518,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                       setSearchInput("");
                       setProductSearch("");
                     }}
-                    className="mt-4 px-6 py-2.5 rounded-lg bg-red-600 text-#c88379 font-semibold hover:bg-red-700 transition cursor-pointer border-0"
+                    className="mt-4 px-6 py-2.5 rounded-full bg-[#A56B97] text-white font-semibold hover:bg-[#8e5880] transition cursor-pointer border-0 shadow"
                   >
                     View All Products
                   </button>

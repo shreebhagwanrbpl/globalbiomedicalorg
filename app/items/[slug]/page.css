@@ -16,18 +16,18 @@
 }
 
 .media-thumb:hover {
-    border-color: #0d6efd;
+    border-color: #A56B97;
     transform: translateY(-3px);
 }
 
 .active-thumb {
-    border-color: #0d6efd;
-    background: #f0f7ff;
+    border-color: #A56B97;
+    background: #fdf5fb;
 }
 
 .media-thumb svg {
     font-size: 28px;
-    color: #0d6efd;
+    color: #A56B97;
 }
 
 .media-thumb span {
@@ -49,7 +49,7 @@
     padding: 40px;
     border-radius: 20px;
     border: 1px solid #ececec;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 15px 40px rgba(165, 107, 151, 0.08);
 }
 
 .seo-content h2 {
@@ -66,7 +66,7 @@
     content: "";
     width: 80px;
     height: 4px;
-    background: #c88379;
+    background: #A56B97;
     position: absolute;
     left: 0;
     bottom: 0;
@@ -87,7 +87,7 @@
     content: "";
     width: 6px;
     height: 100%;
-    background: #c88379;
+    background: #A56B97;
     position: absolute;
     left: 0;
     top: 0;
@@ -106,9 +106,9 @@
 
 .seo-highlight {
     background: linear-gradient(135deg,
-            #fff5f5,
-            #fef2f2);
-    border-left: 5px solid #c88379;
+            #fceef8,
+            #f4dbed);
+    border-left: 5px solid #A56B97;
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 30px;
@@ -130,7 +130,7 @@
 }
 
 .seo-feature {
-    background: #f9fafb;
+    background: #fdfafc;
     border: 1px solid #e5e7eb;
     border-radius: 14px;
     padding: 20px;
@@ -140,7 +140,7 @@
 
 .seo-feature:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+    box-shadow: 0 12px 25px rgba(165, 107, 151, 0.12);
 }
 
 .seo-feature h4 {
@@ -157,8 +157,8 @@
 }
 
 .seo-faq-item {
-    background: #f8fafc;
-    border-left: 4px solid #c88379;
+    background: #fdfafc;
+    border-left: 4px solid #A56B97;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 15px;
@@ -183,7 +183,7 @@
 }
 
 .btn-dark {
-    background: #c88379;
+    background: #A56B97;
 }
 
 .seo-table td {

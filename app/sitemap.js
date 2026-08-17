@@ -45,6 +45,11 @@ const urls = [
 ];
 
   try {
+    if (!adminDb) {
+      console.warn("[sitemap.js] adminDb is null. Returning static sitemap URLs.");
+      return urls;
+    }
+
     const websiteRef =
       adminDb
         .collection("websites")
