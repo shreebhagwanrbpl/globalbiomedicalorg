@@ -220,6 +220,205 @@ export default function ProductDetails({ slug, product: initialProduct }) {
         }
     };
 
+    const handleDownloadBrochure = () => {
+        if (!product) return;
+        const pdfUrl = product.pdf || product.brochure || product.brochureUrl || product.catalogUrl;
+
+        if (pdfUrl) {
+            const link = document.createElement("a");
+            link.href = pdfUrl;
+            link.target = "_blank";
+            link.rel = "noopener noreferrer";
+            link.download = `${product.slug || "product"}-brochure.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast.success("Downloading product brochure...");
+            return;
+        }
+
+        const printWindow = window.open("", "_blank");
+        if (!printWindow) {
+            toast.error("Please allow popups in your browser to download the PDF brochure.");
+            return;
+        }
+
+        const prodImg =
+            (product.images && product.images[0]) ||
+            product.image ||
+            "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=800&auto=format&fit=crop";
+
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>${product.title || "Product"} - Official Brochure</title>
+              <style>
+                @page { size: A4 portrait; margin: 0; }
+                * { box-sizing: border-box; }
+                body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; background: #fff; color: #333; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                .page { width: 210mm; min-height: 297mm; padding: 0; margin: auto; background: white; position: relative; }
+                .header-bar { background: #1e5a75; color: #ffffff; padding: 22px 35px; display: flex; justify-content: space-between; align-items: center; }
+                .header-bar h1 { margin: 0; font-size: 22px; font-weight: 700; }
+                .header-info { text-align: right; font-size: 12px; line-height: 1.4; opacity: 0.95; }
+                .title-banner { background: #e89938; color: #ffffff; padding: 10px 35px; }
+                .title-banner h2 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }
+                .content-body { padding: 25px 35px 80px 35px; }
+                .prod-title { font-size: 24px; font-weight: 800; color: #111; margin-top: 0; margin-bottom: 20px; }
+                .top-grid { display: grid; grid-template-columns: 220px 1fr; gap: 25px; margin-bottom: 25px; }
+                .img-box { border: 2px solid #9ed4cc; border-radius: 12px; padding: 15px; height: 250px; display: flex; align-items: center; justify-content: center; background: #ffffff; }
+                .img-box img { max-width: 100%; max-height: 220px; object-fit: contain; }
+                .spec-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #bce2dc; border-radius: 10px; overflow: hidden; }
+                .spec-table th { background: #1e5a75; color: white; text-align: left; padding: 9px 14px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+                .spec-table td { padding: 7px 14px; font-size: 11.5px; border-bottom: 1px solid #e5f3f0; }
+                .spec-table tr:nth-child(even) { background: #eef7f5; }
+                .spec-table tr:last-child td { border-bottom: none; }
+                .spec-label { font-weight: 700; color: #1e5a75; width: 38%; }
+                .spec-value { color: #222; }
+                .overview-section { margin-bottom: 22px; }
+                .section-heading { font-size: 14px; font-weight: 800; color: #1e5a75; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; border-bottom: 2px solid #1e5a75; padding-bottom: 3px; display: inline-block; }
+                .overview-text { font-size: 11.5px; line-height: 1.6; color: #444; margin: 0; }
+                .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+                .info-card { border: 1.5px solid #9ed4cc; border-radius: 10px; overflow: hidden; background: #fbfdfe; }
+                .info-card-header { background: #1e5a75; color: white; padding: 8px 14px; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+                .info-card-body { padding: 12px 14px; }
+                .info-list { list-style: none; padding: 0; margin: 0; }
+                .info-list li { font-size: 11px; margin-bottom: 7px; display: flex; align-items: center; gap: 8px; color: #333; }
+                .dot { width: 7px; height: 7px; background: #e89938; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+                .footer-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 35px; border-top: 2px solid #e89938; display: flex; justify-content: space-between; font-size: 10.5px; color: #666; background: #ffffff; z-index: 5; }
+                .watermark-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; opacity: 0.07; }
+                .watermark-row { transform: rotate(-30deg); font-size: 34px; font-weight: 900; color: #1e5a75; letter-spacing: 6px; white-space: nowrap; user-select: none; text-transform: uppercase; }
+                .header-bar, .title-banner, .content-body { position: relative; z-index: 3; }
+              </style>
+            </head>
+            <body>
+              <div class="page">
+                <div class="watermark-container">
+                  <div class="watermark-row">GLOBAL BIOMEDICAL INC. &nbsp;&nbsp;&nbsp;&nbsp; GLOBAL BIOMEDICAL INC.</div>
+                  <div class="watermark-row">GLOBAL BIOMEDICAL INC. &nbsp;&nbsp;&nbsp;&nbsp; GLOBAL BIOMEDICAL INC.</div>
+                  <div class="watermark-row">GLOBAL BIOMEDICAL INC. &nbsp;&nbsp;&nbsp;&nbsp; GLOBAL BIOMEDICAL INC.</div>
+                  <div class="watermark-row">GLOBAL BIOMEDICAL INC. &nbsp;&nbsp;&nbsp;&nbsp; GLOBAL BIOMEDICAL INC.</div>
+                  <div class="watermark-row">GLOBAL BIOMEDICAL INC. &nbsp;&nbsp;&nbsp;&nbsp; GLOBAL BIOMEDICAL INC.</div>
+                </div>
+
+                <div class="header-bar">
+                  <h1>Global Biomedical Inc.</h1>
+                  <div class="header-info">
+                    Phone: +91 9257984336 | +91 8529833535 | +91 9983301657<br/>
+                    Web: www.globalbiomedical.org
+                  </div>
+                </div>
+
+                <div class="title-banner">
+                  <h2>OFFICIAL PRODUCT SPECIFICATION BROCHURE</h2>
+                </div>
+
+                <div class="content-body">
+                  <h2 class="prod-title">${product.title}</h2>
+
+                  <div class="top-grid">
+                    <div class="img-box">
+                      <img src="${prodImg}" alt="${product.title}" />
+                    </div>
+
+                    <div>
+                      <table class="spec-table">
+                        <thead>
+                          <tr>
+                            <th colspan="2">KEY SPECIFICATIONS</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td class="spec-label">Brand:</td>
+                            <td class="spec-value">${product.brand || "Global Biomedical Partner"}</td>
+                          </tr>
+                          <tr>
+                            <td class="spec-label">Model:</td>
+                            <td class="spec-value">${product.model || "N/A"}</td>
+                          </tr>
+                          <tr>
+                            <td class="spec-label">Instrument:</td>
+                            <td class="spec-value">${product.instrument || "Diagnostic Equipment"}</td>
+                          </tr>
+                          <tr>
+                            <td class="spec-label">Usage:</td>
+                            <td class="spec-value">${product.usage || "Clinical Laboratory"}</td>
+                          </tr>
+                          <tr>
+                            <td class="spec-label">Automation:</td>
+                            <td class="spec-value">${product.automation || "Fully Automatic"}</td>
+                          </tr>
+                          <tr>
+                            <td class="spec-label">Size / Capacity:</td>
+                            <td class="spec-value">${product.capacity || "Standard"}</td>
+                          </tr>
+                          <tr>
+                            <td class="spec-label">Availability:</td>
+                            <td class="spec-value">${product.availability || "In Stock"}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="overview-section">
+                    <div class="section-heading">PRODUCT OVERVIEW</div>
+                    <p class="overview-text">
+                      ${product.desc || product.description || `The ${product.title} is an advanced diagnostic analyzer designed for high performance, accuracy, and reliability in medical laboratories, hospitals, and clinical settings.`}
+                    </p>
+                  </div>
+
+                  <div class="bottom-grid">
+                    <div class="info-card">
+                      <div class="info-card-header">KEY APPLICATIONS</div>
+                      <div class="info-card-body">
+                        <ul class="info-list">
+                          <li><span class="dot"></span> Clinical Diagnostic Laboratories</li>
+                          <li><span class="dot"></span> Hospitals & Healthcare Centres</li>
+                          <li><span class="dot"></span> Pathology & Testing Labs</li>
+                          <li><span class="dot"></span> Blood Banks & Research Units</li>
+                          <li><span class="dot"></span> Medical Colleges & Institutions</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div class="info-card">
+                      <div class="info-card-header">WHY CHOOSE GLOBAL BIOMEDICAL INC.</div>
+                      <div class="info-card-body">
+                        <ul class="info-list">
+                          <li><span class="dot"></span> Trusted Biomedical Equipment Supplier</li>
+                          <li><span class="dot"></span> 100% Genuine Leading Brand Products</li>
+                          <li><span class="dot"></span> Competitive Pricing & Warranty Support</li>
+                          <li><span class="dot"></span> Prompt Installation & Staff Training</li>
+                          <li><span class="dot"></span> Fast Express Delivery Across India</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="footer-bar">
+                  <div><strong>GLOBAL BIOMEDICAL INC.</strong> - Diagnostic Instruments & Healthcare Solutions</div>
+                  <div>Official Product Brochure | Confidential & Proprietary</div>
+                </div>
+              </div>
+
+              <script>
+                window.onload = function() {
+                  setTimeout(function() {
+                    window.print();
+                  }, 300);
+                };
+              </script>
+            </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        toast.success("Opening PDF Brochure for download...");
+    };
+
     useEffect(() => {
         const close = (e) => {
             if (
@@ -584,19 +783,35 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                     <br />
                                     {product.automation || "-"}
                                 </div>
-
-                                <div className="col-6 mb-3">
-                                    <strong>Availability</strong>
-                                    <br />
-                                    {product.availability || "-"}
-                                </div>
                             </div>
                         </div>
 
+                        {/* PRODUCT BROCHURE SECTION */}
+                        <div className="card border-0 shadow-sm p-4 mt-4 rounded-4 d-flex flex-row align-items-center justify-content-between flex-wrap gap-3" style={{ background: "linear-gradient(135deg, #fff5f2, #fef0eb)" }}>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="p-3 bg-danger bg-opacity-10 text-danger rounded-3">
+                                    <i className="bi bi-file-earmark-pdf-fill fs-2"></i>
+                                </div>
+                                <div>
+                                    <h5 className="fw-bold mb-1 text-dark">Product Brochure</h5>
+                                    <p className="small text-muted mb-0">
+                                        Download complete technical specifications & catalog
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleDownloadBrochure}
+                                className="btn btn-danger rounded-pill px-4 py-2.5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm fs-6"
+                            >
+                                <i className="bi bi-download"></i> Download Brochure
+                            </button>
+                        </div>
+
                         {/* QUERY FORM */}
-                        <div className="card shadow-sm border-0 p-4 mt-4">
+                        <div id="query-form" className="card shadow-sm border-0 p-4 mt-4">
                             <h4 className="mb-3">
-                                Get Details
+                                Get Details & Quote
                             </h4>
 
                             <form onSubmit={handleSubmit}>

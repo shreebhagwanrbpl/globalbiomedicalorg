@@ -326,64 +326,73 @@ export default function Contact({ city }) {
               <div className="contact-info mt-4">
 
                 {loading ? (
-
-                  <p className="text-muted">
-                    Loading...
-                  </p>
-
+                  <p className="text-muted">Loading contact details...</p>
                 ) : contactInfo.length === 0 ? (
-
-                  <p className="text-muted">
-                    No contact info added
-                  </p>
-
-                ) : (
-
-                  contactInfo.map((item, i) => (
-
-                    <div
-                      className="info-box"
-                      key={i}
-                    >
-
-                      <i
-                        className={
-                          item.label
-                            .toLowerCase()
-                            .includes("address")
-                            ? "bi bi-geo-alt"
-                            : item.label
-                              .toLowerCase()
-                              .includes("email")
-                              ? "bi bi-envelope"
-                              : item.label
-                                .toLowerCase()
-                                .includes("phone")
-                                ? "bi bi-telephone"
-                                : "bi bi-info-circle"
-                        }
-                      ></i>
-
+                  <div className="d-flex flex-column gap-3">
+                    <div className="info-box">
+                      <i className="bi bi-geo-alt"></i>
                       <div>
-                        <strong>
-                          {item.label}
-                        </strong>
+                        <strong>Address</strong>
+                        <p>{isValidCity ? `${cityName}, ${stateName}, India` : "Jaipur, Rajasthan, India"}</p>
+                      </div>
+                    </div>
+
+                    <div className="info-box">
+                      <i className="bi bi-envelope"></i>
+                      <div>
+                        <strong>Email Address</strong>
                         <p>
-                          {
-                            item.label
-                              .toLowerCase()
-                              .includes("address")
-                              ? isValidCity
-                                ? `${cityName}, ${stateName}, India`
-                                : item.value
-                              : item.value
-                          }
+                          <a href="mailto:info@globalbiomedical.org" className="text-dark text-decoration-none">
+                            info@globalbiomedical.org
+                          </a>
                         </p>
                       </div>
                     </div>
 
+                    <div className="info-box">
+                      <i className="bi bi-telephone"></i>
+                      <div>
+                        <strong>Phone & WhatsApp Support</strong>
+                        <div className="d-flex flex-column gap-1 mt-1">
+                          <a href="tel:+919257984336" className="text-dark fw-semibold text-decoration-none">
+                            +91 9257984336
+                          </a>
+                          <a href="tel:+918529833535" className="text-dark fw-semibold text-decoration-none">
+                            +91 8529833535
+                          </a>
+                          <a href="tel:+919983301657" className="text-dark fw-semibold text-decoration-none">
+                            +91 9983301657
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  contactInfo.map((item, i) => (
+                    <div className="info-box" key={i}>
+                      <i
+                        className={
+                          item.label.toLowerCase().includes("address")
+                            ? "bi bi-geo-alt"
+                            : item.label.toLowerCase().includes("email")
+                              ? "bi bi-envelope"
+                              : item.label.toLowerCase().includes("phone")
+                                ? "bi bi-telephone"
+                                : "bi bi-info-circle"
+                        }
+                      ></i>
+                      <div>
+                        <strong>{item.label}</strong>
+                        <p>
+                          {item.label.toLowerCase().includes("address")
+                            ? isValidCity
+                              ? `${cityName}, ${stateName}, India`
+                              : item.value
+                            : item.value}
+                        </p>
+                      </div>
+                    </div>
                   ))
-
                 )}
 
               </div>
