@@ -1,83 +1,32 @@
 import ProductDetails from "./ProductDetails";
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
+import { generateProductMetadata, generateProductSchema, makeSlug } from "@/lib/seo-utils";
+import InternalLinkEngine from "@/app/components/InternalLinkEngine";
 
 export async function generateMetadata({ params }) {
     try {
         const resolvedParams = await params;
         const slug = resolvedParams?.slug || "";
 
-        const productName = slug
-            ? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-            : "Medical Equipment";
+        const allProducts = await fetchFullCatalog();
+        const targetSlug = (slug || "").toLowerCase().trim();
+        const product = allProducts.find((p) => {
+            if (!p) return false;
+            const prodSlug = (p.slug || "").toLowerCase().trim();
+            const prodId = (p.id || "").toLowerCase().trim();
+            return (
+                prodSlug === targetSlug ||
+                prodId === targetSlug ||
+                makeSlug(p.title) === targetSlug
+            );
+        });
 
-        const title = `${productName} Supplier in India | Price, Dealer & Distributor | Global Biomedical`;
-
-        const description = `Buy ${productName} at best price in India. Trusted supplier, dealer and distributor of ${productName} for hospitals, laboratories, diagnostic centers, research institutes and healthcare facilities. Contact Global Biomedical for latest quotation and product details.`;
-
-        const url = `https://globalbiomedical.org/items/${slug}`;
-
-        return {
-            title,
-            description,
-
-            keywords: [
-                productName,
-                `${productName} Supplier`,
-                `${productName} Dealer`,
-                `${productName} Distributor`,
-                `${productName} Manufacturer`,
-                `${productName} Exporter`,
-                `${productName} Price`,
-                `${productName} Price in India`,
-                `${productName} Supplier in India`,
-                `${productName} Dealer in India`,
-                `${productName} Distributor in India`,
-                `Buy ${productName}`,
-                `${productName} for Laboratory`,
-                `${productName} for Hospital`,
-                `${productName} for Diagnostic Center`,
-                "Biomedical Equipment",
-                "Medical Equipment",
-                "Laboratory Equipment",
-                "Diagnostic Equipment",
-                "Hospital Equipment",
-                "Healthcare Equipment",
-                "Global Biomedical",
-            ],
-
-            alternates: {
-                canonical: url,
-            },
-
-            openGraph: {
-                title,
-                description,
-                url,
-                siteName: "Global Biomedical",
-                type: "website",
-                locale: "en_IN",
-            },
-
-            twitter: {
-                card: "summary_large_image",
-                title,
-                description,
-            },
-
-            robots: {
-                index: true,
-                follow: true,
-                googleBot: {
-                    index: true,
-                    follow: true,
-                    "max-video-preview": -1,
-                    "max-image-preview": "large",
-                    "max-snippet": -1,
-                },
-            },
-
-            metadataBase: new URL("https://globalbiomedical.org"),
+        // Generate metadata canonicalized to primary product URL /products/[slug]
+        const metadata = generateProductMetadata(product || { title: slug.replace(/-/g, " "), slug });
+        metadata.alternates = {
+            canonical: `https://globalbiomedical.org/products/${slug}`,
         };
+        return metadata;
     } catch (err) {
         console.error("generateMetadata error:", err);
         return {
@@ -96,24 +45,19 @@ export default async function Page({ params }) {
     }
 
     let product = null;
+    let allProducts = [];
     try {
         if (slug) {
-            const allProducts = await fetchFullCatalog();
+            allProducts = await fetchFullCatalog();
             const targetSlug = (slug || "").toLowerCase().trim();
             product = allProducts.find((p) => {
                 if (!p) return false;
                 const prodSlug = (p.slug || "").toLowerCase().trim();
                 const prodId = (p.id || "").toLowerCase().trim();
-                const prodTitleSlug = (p.title || "")
-                    .toLowerCase()
-                    .trim()
-                    .replace(/[^a-z0-9\s-]/g, "")
-                    .replace(/\s+/g, "-");
                 return (
                     prodSlug === targetSlug ||
                     prodId === targetSlug ||
-                    prodTitleSlug === targetSlug ||
-                    decodeURIComponent(targetSlug) === prodSlug
+                    makeSlug(p.title) === targetSlug
                 );
             }) || null;
         }
@@ -121,5 +65,28 @@ export default async function Page({ params }) {
         console.error("[ProductSlugPage] Server fetch failed:", err);
     }
 
-    return <ProductDetails slug={slug} product={product} />;
+    const categories = Array.from(new Set(allProducts.map((p) => p.category).filter(Boolean)));
+    const brands = Array.from(new Set(allProducts.map((p) => p.brand).filter(Boolean)));
+    const canonicalUrl = `https://globalbiomedical.org/products/${slug}`;
+    const productSchema = generateProductSchema(product, canonicalUrl);
+
+    return (
+        <>
+            {productSchema && (
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+                />
+            )}
+            <ProductDetails slug={slug} product={product} />
+            <div className="container pb-5">
+                <InternalLinkEngine
+                    categories={categories}
+                    brands={brands}
+                    currentCategory={product?.category}
+                    currentBrand={product?.brand}
+                />
+            </div>
+        </>
+    );
 }

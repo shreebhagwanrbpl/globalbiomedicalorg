@@ -9,58 +9,6 @@ export default function Footer() {
   const [contactInfo, setContactInfo] = useState([]);
   const pathname = usePathname();
 
-  const pathParts = pathname.split("/").filter(Boolean);
-
-  const reservedRoutes = [
-    "about",
-    "contact",
-    "items",
-    "products",
-    "services",
-  ];
-
-  // district slug
-  const district =
-    pathParts[0] && !reservedRoutes.includes(pathParts[0])
-      ? pathParts[0]
-      : "";
-
-  // format city
-  const formatCity = (name = "") =>
-    name
-      .split("-")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-
-  const citySlug = district;
-  const city = formatCity(citySlug);
-  const [stateName, setStateName] = useState("");
-
-  // dynamic links
-  const makeLink = (path = "") => {
-    if (!citySlug) return path || "/";
-    if (!path) return `/${citySlug}`;
-    return `/${citySlug}${path}`;
-  };
-
-  useEffect(() => {
-    const loadDistrict = async () => {
-      if (!citySlug) return;
-      try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "districts", citySlug)
-        );
-        if (snap.exists()) {
-          setStateName(snap.data()?.state || "");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    loadDistrict();
-  }, [citySlug]);
-
   const getValue = (key) => {
     return (
       contactInfo.find((x) => {
@@ -97,11 +45,10 @@ export default function Footer() {
           {/* COMPANY INFO */}
           <div className="col-lg-3 col-md-6">
             <h4 className="fw-bold text-white mb-3">
-              Global Biomedical inc.
+              Global Biomedical Inc.
             </h4>
             <p className="small text-white-50 mb-4">
-              Trusted partner for diagnostic instruments, reagents, and medical
-              consumables across India. Delivering precision healthcare technology.
+              Trusted supplier for medical equipment, diagnostic analyzers, pathology instruments, and lab consumables across India. Delivering precision healthcare technology.
             </p>
 
             {/* SOCIAL MEDIA ICONS */}
@@ -169,19 +116,19 @@ export default function Footer() {
             <h6 className="footer-title">Quick Links</h6>
             <ul className="footer-links">
               <li>
-                <Link href={makeLink("")}>Home</Link>
+                <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href={makeLink("/items")}>Products Catalog</Link>
+                <Link href="/products">Products Catalog</Link>
               </li>
               <li>
-                <Link href={makeLink("/services")}>Services</Link>
+                <Link href="/services">Services & AMC</Link>
               </li>
               <li>
-                <Link href={makeLink("/about")}>About Us</Link>
+                <Link href="/about">About Us</Link>
               </li>
               <li>
-                <Link href={makeLink("/contact")}>Contact Us</Link>
+                <Link href="/contact">Contact Us</Link>
               </li>
             </ul>
           </div>
@@ -191,38 +138,51 @@ export default function Footer() {
             <h6 className="footer-title">Product Categories</h6>
             <ul className="footer-links">
               <li>
-                <Link href={makeLink("/items")}>Immunology & CLIA</Link>
+                <Link href="/category/hematology-analyzer">Hematology Analyzers</Link>
               </li>
               <li>
-                <Link href={makeLink("/items")}>Hematology Analyzers</Link>
+                <Link href="/category/biochemistry-analyzer">Biochemistry Analyzers</Link>
               </li>
               <li>
-                <Link href={makeLink("/items")}>Biochemistry Systems</Link>
+                <Link href="/category/electrolyte-analyzer">Electrolyte Analyzers</Link>
               </li>
               <li>
-                <Link href={makeLink("/items")}>Medical Consumables</Link>
+                <Link href="/category/immunoassay-analyzer">Immunoassay Analyzers</Link>
               </li>
               <li>
-                <Link href={makeLink("/items")}>Diagnostic Reagents</Link>
+                <Link href="/category/laboratory-consumables">Medical Consumables</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* LOCATION HUBS */}
+          <div className="col-lg-2 col-md-6">
+            <h6 className="footer-title">Top Locations</h6>
+            <ul className="footer-links">
+              <li>
+                <Link href="/district/jaipur">Jaipur Supplier</Link>
               </li>
               <li>
-                <Link href={makeLink("/items")}>Lab Instruments</Link>
+                <Link href="/district/delhi">Delhi Supplier</Link>
+              </li>
+              <li>
+                <Link href="/district/mumbai">Mumbai Supplier</Link>
+              </li>
+              <li>
+                <Link href="/district/jodhpur">Jodhpur Supplier</Link>
+              </li>
+              <li>
+                <Link href="/district/kota">Kota Supplier</Link>
               </li>
             </ul>
           </div>
 
           {/* CONTACT INFO WITH ALL 3 PHONE NUMBERS */}
-          <div className="col-lg-4 col-md-6">
+          <div className="col-lg-2 col-md-6">
             <h6 className="footer-title">Get In Touch</h6>
             <p className="small mb-2 d-flex align-items-start text-white-50">
               <i className="bi bi-geo-alt me-2 mt-1"></i>
-              <span>
-                {district
-                  ? stateName
-                    ? `${city}, ${stateName}, India`
-                    : getValue("address") || "Jaipur, Rajasthan, India"
-                  : getValue("address") || "Jaipur, Rajasthan, India"}
-              </span>
+              <span>{getValue("address") || "Jaipur, Rajasthan, India"}</span>
             </p>
 
             <p className="small mb-2 d-flex align-items-center text-white-50">
@@ -250,7 +210,7 @@ export default function Footer() {
         {/* BOTTOM */}
         <div className="footer-bottom mt-5 pt-3 text-center">
           <p className="mb-0 small text-white-50">
-            © {new Date().getFullYear()} Global Biomedical | All Rights Reserved
+            © {new Date().getFullYear()} Global Biomedical Inc. | All Rights Reserved
           </p>
         </div>
       </div>

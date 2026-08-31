@@ -625,9 +625,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                                           <button
                                             className="btn-view cursor-pointer"
                                             onClick={() => {
-                                              const targetUrl = district
-                                                ? `/${district}/items/${product.slug}`
-                                                : `/items/${product.slug}`;
+                                              const targetUrl = `/products/${product.slug}`;
                                               router.push(targetUrl);
                                             }}
                                           >

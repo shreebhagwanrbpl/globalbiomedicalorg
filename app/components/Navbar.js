@@ -10,27 +10,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const pathParts = pathname.split("/").filter(Boolean);
-
-  const reservedRoutes = [
-    "about",
-    "contact",
-    "items",
-    "products",
-    "services",
-  ];
-
-  const district =
-    pathParts[0] && !reservedRoutes.includes(pathParts[0])
-      ? pathParts[0]
-      : "";
-
-  const makeLink = (path = "") => {
-    if (!district) return path || "/";
-    if (!path) return `/${district}`;
-    return `/${district}${path}`;
-  };
-
   return (
     <>
       {/* TOP HEADER STRIP WITH CONTACT NUMBERS */}
@@ -74,10 +53,10 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg custom-navbar">
         <div className="container-fluid px-lg-5 px-3">
           {/* LOGO */}
-          <Link href={makeLink("")} className="navbar-brand d-flex align-items-center gap-2">
+          <Link href="/" className="navbar-brand d-flex align-items-center gap-2">
             <Image
               src="/globallogo.png"
-              alt="Global Biomedical Inc."
+              alt="Global Biomedical Inc. - Medical Equipment Supplier"
               width={140}
               height={55}
               priority
@@ -90,6 +69,7 @@ export default function Navbar() {
             className="navbar-toggler"
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
@@ -103,20 +83,31 @@ export default function Navbar() {
             <ul className="navbar-nav align-items-lg-center gap-lg-4 gap-3">
               <li className="nav-item">
                 <Link
-                  href={makeLink("/about")}
+                  href="/products"
                   className={`nav-link ${
-                    pathname.includes("/about") ? "active" : ""
+                    pathname.startsWith("/products") || pathname.startsWith("/items") ? "active" : ""
                   }`}
                 >
-                  About
+                  Products
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link
-                  href={makeLink("/services")}
+                  href="/category/hematology-analyzer"
                   className={`nav-link ${
-                    pathname.includes("/services") ? "active" : ""
+                    pathname.startsWith("/category") ? "active" : ""
+                  }`}
+                >
+                  Categories
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link
+                  href="/services"
+                  className={`nav-link ${
+                    pathname.startsWith("/services") ? "active" : ""
                   }`}
                 >
                   Services
@@ -125,20 +116,20 @@ export default function Navbar() {
 
               <li className="nav-item">
                 <Link
-                  href={makeLink("/items")}
+                  href="/about"
                   className={`nav-link ${
-                    pathname.includes("/items") ? "active" : ""
+                    pathname.startsWith("/about") ? "active" : ""
                   }`}
                 >
-                  Items
+                  About
                 </Link>
               </li>
 
               <li className="nav-item">
                 <Link
-                  href={makeLink("/contact")}
+                  href="/contact"
                   className={`nav-link ${
-                    pathname.includes("/contact") ? "active" : ""
+                    pathname.startsWith("/contact") ? "active" : ""
                   }`}
                 >
                   Contact
