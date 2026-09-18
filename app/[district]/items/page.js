@@ -1,6 +1,9 @@
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import ProductsClient from "@/app/items/ProductsClient";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const district = resolvedParams?.district || "jaipur";

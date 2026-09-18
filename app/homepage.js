@@ -84,36 +84,29 @@ export default function Home({ city }) {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCatalogProducts = async () => {
       try {
-        // 1. Check pages/products document
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "pages", "products")
-        );
-
-        if (snap.exists()) {
-          const data = snap.data().products || [];
-          const visible = data.filter((p) => p.isPublished !== false);
-          if (visible.length > 0) {
-            setProducts(visible);
-            return;
-          }
-        }
-
-        // 2. Fallback to catalog categories
         const catalog = await fetchFullCatalog();
-        if (catalog && catalog.allProducts && catalog.allProducts.length > 0) {
-          setProducts(catalog.allProducts);
-          return;
+        if (Array.isArray(catalog) && catalog.length > 0) {
+          setProducts(catalog);
+        } else {
+          setProducts(DEFAULT_PRODUCTS);
         }
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.error("Error fetching homepage products from master catalog:", err);
+        setProducts(DEFAULT_PRODUCTS);
       } finally {
         setHomeLoading(false);
       }
     };
 
-    fetchData();
+    fetchCatalogProducts();
+
+    const handleFocus = () => {
+      fetchCatalogProducts();
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
   const formatCity = (name = "") =>

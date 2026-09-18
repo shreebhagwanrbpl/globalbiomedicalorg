@@ -49,55 +49,72 @@ export default function ProductDetails({ slug, product: initialProduct }) {
     const city = pathParts.length > 1 ? pathParts[0] : "India";
     const cityName = city.charAt(0).toUpperCase() + city.slice(1);
 
+    const loadProduct = async (silent = false) => {
+        try {
+            if (!silent) setLoading(true);
+            const res = await fetch(`/api/catalog?t=${Date.now()}`, {
+                cache: "no-store",
+                headers: { "Cache-Control": "no-cache" },
+            });
+            let allProducts = [];
+            if (res.ok) {
+                const json = await res.json();
+                allProducts = json.products || [];
+            } else {
+                allProducts = await fetchFullCatalog({ forceRefresh: true });
+            }
+
+            const targetSlug = (slug || "").toLowerCase().trim();
+            const found = allProducts.find((p) => {
+                if (!p) return false;
+                const prodSlug = (p.slug || "").toLowerCase().trim();
+                const prodId = (p.id || "").toLowerCase().trim();
+                const prodTitleSlug = (p.title || "")
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-");
+                return (
+                    prodSlug === targetSlug ||
+                    prodId === targetSlug ||
+                    prodTitleSlug === targetSlug ||
+                    decodeURIComponent(targetSlug) === prodSlug
+                );
+            });
+
+            setProduct(found || null);
+
+            if (found) {
+                if (found.images?.length > 0) {
+                    setSelectedImage(found.images[0]);
+                } else {
+                    setSelectedImage(found.image || "");
+                }
+                setSelectedMedia("image");
+            }
+        } catch (error) {
+            console.error("Error loading product details:", error);
+        } finally {
+            if (!silent) setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (initialProduct) {
             setProduct(initialProduct);
             setSelectedImage(initialProduct.images?.length > 0 ? initialProduct.images[0] : (initialProduct.image || ""));
             setSelectedMedia("image");
             setLoading(false);
-            return;
+        } else {
+            loadProduct(false);
         }
 
-        const loadProduct = async () => {
-            try {
-                setLoading(true);
-                const allProducts = await fetchFullCatalog();
-                const targetSlug = (slug || "").toLowerCase().trim();
-                const found = allProducts.find((p) => {
-                    if (!p) return false;
-                    const prodSlug = (p.slug || "").toLowerCase().trim();
-                    const prodId = (p.id || "").toLowerCase().trim();
-                    const prodTitleSlug = (p.title || "")
-                        .toLowerCase()
-                        .trim()
-                        .replace(/[^a-z0-9\s-]/g, "")
-                        .replace(/\s+/g, "-");
-                    return (
-                        prodSlug === targetSlug ||
-                        prodId === targetSlug ||
-                        prodTitleSlug === targetSlug ||
-                        decodeURIComponent(targetSlug) === prodSlug
-                    );
-                });
-
-                setProduct(found || null);
-
-                if (found) {
-                    if (found.images?.length > 0) {
-                        setSelectedImage(found.images[0]);
-                    } else {
-                        setSelectedImage(found.image || "");
-                    }
-                    setSelectedMedia("image");
-                }
-            } catch (error) {
-                console.error("Error loading product details:", error);
-            } finally {
-                setLoading(false);
-            }
+        const handleFocus = () => {
+            loadProduct(true);
         };
 
-        loadProduct();
+        window.addEventListener("focus", handleFocus);
+        return () => window.removeEventListener("focus", handleFocus);
     }, [slug, initialProduct]);
 
     const handleSubmit = async (e) => {

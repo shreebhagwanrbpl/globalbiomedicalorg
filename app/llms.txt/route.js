@@ -1,303 +1,185 @@
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebase-admin";
+import { fetchFullCatalog } from "@/lib/data-fetcher-server";
+import { getDetectedWebsiteId } from "@/lib/catalog-config";
 
-const WEBSITE = "globalbiomedicalorg";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const DOMAIN = "https://globalbiomedical.org";
 
 export async function GET() {
-    try {
-        if (!adminDb) {
-            return new NextResponse("Global Biomedical - Medical Equipment Catalog", {
-                headers: { "Content-Type": "text/plain; charset=utf-8" }
-            });
-        }
+  try {
+    const websiteId = getDetectedWebsiteId();
 
-        // Districts
+    // 1. Fetch Master Catalog products
+    const products = await fetchFullCatalog();
+    const publishedProducts = Array.isArray(products) ? products : [];
+
+    // Group by category
+    const categoryMap = {};
+    publishedProducts.forEach((p) => {
+      const cat = p.category || "General Products";
+      if (!categoryMap[cat]) categoryMap[cat] = [];
+      categoryMap[cat].push(p);
+    });
+
+    const categoryNames = Object.keys(categoryMap);
+
+    // 2. Fetch Districts
+    let districts = [];
+    if (adminDb) {
+      try {
         const districtSnap = await adminDb
-            .collection("websites")
-            .doc(WEBSITE)
-            .collection("districts")
-            .get();
+          .collection("websites")
+          .doc(websiteId)
+          .collection("districts")
+          .get();
 
-        const districts = districtSnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
+        districts = districtSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
         }));
+      } catch (distErr) {
+        console.warn("[llms.txt] Error fetching districts:", distErr);
+      }
+    }
 
-        // Products Document
-        const productDoc = await adminDb
-            .collection("websites")
-            .doc(WEBSITE)
-            .collection("pages")
-            .doc("products")
-            .get();
-
-        const productData = productDoc.exists ? productDoc.data() : {};
-
-        const products = productData.products || [];
-
-        // Categories
-        const categorySnap = await adminDb
-            .collection("websites")
-            .doc(WEBSITE)
-            .collection("pages")
-            .doc("categoryproducts")
-            .collection("categories")
-            .get();
-
-        const categories = categorySnap.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-
-        // ===========================
-        // Published Products
-        // ===========================
-
-        const publishedProducts = products.filter(
-            (item) => item.isPublished === true
-        );
-
-        // ===========================
-        // Categories
-        // ===========================
-
-        const categoryText =
-            categories.length > 0
-                ? categories
-                    .map((cat) => {
-
-                        const productList =
-                            (cat.products || [])
-                                .map((item) => `- ${item.title}`)
-                                .join("\n");
-
-                        return `
-
-## ${cat.category}
-
-Category ID:
-${cat.id}
-
-Total Products:
-${cat.products?.length || 0}
-
-Products
-
-${productList || "No Products"}
-
-`;
-
-                    })
-                    .join("\n")
-                : "No Categories Found";
-
-        // ===========================
-        // Products
-        // ===========================
-
-        const productText =
-            publishedProducts.length > 0
-                ? publishedProducts
-                    .map((product) => {
-
-                        return `
-
-# ${product.title}
-
-Category:
-${product.category || "N/A"}
-
-Brand:
-${product.brand || "N/A"}
-
-Model:
-${product.model || "N/A"}
-
-Description:
-${product.desc || "No description available"}
-
-Instrument:
-${product.instrument || "N/A"}
-
-Automation:
-${product.automation || "N/A"}
-
-Usage:
-${product.usage || "N/A"}
-
-Throughput:
-${product.throughput || "N/A"}
-
-Capacity:
-${product.capacity || "N/A"}
-
-Availability:
-${product.availability || "N/A"}
-
-Price:
-${product.price || "Contact for Price"}
-
-Product URL:
-
-${DOMAIN}/items/${product.slug || product.id}
-
-
-
-
-${[product.title, product.brand, product.category, product.model,
-                            product.instrument,
-                            product.automation,
-                            product.usage,
-                            ]
-                                .filter(Boolean)
-                                .join(", ")
-                            }
-`;
-                    })
-                    .join("\n")
-                : "No Products Found";
-
-
-        // ===========================
-        // Districts
-        // ===========================
-
-        const districtText =
-            districts.length > 0
-                ? districts
-                    .map(
-                        (item) =>
-                            `${DOMAIN}/${item.slug}`
-                    )
-                    .join("\n")
-                : "No Districts Found";
-
-        // ===========================
-        // llms.txt
-        // ===========================
-
-        const content = `
-## Statistics
+    // ===========================
+    // Categories Text
+    // ===========================
+    const categoryText =
+      categoryNames.length > 0
+        ? categoryNames
+            .map((catName) => {
+              const prods = categoryMap[catName] || [];
+              const productList = prods.map((item) => `- ${item.title}`).join("\n");
+              return `
+## ${catName}
+Total Products: ${prods.length}
 
 Products:
-${publishedProducts.length}
+${productList || "No Products"}
+`;
+            })
+            .join("\n")
+        : "No Categories Found";
 
-Categories:
-${categories.length}
+    // ===========================
+    // Products Text
+    // ===========================
+    const productText =
+      publishedProducts.length > 0
+        ? publishedProducts
+            .map((product) => {
+              return `
+# ${product.title}
+Category: ${product.category || "N/A"}
+SubCategory: ${product.subCategory || "N/A"}
+Brand: ${product.brand || "N/A"}
+Model: ${product.model || "N/A"}
+Description: ${product.desc || product.description || "No description available"}
+Instrument: ${product.instrument || "N/A"}
+Automation: ${product.automation || "N/A"}
+Usage: ${product.usage || "N/A"}
+Throughput: ${product.throughput || "N/A"}
+Capacity: ${product.capacity || "N/A"}
+Availability: ${product.availability || "N/A"}
+Price: ${product.price ? "₹" + product.price : "Contact for Price"}
+Product URL: ${DOMAIN}/items/${product.slug || product.id}
+Tags: ${[
+                product.title,
+                product.brand,
+                product.category,
+                product.subCategory,
+                product.model,
+                product.instrument,
+                product.automation,
+                product.usage,
+              ]
+                .filter(Boolean)
+                .join(", ")}
+`;
+            })
+            .join("\n")
+        : "No Products Found";
 
-Districts:
-${districts.length}
+    // ===========================
+    // Districts Text
+    // ===========================
+    const districtText =
+      districts.length > 0
+        ? districts.map((item) => `${DOMAIN}/${item.slug || item.id}`).join("\n")
+        : "No Districts Found";
+
+    // ===========================
+    // llms.txt Content
+    // ===========================
+    const content = `
+## Statistics
+Products: ${publishedProducts.length}
+Categories: ${categoryNames.length}
+Districts: ${districts.length}
+
 # Global Biomedical
+India's Trusted Biomedical, Hospital & Laboratory Equipment Supplier
 
-India's Trusted Biomedical Equipment Company
+Website: ${DOMAIN}
+Published Products: ${publishedProducts.length}
+Categories: ${categoryNames.length}
+District Pages: ${districts.length}
 
-Website
+Company:
+Global Biomedical is one of India's trusted Biomedical & Laboratory Equipment suppliers.
 
-${DOMAIN}
-
-Published Products
-
-${publishedProducts.length}
-
-Categories
-
-${categories.length}
-
-District Pages
-
-${districts.length}
-Company
-
-Global Biomedical is one of India's trusted Biomedical Equipment suppliers.
-
-Services
-
+Services:
 - Biomedical Equipment Supply
 - Laboratory Equipment
 - Diagnostic Equipment
-- Installation
-- AMC
+- Installation & Commissioning
+- AMC & CMC
 - Calibration
-- Repair
+- Repair & Maintenance
 - Technical Support
 - Pan India Delivery
 
-Search Keywords
+Search Keywords:
+Biomedical Equipment, Laboratory Equipment, Diagnostic Equipment, Hospital Equipment, Medical Equipment, ICU Equipment, Operation Theatre Equipment, Biochemistry Analyzer, Electrolyte Analyzer, CLIA Analyzer, Immunoassay Analyzer
 
-Biomedical Equipment
-
-Laboratory Equipment
-
-Diagnostic Equipment
-
-Hospital Equipment
-
-Medical Equipment
-
-ICU Equipment
-
-Operation Theatre Equipment
-
-Biochemistry Analyzer
-
-Electrolyte Analyzer
-
-CLIA Analyzer
-
-Immunoassay Analyzer
 ------------------------------------------------
-
 ## Categories
-
 ${categoryText}
 
 ------------------------------------------------
-
 ## Products
-
 ${productText}
 
 ------------------------------------------------
-
 ## District Pages
-
 ${districtText}
 
 ------------------------------------------------
-
-Sitemap
-
-${DOMAIN}/sitemap.xml
-
-Robots
-
-${DOMAIN}/robots.txt
-
-Contact
-
-${DOMAIN}/contact
-Last Updated
-
-${new Date().toISOString()}
-
+Sitemap: ${DOMAIN}/sitemap.xml
+Robots: ${DOMAIN}/robots.txt
+Contact: ${DOMAIN}/contact
+Last Updated: ${new Date().toISOString()}
 `;
-        return new NextResponse(content, {
-            headers: {
-                "Content-Type": "text/plain; charset=utf-8",
-                "Cache-Control": "public,max-age=3600",
-            },
-        });
-    } catch (e) {
-        return NextResponse.json(
-            {
-                success: false,
-                error: e.message,
-            },
-            {
-                status: 500,
-            }
-        );
-    }
 
+    return new NextResponse(content, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+      },
+    });
+  } catch (e) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: e.message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }

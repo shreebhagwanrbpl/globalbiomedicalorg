@@ -1,15 +1,25 @@
 "use client";
 
-import React, { useEffect, useMemo, useState, useCallback, memo } from "react";
+import React, { useEffect, useMemo, useState, useCallback, useRef, memo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Toaster } from "react-hot-toast";
 import {
   Search,
   ChevronRight,
+  PackageSearch,
+  Boxes,
+  PhoneCall,
+  Mail,
+  Truck,
+  ShieldCheck,
+  Headphones,
+  Sparkles,
+  ArrowRight,
+  RefreshCw,
+  FileText,
 } from "lucide-react";
 import ProductCard from "../components/ProductCard";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
 import "./product.css";
 
 // 1. Memoized Product Link Component
@@ -148,32 +158,89 @@ export default function ProductsClient({ initialProducts = [], district = null, 
   const [openedSubCategories, setOpenedSubCategories] = useState({});
   const [pendingScroll, setPendingScroll] = useState(null);
   const [showTopButton, setShowTopButton] = useState(false);
-  const [activeSubCategory, setActiveSubCategory] = useState("");
 
-  // Client-side fallback to fetch products if server cache is empty
+  // Ref to track current products for live comparison
+  const productsRef = useRef(products);
+  useEffect(() => {
+    productsRef.current = products;
+  }, [products]);
+
+  // Master Live Sync function: fetches /api/catalog with no-store
+  const syncCatalog = useCallback(async (silent = true) => {
+    try {
+      if (!silent) setLoading(true);
+      const res = await fetch(`/api/catalog?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Catalog API responded with ${res.status}`);
+      }
+
+      const json = await res.json();
+      const freshProducts = Array.isArray(json.products) ? json.products : [];
+
+      // Check if products have changed (length or id mismatch)
+      const current = productsRef.current || [];
+      const isChanged =
+        current.length !== freshProducts.length ||
+        current.some((p, i) => {
+          const fresh = freshProducts[i];
+          return (
+            !fresh ||
+            (fresh.id || fresh.slug) !== (p.id || p.slug) ||
+            fresh.isPublished !== p.isPublished
+          );
+        });
+
+      if (isChanged || !silent) {
+        setProducts(freshProducts);
+      }
+    } catch (err) {
+      console.error("[ProductsClient] Live sync error:", err);
+    } finally {
+      if (!silent) setLoading(false);
+    }
+  }, []);
+
+  // 1. Initial Load: use initialProducts if available, or fetch fresh
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
       setProducts(initialProducts);
       setLoading(false);
-      return;
+    } else {
+      syncCatalog(false);
     }
+  }, [initialProducts, syncCatalog]);
 
-    const loadProductsOnClient = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchFullCatalog();
-        if (data && data.length > 0) {
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error("[ProductsClient] Error loading catalog on client:", err);
-      } finally {
-        setLoading(false);
+  // 2. Real-time Live Sync: 3-Second Interval + Window Focus + Visibility Change
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (typeof document !== "undefined" && !document.hidden) {
+        syncCatalog(true);
+      }
+    }, 3000);
+
+    const handleFocus = () => {
+      syncCatalog(true);
+    };
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        syncCatalog(true);
       }
     };
 
-    loadProductsOnClient();
-  }, [initialProducts]);
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [syncCatalog]);
 
   // Debounce search term updates to make search typing instant
   useEffect(() => {
@@ -183,12 +250,13 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Combined single-pass product filtering, grouping, category count, and sorting for maximum performance
+  // Combined single-pass product filtering, grouping, category count, and sorting
   const { filteredProducts, sortedGroupedProducts, categoryCounts } = useMemo(() => {
-    const start = performance.now();
     const query = productSearch.trim().toLowerCase();
+    const currentList = Array.isArray(products) ? products : [];
+
     const filtered = query
-      ? products.filter((item) => {
+      ? currentList.filter((item) => {
         const title = (item.title || "").toLowerCase();
         const brand = (item.brand || "").toLowerCase();
         const model = (item.model || "").toLowerCase();
@@ -203,7 +271,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
           subCategory.includes(query)
         );
       })
-      : products;
+      : currentList;
 
     const grouped = {};
     const counts = {};
@@ -242,9 +310,6 @@ export default function ProductsClient({ initialProducts = [], district = null, 
       sortedObj[cat] = Object.fromEntries(subEntries);
     }
 
-    const end = performance.now();
-    console.log(`[ProductsClient] Grouping, filtering, and sorting completed in ${(end - start).toFixed(2)}ms`);
-
     return {
       filteredProducts: filtered,
       sortedGroupedProducts: sortedObj,
@@ -273,7 +338,6 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     setActiveCategory(category);
     setPendingScroll(slug);
 
-    // Auto-expand the target subcategory when scrolling to its product
     const prod = products.find((p) => p.slug === slug);
     if (prod && prod.subCategory) {
       const subKey = `${category}-${prod.subCategory}`;
@@ -319,16 +383,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     });
   };
 
-  // Measure hydration completion time
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.performance) {
-      const navigationStart = window.performance.timing?.navigationStart || 0;
-      if (navigationStart) {
-        const timeSinceNavigation = Date.now() - navigationStart;
-        console.log(`[ProductsClient] Hydration completed in ${timeSinceNavigation}ms since navigation start`);
-      }
-    }
-  }, []);
+  const hasCatalogProducts = products && products.length > 0;
 
   return (
     <>
@@ -363,7 +418,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         }}
       />
 
-      {/* HERO */}
+      {/* HERO SECTION */}
       <section className="product-hero">
         <div className="container hero-inner">
           <div className="product-badge">
@@ -395,41 +450,148 @@ export default function ProductsClient({ initialProducts = [], district = null, 
         </div>
       </section>
 
-      {/* Products Layout */}
+      {/* MAIN CONTENT AREA */}
       <section className="product-page">
         <div className="container-fluid">
-          <div className="products-layout">
+          {loading ? (
+            /* Loading Skeleton State */
+            <div className="products-layout" style={{ minHeight: "550px" }}>
+              <div className="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div className="h-6 w-1/2 bg-slate-200 rounded-lg animate-pulse"></div>
+                <div className="h-10 bg-slate-100 rounded-lg animate-pulse"></div>
+                <div className="h-10 bg-slate-100 rounded-lg animate-pulse"></div>
+                <div className="h-10 bg-slate-100 rounded-lg animate-pulse"></div>
+              </div>
+              <div className="space-y-6">
+                <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
+                  <div className="h-6 w-1/3 bg-slate-200 rounded-lg"></div>
+                  <div className="h-40 bg-slate-100 rounded-2xl"></div>
+                </div>
+                <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
+                  <div className="h-6 w-1/3 bg-slate-200 rounded-lg"></div>
+                  <div className="h-40 bg-slate-100 rounded-2xl"></div>
+                </div>
+              </div>
+            </div>
+          ) : !hasCatalogProducts ? (
+            /* LUXURIOUS FULL-WIDTH EMPTY STATE WHEN 0 PRODUCTS ARE ASSIGNED */
+            <div className="empty-catalog-section">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="empty-catalog-card"
+              >
+                {/* Glowing Animated Icon */}
+                <div className="empty-icon-glow">
+                  <PackageSearch size={48} strokeWidth={1.8} />
+                </div>
 
-            {/* Main Sidebar */}
-            <aside className="sticky-sidebar z-30 relative">
-              <div className="sidebar-wrapper" id="sidebarWrapper">
-                <div className="category-sidebar">
-                  <div className="sidebar-title flex justify-between items-center">
-                    <span>Categories</span>
-                    <span className="text-xs bg-slate-100 text-slate-500 font-semibold px-2 py-0.5 rounded-full">
-                      {Object.keys(sortedGroupedProducts).length}
-                    </span>
+                {/* Status Badge */}
+                <div className="empty-status-badge">
+                  <span className="live-dot" />
+                  <span>Master Catalog Live &bull; Standby Mode</span>
+                </div>
+
+                {/* Heading & Subtitle */}
+                <h2 className="empty-title">
+                  {city
+                    ? `Equipment Catalog for ${city} Is Being Updated`
+                    : "Product Catalog Is Currently Being Updated"}
+                </h2>
+                <p className="empty-subtitle">
+                  We are in the process of assigning fresh diagnostic instruments, laboratory analyzers, and hospital medical supplies for this website. For immediate stock availability, customized quotations, or expert advice, please contact our team directly.
+                </p>
+
+                {/* Action Buttons */}
+                <div className="empty-actions-group">
+                  <button
+                    onClick={() => router.push("/contact")}
+                    className="btn-empty-primary cursor-pointer"
+                  >
+                    <FileText size={18} />
+                    <span>Request Custom Quote</span>
+                    <ArrowRight size={16} />
+                  </button>
+
+                  <button
+                    onClick={() => router.push("/services")}
+                    className="btn-empty-secondary cursor-pointer"
+                  >
+                    <Boxes size={18} />
+                    <span>Explore Our Services</span>
+                  </button>
+
+                  <a
+                    href="tel:+919257984336"
+                    className="btn-empty-call cursor-pointer"
+                  >
+                    <PhoneCall size={18} />
+                    <span>Call: +91 9257984336</span>
+                  </a>
+                </div>
+
+                {/* Value Proposition Grid */}
+                <div className="empty-features-grid">
+                  <div className="empty-feature-card">
+                    <div className="feature-icon-box">
+                      <Truck size={20} />
+                    </div>
+                    <h5>Pan-India Delivery</h5>
+                    <p>Express safe dispatch with transit insurance across all states &amp; districts.</p>
                   </div>
 
-                  <div className="sidebar-search">
-                    <input
-                      type="text"
-                      placeholder="Search categories..."
-                      value={categorySearch}
-                      onChange={(e) => setCategorySearch(e.target.value)}
-                    />
+                  <div className="empty-feature-card">
+                    <div className="feature-icon-box">
+                      <ShieldCheck size={20} />
+                    </div>
+                    <h5>Genuine &amp; Certified</h5>
+                    <p>CE, ISO &amp; regulatory compliant diagnostic equipment with brand warranties.</p>
                   </div>
 
-                  <div className="category-list custom-scrollbar">
-                    {loading ? (
-                      <div className="p-3 space-y-3">
-                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
-                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
-                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
-                        <div className="h-10 bg-slate-100 animate-pulse rounded-xl"></div>
-                      </div>
-                    ) : (
-                      Object.keys(sortedGroupedProducts)
+                  <div className="empty-feature-card">
+                    <div className="feature-icon-box">
+                      <Headphones size={20} />
+                    </div>
+                    <h5>Installation &amp; Support</h5>
+                    <p>Certified biomedical engineers for on-site setup, training, and AMC service.</p>
+                  </div>
+
+                  <div className="empty-feature-card">
+                    <div className="feature-icon-box">
+                      <Sparkles size={20} />
+                    </div>
+                    <h5>Direct Best Pricing</h5>
+                    <p>Authorized distributor rates and flexible institutional buying packages.</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          ) : (
+            /* STANDARD PRODUCTS LAYOUT (WHEN PRODUCTS EXIST) */
+            <div className="products-layout">
+              {/* Main Sidebar */}
+              <aside className="sticky-sidebar z-30 relative">
+                <div className="sidebar-wrapper" id="sidebarWrapper">
+                  <div className="category-sidebar">
+                    <div className="sidebar-title flex justify-between items-center">
+                      <span>Categories</span>
+                      <span className="text-xs bg-slate-100 text-slate-500 font-semibold px-2 py-0.5 rounded-full">
+                        {Object.keys(sortedGroupedProducts).length}
+                      </span>
+                    </div>
+
+                    <div className="sidebar-search">
+                      <input
+                        type="text"
+                        placeholder="Search categories..."
+                        value={categorySearch}
+                        onChange={(e) => setCategorySearch(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="category-list custom-scrollbar">
+                      {Object.keys(sortedGroupedProducts)
                         .filter((category) =>
                           category.toLowerCase().includes(categorySearch.toLowerCase())
                         )
@@ -453,207 +615,197 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                               scrollToProduct={scrollToProduct}
                             />
                           );
-                        })
-                    )}
+                        })}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </aside>
+              </aside>
 
-            {/* RIGHT SIDE */}
-            <div>
-              {/* Product Search Filter Bar */}
-              <div className="filter-card">
-                <div className="row align-items-center">
-                  <div className="col-lg-10">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder={
-                        city
-                          ? `Search Product in ${city}...`
-                          : "Search Product..."
-                      }
-                      value={searchInput}
-                      onChange={(e) => setSearchInput(e.target.value)}
-                    />
+              {/* RIGHT SIDE PRODUCTS COLUMN */}
+              <div>
+                {/* Product Search Filter Bar */}
+                <div className="filter-card">
+                  <div className="row align-items-center">
+                    <div className="col-lg-10">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder={
+                          city
+                            ? `Search Product in ${city}...`
+                            : "Search Product..."
+                        }
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                      />
+                    </div>
+                    <div className="col-lg-2 mt-2 mt-lg-0">
+                      <button
+                        className="btn-reset w-100 cursor-pointer border-0"
+                        onClick={() => {
+                          setSearchInput("");
+                          setProductSearch("");
+                        }}
+                      >
+                        Reset
+                      </button>
+                    </div>
                   </div>
-                  <div className="col-lg-2 mt-2 mt-lg-0">
+                </div>
+
+                {filteredProducts.length === 0 ? (
+                  /* Search Not Found State */
+                  <div className="product-not-found">
+                    <h2>No Matching Products Found</h2>
+                    <p>
+                      {"We couldn't find any products matching"}
+                      <span className="font-semibold text-red-600">
+                        {" \"" + productSearch + "\" "}
+                      </span>
+                      . Please try another keyword or browse our full category listing.
+                    </p>
                     <button
-                      className="btn-reset w-100 cursor-pointer border-0"
                       onClick={() => {
                         setSearchInput("");
                         setProductSearch("");
                       }}
+                      className="mt-4 px-6 py-2.5 rounded-full bg-[#A56B97] text-white font-semibold hover:bg-[#8e5880] transition cursor-pointer border-0 shadow"
                     >
-                      Reset
+                      View All Products
                     </button>
                   </div>
-                </div>
-              </div>
+                ) : (
+                  /* Render Grouped Product Sections */
+                  Object.entries(sortedGroupedProducts).map(
+                    ([category, subcategoriesObj]) => (
+                      <section
+                        key={category}
+                        id={category.replace(/\s+/g, "-").toLowerCase()}
+                        className="product-section"
+                      >
+                        {/* Category Header */}
+                        <div className="section-title">
+                          <h3>{category}</h3>
+                          <span>
+                            {Object.values(subcategoriesObj).reduce(
+                              (sum, list) => sum + list.length,
+                              0
+                            )}{" "}
+                            Products
+                          </span>
+                        </div>
 
-              {loading ? (
-                <div className="space-y-6">
-                  <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
-                    <div className="h-6 w-1/3 bg-slate-200 rounded-lg"></div>
-                    <div className="h-40 bg-slate-100 rounded-2xl"></div>
-                  </div>
-                  <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm space-y-4 animate-pulse">
-                    <div className="h-6 w-1/3 bg-slate-200 rounded-lg"></div>
-                    <div className="h-40 bg-slate-100 rounded-2xl"></div>
-                  </div>
-                </div>
-              ) : filteredProducts.length === 0 ? (
-                <div className="product-not-found">
-                  <h2>Product Not Found</h2>
-                  <p>
-                    {"We couldn't find any products matching"}
-                    <span className="font-semibold text-red-600">
-                      {" \"" + productSearch + "\" "}
-                    </span>
-                    . Please try another keyword or browse categories.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchInput("");
-                      setProductSearch("");
-                    }}
-                    className="mt-4 px-6 py-2.5 rounded-full bg-[#A56B97] text-white font-semibold hover:bg-[#8e5880] transition cursor-pointer border-0 shadow"
-                  >
-                    View All Products
-                  </button>
-                </div>
-              ) : (
-                Object.entries(sortedGroupedProducts).map(
-                  ([category, subcategoriesObj]) => (
-                    <section
-                      key={category}
-                      id={category.replace(/\s+/g, "-").toLowerCase()}
-                      className="product-section"
-                    >
-                      {/* Category Header */}
-                      <div className="section-title">
-                        <h3>{category}</h3>
-                        <span>
-                          {Object.values(subcategoriesObj).reduce(
-                            (sum, list) => sum + list.length,
-                            0
-                          )}{" "}
-                          Products
-                        </span>
-                      </div>
+                        {/* Subcategories */}
+                        <div className="space-y-12">
+                          {Object.entries(subcategoriesObj).map(
+                            (([subCategory, list]) => (
+                              <div key={subCategory} className="space-y-6">
+                                {/* Subcategory Heading */}
+                                <div
+                                  id={`${category}-${subCategory}`}
+                                  className="flex items-center gap-3"
+                                >
+                                  <h3 className="text-xl font-bold text-slate-800 uppercase tracking-wide">
+                                    {subCategory}
+                                  </h3>
+                                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                    {list.length}{" "}
+                                    {list.length === 1 ? "Product" : "Products"}
+                                  </span>
+                                </div>
 
-                      {/* Subcategories */}
-                      <div className="space-y-12">
-                        {Object.entries(subcategoriesObj).map(
-                          (([subCategory, list]) => (
-                            <div key={subCategory} className="space-y-6">
-                              {/* Subcategory Heading */}
-                              <div
-                                id={`${category}-${subCategory}`}
-                                className="flex items-center gap-3"
-                              >
-                                <h3 className="text-xl font-bold text-slate-800 uppercase tracking-wide">
-                                  {subCategory}
-                                </h3>
-                                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                                  {list.length}{" "}
-                                  {list.length === 1 ? "Product" : "Products"}
-                                </span>
-                              </div>
-
-                              {/* Product List */}
-                              <div className="space-y-8">
-                                {list.slice(0, 12).map((product) => (
-                                  <div
-                                    key={product.uid}
-                                    id={product.slug}
-                                    className="product-list-card text-start"
-                                  >
-                                    <div className="row align-items-center">
-                                      {/* IMAGE */}
-                                      <div className="col-lg-3 col-md-4">
-                                        <div className="list-image">
-                                          <img
-                                            src={product.images?.[0] || product.image || "/placeholder.jpg"}
-                                            alt={product.title}
-                                            onError={(e) => {
-                                              e.currentTarget.src = "/placeholder.jpg";
-                                            }}
-                                          />
+                                {/* Product List */}
+                                <div className="space-y-8">
+                                  {list.slice(0, 24).map((product) => (
+                                    <div
+                                      key={product.uid}
+                                      id={product.slug}
+                                      className="product-list-card text-start"
+                                    >
+                                      <div className="row align-items-center">
+                                        {/* IMAGE */}
+                                        <div className="col-lg-3 col-md-4">
+                                          <div className="list-image">
+                                            <img
+                                              src={product.images?.[0] || product.image || "/placeholder.jpg"}
+                                              alt={product.title}
+                                              onError={(e) => {
+                                                e.currentTarget.src = "/placeholder.jpg";
+                                              }}
+                                            />
+                                          </div>
                                         </div>
-                                      </div>
 
-                                      {/* CONTENT */}
-                                      <div className="col-lg-6 col-md-5">
-                                        <div className="list-content">
-                                          <h4 className="fw-bold">{product.title}</h4>
-                                          <p>
-                                            {product.description ||
-                                              product.desc ||
-                                              "Premium laboratory and diagnostic medical equipment."}
-                                          </p>
+                                        {/* CONTENT */}
+                                        <div className="col-lg-6 col-md-5">
+                                          <div className="list-content">
+                                            <h4 className="fw-bold">{product.title}</h4>
+                                            <p>
+                                              {product.description ||
+                                                product.desc ||
+                                                "Premium laboratory and diagnostic medical equipment."}
+                                            </p>
 
-                                          <div className="spec-grid">
-                                            <div>
-                                              <b>Brand</b>
-                                              <span>{product.brand || "-"}</span>
-                                            </div>
-                                            <div>
-                                              <b>Model</b>
-                                              <span>{product.model || "-"}</span>
-                                            </div>
-                                            {product.instrument && (
+                                            <div className="spec-grid">
                                               <div>
-                                                <b>Instrument</b>
-                                                <span>{product.instrument}</span>
+                                                <b>Brand</b>
+                                                <span>{product.brand || "-"}</span>
                                               </div>
-                                            )}
-                                            {product.usage && (
                                               <div>
-                                                <b>Usage</b>
-                                                <span>{product.usage}</span>
+                                                <b>Model</b>
+                                                <span>{product.model || "-"}</span>
                                               </div>
-                                            )}
+                                              {product.instrument && (
+                                                <div>
+                                                  <b>Instrument</b>
+                                                  <span>{product.instrument}</span>
+                                                </div>
+                                              )}
+                                              {product.usage && (
+                                                <div>
+                                                  <b>Usage</b>
+                                                  <span>{product.usage}</span>
+                                                </div>
+                                              )}
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        {/* BUTTON */}
+                                        <div className="col-lg-3 col-md-3 text-center">
+                                          <div className="product-action">
+                                            <button
+                                              className="btn-view cursor-pointer"
+                                              onClick={() => {
+                                                const targetUrl = district
+                                                  ? `/${district}/items/${product.slug}`
+                                                  : `/items/${product.slug}`;
+                                                router.push(targetUrl);
+                                              }}
+                                            >
+                                              View Details
+                                            </button>
                                           </div>
                                         </div>
                                       </div>
-
-                                      {/* BUTTON */}
-                                      <div className="col-lg-3 col-md-3 text-center">
-                                        <div className="product-action">
-                                          <button
-                                            className="btn-view cursor-pointer"
-                                            onClick={() => {
-                                              const targetUrl = district
-                                                ? `/${district}/items/${product.slug}`
-                                                : `/items/${product.slug}`;
-                                              router.push(targetUrl);
-                                            }}
-                                          >
-                                            View Details
-                                          </button>
-                                        </div>
-                                      </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </section>
+                            ))
+                          )}
+                        </div>
+                      </section>
+                    )
                   )
-                )
-              )}
+                )}
+              </div>
             </div>
-
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Back To Top */}
+      {/* Back To Top Button */}
       {showTopButton && (
         <button
           onClick={scrollToTop}
