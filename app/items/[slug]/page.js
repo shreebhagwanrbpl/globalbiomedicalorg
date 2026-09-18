@@ -1,5 +1,7 @@
 import ProductDetails from "./ProductDetails";
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
+import { generateProductMetadata, generateProductSchema, makeSlug } from "@/lib/seo-utils";
+import InternalLinkEngine from "@/app/components/InternalLinkEngine";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

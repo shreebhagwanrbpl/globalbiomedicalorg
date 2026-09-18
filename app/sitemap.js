@@ -1,3 +1,4 @@
+import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import { adminDb } from "@/lib/firebase-admin";
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import { getDetectedWebsiteId } from "@/lib/catalog-config";
