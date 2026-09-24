@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebase-admin";
+import { fetchDistricts } from "@/lib/data-fetcher-server";
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import { getDetectedWebsiteId } from "@/lib/catalog-config";
 
@@ -26,23 +26,12 @@ export async function GET() {
 
     const categoryNames = Object.keys(categoryMap);
 
-    // 2. Fetch Districts
+    // 2. Fetch Districts from SQLite
     let districts = [];
-    if (adminDb) {
-      try {
-        const districtSnap = await adminDb
-          .collection("websites")
-          .doc(websiteId)
-          .collection("districts")
-          .get();
-
-        districts = districtSnap.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-      } catch (distErr) {
-        console.warn("[llms.txt] Error fetching districts:", distErr);
-      }
+    try {
+      districts = await fetchDistricts(websiteId);
+    } catch (distErr) {
+      console.warn("[llms.txt] Error fetching districts:", distErr);
     }
 
     // ===========================

@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import Link from "next/link";
 
 export default function Hero({ city }) {
@@ -30,11 +28,10 @@ export default function Hero({ city }) {
       }
 
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "districts", slug)
-        );
+        const res = await fetch(`/api/site-data?type=district&slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+        const json = await res.json();
 
-        if (snap.exists()) {
+        if (json?.data) {
           setCurrentCity(slug);
           setIsValidCity(true);
         } else {
@@ -67,13 +64,9 @@ export default function Hero({ city }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "pages", "home")
-        );
-
-        if (snap.exists()) {
-          setData(snap.data());
-        }
+        const res = await fetch("/api/site-data?type=home", { cache: "no-store" });
+        const json = await res.json();
+        if (json?.data) setData(json.data);
       } catch (err) {
         console.error("Error fetching hero data:", err);
       } finally {
@@ -94,17 +87,14 @@ export default function Hero({ city }) {
     );
   }
 
-  // Dynamic values with strong fallbacks
-  const heroBadge = data?.badge || "Trusted Since 2009";
-  const heroTitle = data?.title || "Advanced Diagnostic Solutions";
-  const heroDescription =
-    data?.description ||
-    "Delivering high-quality medical equipment & consumables for hospitals, labs & healthcare professionals across India.";
-  const button1Text = data?.button1Text || "Explore Services";
-  const button2Text = data?.button2Text || "Contact Us";
-  const heroImage =
-    data?.image ||
-    "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1000&auto=format&fit=crop";
+  // Admin-managed text is used exactly as stored in SQLite.
+  // Only the image is allowed to use a local static fallback.
+  const heroBadge = "Trusted Since 2009";
+  const heroTitle = data?.title || "";
+  const heroDescription = data?.description || "";
+  const button1Text = data?.button1Text || "";
+  const button2Text = data?.button2Text || "";
+  const heroImage = data?.image || "/HA.png";
 
   return (
     <section className="hero-section">
@@ -151,25 +141,23 @@ export default function Hero({ city }) {
               </div>
 
               <div className="mt-4 pt-2 d-flex flex-wrap gap-3 align-items-center">
-                <Link
-                  href={
-                    data?.button1Link ||
-                    (isValidCity ? `/${citySlug}/services` : "/services")
-                  }
-                  className="hero-btn-primary"
-                >
-                  {button1Text} <i className="bi bi-arrow-right ms-2"></i>
-                </Link>
+                {button1Text && (data?.button1Link ? (
+                  <Link href={data.button1Link} className="hero-btn-primary">
+                    {button1Text} <i className="bi bi-arrow-right ms-2"></i>
+                  </Link>
+                ) : (
+                  <span className="hero-btn-primary">
+                    {button1Text} <i className="bi bi-arrow-right ms-2"></i>
+                  </span>
+                ))}
 
-                <Link
-                  href={
-                    data?.button2Link ||
-                    (isValidCity ? `/${citySlug}/contact` : "/contact")
-                  }
-                  className="hero-btn-outline"
-                >
-                  {button2Text}
-                </Link>
+                {button2Text && (data?.button2Link ? (
+                  <Link href={data.button2Link} className="hero-btn-outline">
+                    {button2Text}
+                  </Link>
+                ) : (
+                  <span className="hero-btn-outline">{button2Text}</span>
+                ))}
               </div>
             </div>
 
@@ -181,8 +169,7 @@ export default function Hero({ city }) {
                   className="hero-banner-img img-fluid"
                   alt="Medical Laboratory Equipment"
                   onError={(e) => {
-                    e.currentTarget.src =
-                      "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1000&auto=format&fit=crop";
+                    e.currentTarget.src = "/HA.png";
                   }}
                 />
                 <div className="hero-floating-badge">

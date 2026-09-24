@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,26 +8,32 @@ export default function Footer() {
   const pathname = usePathname();
 
   const getValue = (key) => {
-    return (
-      contactInfo.find((x) => {
-        const label = x.label?.toLowerCase();
-        return (
-          label?.includes(key) ||
-          (key === "address" && label?.includes("location"))
-        );
-      })?.value || ""
-    );
+    return contactInfo.find((x) => {
+      const label = x.label?.toLowerCase();
+      return (
+        label?.includes(key) ||
+        (key === "address" && label?.includes("location"))
+      );
+    })?.value || "";
+  };
+
+  const getValues = (keys = []) => {
+    const normalizedKeys = keys.map((key) => key.toLowerCase());
+    return contactInfo
+      .filter((x) => {
+        const label = String(x.label || "").toLowerCase();
+        return normalizedKeys.some((key) => label.includes(key));
+      })
+      .map((x) => x.value)
+      .filter(Boolean);
   };
 
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "pages", "contact")
-        );
-        if (snap.exists()) {
-          setContactInfo(snap.data().contactInfo || []);
-        }
+        const res = await fetch("/api/site-data?type=contact", { cache: "no-store" });
+        const json = await res.json();
+        setContactInfo(json?.data?.contactInfo || []);
       } catch (err) {
         console.log(err);
       }
@@ -177,33 +181,39 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* CONTACT INFO WITH ALL 3 PHONE NUMBERS */}
+          {/* CONTACT INFO FROM ADMIN / SQLITE */}
           <div className="col-lg-2 col-md-6">
             <h6 className="footer-title">Get In Touch</h6>
-            <p className="small mb-2 d-flex align-items-start text-white-50">
-              <i className="bi bi-geo-alt me-2 mt-1"></i>
-              <span>{getValue("address") || "Jaipur, Rajasthan, India"}</span>
-            </p>
+            {getValue("address") && (
+              <p className="small mb-2 d-flex align-items-start text-white-50">
+                <i className="bi bi-geo-alt me-2 mt-1"></i>
+                <span>{getValue("address")}</span>
+              </p>
+            )}
 
-            <p className="small mb-2 d-flex align-items-center text-white-50">
-              <i className="bi bi-envelope me-2"></i>
-              <span>{getValue("email") || "info@globalbiomedical.org"}</span>
-            </p>
+            {getValue("email") && (
+              <p className="small mb-2 d-flex align-items-center text-white-50">
+                <i className="bi bi-envelope me-2"></i>
+                <span>{getValue("email")}</span>
+              </p>
+            )}
 
-            <div className="small mb-2 d-flex align-items-start text-white-50">
-              <i className="bi bi-telephone me-2 mt-1"></i>
-              <div className="d-flex flex-column gap-1">
-                <a href="tel:+919257984336" className="text-light text-decoration-none hover-pink">
-                  +91 9257984336
-                </a>
-                <a href="tel:+918529833535" className="text-light text-decoration-none hover-pink">
-                  +91 8529833535
-                </a>
-                <a href="tel:+919983301657" className="text-light text-decoration-none hover-pink">
-                  +91 9983301657
-                </a>
+            {getValues(["phone", "mobile", "telephone", "whatsapp"]).length > 0 && (
+              <div className="small mb-2 d-flex align-items-start text-white-50">
+                <i className="bi bi-telephone me-2 mt-1"></i>
+                <div className="d-flex flex-column gap-1">
+                  {getValues(["phone", "mobile", "telephone", "whatsapp"]).map((phone, index) => (
+                    <a
+                      key={`${phone}-${index}`}
+                      href={`tel:${String(phone).replace(/[^0-9+]/g, "")}`}
+                      className="text-light text-decoration-none hover-pink"
+                    >
+                      {phone}
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

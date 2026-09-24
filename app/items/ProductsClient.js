@@ -227,7 +227,7 @@ export default function ProductsClient({ initialProducts = [], district = null, 
     };
 
     const handleVisibilityChange = () => {
-      if (!document.hidden) {
+      if (typeof document !== "undefined" && !document.hidden) {
         syncCatalog(true);
       }
     };

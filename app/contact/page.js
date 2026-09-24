@@ -3,17 +3,9 @@
 import toast, { Toaster } from "react-hot-toast";
 import "./contact.css";
 import { useState, useEffect } from "react";
-import { db } from "@/lib/firebase";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import ContactBanner from "./Contact.png";
-import {
-  addDoc,
-  collection,
-  serverTimestamp,
-  doc,
-  getDoc
-} from "firebase/firestore";
 
 const POPULAR_DISTRICTS = [
   { name: "Jaipur", state: "Rajasthan", slug: "jaipur" },
@@ -78,12 +70,11 @@ export default function Contact({ city }) {
       if (!slug) return;
 
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "districts", slug)
-        );
+        const res = await fetch(`/api/site-data?type=district&slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+        const json = await res.json();
 
-        if (snap.exists()) {
-          const data = snap.data();
+        if (json?.data) {
+          const data = json.data;
           setCurrentCity(slug);
           setStateName(data?.state || "India");
         } else {
@@ -161,20 +152,16 @@ export default function Contact({ city }) {
     try {
       setSubmitting(true);
 
-      await addDoc(
-        collection(
-          db,
-          "websitesQueries",
-          "globalbiomedicalorg",
-          "contactQueries"
-        ),
-        {
+      const response = await fetch("/api/contact-queries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           ...form,
           city: cityName,
           districtSlug: selectedDistrictSlug,
-          createdAt: serverTimestamp()
-        }
-      );
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to save contact query");
 
       toast.success(`Message sent successfully for ${cityName} area!`);
 

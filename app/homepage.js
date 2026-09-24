@@ -2,53 +2,7 @@
 import Hero from "./components/Hero";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { fetchFullCatalog } from "@/lib/data-fetcher";
 import Link from "next/link";
-
-const DEFAULT_PRODUCTS = [
-  {
-    id: "clia-200",
-    title: "Chemiluminescence Immunoassay Analyzer (CLIA)",
-    brand: "Mindray",
-    size: "CLIA-200",
-    usage: "Immunoassay Testing",
-    category: "Immunology",
-    image: "https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=800&auto=format&fit=crop",
-    slug: "chemiluminescence-immunoassay-analyzer"
-  },
-  {
-    id: "maglumi-800",
-    title: "Maglumi 800 Chemiluminescence Analyzer",
-    brand: "Snibe",
-    size: "180 Tests/Hour",
-    usage: "Hormone & Tumor Markers",
-    category: "CLIA System",
-    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop",
-    slug: "maglumi-800-chemiluminescence-analyzer"
-  },
-  {
-    id: "cbc-3part",
-    title: "Fully Automated 3-Part Hematology Analyzer",
-    brand: "Erba",
-    size: "60 Samples/Hour",
-    usage: "Blood Cell Counting",
-    category: "Hematology",
-    image: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=800&auto=format&fit=crop",
-    slug: "fully-automated-3-part-hematology-analyzer"
-  },
-  {
-    id: "biochem-auto",
-    title: "Fully Automated Biochemistry Analyzer",
-    brand: "Abbott",
-    size: "200 Tests/Hour",
-    usage: "Clinical Chemistry",
-    category: "Biochemistry",
-    image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=800&auto=format&fit=crop",
-    slug: "fully-automated-biochemistry-analyzer"
-  }
-];
 
 export default function Home({ city }) {
   const [mounted, setMounted] = useState(false);
@@ -69,13 +23,9 @@ export default function Home({ city }) {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "pages", "services")
-        );
-        if (snap.exists()) {
-          const data = snap.data().services || [];
-          setServices(data);
-        }
+        const res = await fetch("/api/site-data?type=services", { cache: "no-store" });
+        const json = await res.json();
+        if (json?.data) setServices(json.data.services || []);
       } catch (err) {
         console.error("Error fetching services:", err);
       }
@@ -86,27 +36,24 @@ export default function Home({ city }) {
   useEffect(() => {
     const fetchCatalogProducts = async () => {
       try {
-        const catalog = await fetchFullCatalog();
-        if (Array.isArray(catalog) && catalog.length > 0) {
-          setProducts(catalog);
-        } else {
-          setProducts(DEFAULT_PRODUCTS);
+        const res = await fetch(`/api/catalog?websiteId=globalbiomedicalorg&companyId=global&t=${Date.now()}`, { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.products)) {
+            setProducts(json.products);
+            return;
+          }
         }
+        setProducts([]);
       } catch (err) {
-        console.error("Error fetching homepage products from master catalog:", err);
-        setProducts(DEFAULT_PRODUCTS);
+        console.error("Error fetching homepage products:", err);
+        setProducts([]);
       } finally {
         setHomeLoading(false);
       }
     };
 
     fetchCatalogProducts();
-
-    const handleFocus = () => {
-      fetchCatalogProducts();
-    };
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
   const formatCity = (name = "") =>
@@ -129,11 +76,10 @@ export default function Home({ city }) {
       }
 
       try {
-        const snap = await getDoc(
-          doc(db, "websites", "globalbiomedicalorg", "districts", slug)
-        );
+        const res = await fetch(`/api/site-data?type=district&slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+        const json = await res.json();
 
-        if (snap.exists()) {
+        if (json?.data) {
           setCurrentCity(slug);
           setIsValidCity(true);
         } else {
@@ -170,8 +116,8 @@ export default function Home({ city }) {
     );
   }
 
-  const displayProducts =
-    products && products.length > 0 ? products.slice(0, 4) : DEFAULT_PRODUCTS;
+  // Firebase dummy fallback has been removed. Show only live SQLite catalog products.
+  const displayProducts = Array.isArray(products) ? products.slice(0, 4) : [];
 
   return (
     <>
@@ -298,7 +244,7 @@ export default function Home({ city }) {
                 (item.images && Array.isArray(item.images) && item.images[0]) ||
                 item.image ||
                 item.imageUrl ||
-                DEFAULT_PRODUCTS[i % DEFAULT_PRODUCTS.length].image;
+                "/HA.png";
 
               return (
                 <div className="col-lg-3 col-md-6" key={item.id || item.slug || i}>
@@ -309,8 +255,7 @@ export default function Home({ city }) {
                         alt={item.title || "Biomedical Product"}
                         className="img-fluid"
                         onError={(e) => {
-                          e.currentTarget.src =
-                            DEFAULT_PRODUCTS[i % DEFAULT_PRODUCTS.length].image;
+                          e.currentTarget.src = "/HA.png";
                         }}
                       />
                     </div>

@@ -1,5 +1,8 @@
 import { fetchFullCatalog } from "@/lib/data-fetcher-server";
 import ProductDetails from "@/app/items/[slug]/ProductDetails";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import {
   generateProductMetadata,
   generateProductSchema,

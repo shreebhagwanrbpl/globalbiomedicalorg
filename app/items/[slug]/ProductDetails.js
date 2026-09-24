@@ -14,11 +14,6 @@ import {
     FaLink,
 } from "react-icons/fa";
 
-import {
-    addDoc,
-    collection,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import { fetchFullCatalog } from "@/lib/data-fetcher";
 import "./page.css";
 
@@ -52,7 +47,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
     const loadProduct = async (silent = false) => {
         try {
             if (!silent) setLoading(true);
-            const res = await fetch(`/api/catalog?t=${Date.now()}`, {
+            const res = await fetch(`/api/catalog?websiteId=globalbiomedicalorg&companyId=global&t=${Date.now()}`, {
                 cache: "no-store",
                 headers: { "Cache-Control": "no-cache" },
             });
@@ -108,13 +103,6 @@ export default function ProductDetails({ slug, product: initialProduct }) {
         } else {
             loadProduct(false);
         }
-
-        const handleFocus = () => {
-            loadProduct(true);
-        };
-
-        window.addEventListener("focus", handleFocus);
-        return () => window.removeEventListener("focus", handleFocus);
     }, [slug, initialProduct]);
 
     const handleSubmit = async (e) => {
@@ -138,22 +126,18 @@ export default function ProductDetails({ slug, product: initialProduct }) {
         try {
             setSubmitting(true);
 
-            await addDoc(
-                collection(
-                    db,
-                    "websitesQueries",
-                    "globalbiomedicalorg",
-                    "productQueries"
-                ),
-                {
+            const response = await fetch("/api/product-queries", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     ...form,
                     productName: product.title,
                     productSlug: product.slug,
                     brand: product.brand || "",
                     model: product.model || "",
-                    createdAt: new Date(),
-                }
-            );
+                }),
+            });
+            if (!response.ok) throw new Error("Failed to save product query");
 
             toast.success("Your enquiry has been submitted successfully.");
 

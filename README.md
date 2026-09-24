@@ -34,3 +34,32 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## VPS + SQLite migration
+
+This version no longer uses Firebase at runtime. The website reads catalog/content from a local SQLite database on the VPS and saves contact/product enquiries to SQLite.
+
+### Requirements
+- Node.js 22.5+ (the project uses Node's built-in `node:sqlite`)
+- A writable `data/` directory
+
+### First-time migration from the old Firestore catalog
+The migration utility is included as `scripts/migrate-firestore.mjs`. It requires Firestore access only during the one-time migration and does not add Firebase SDKs to the website.
+
+Set these variables temporarily on the VPS (or set `FIREBASE_SERVICE_ACCOUNT_FILE` to a service-account JSON file):
+- `FIREBASE_PROJECT_ID`
+- `FIREBASE_CLIENT_EMAIL`
+- `FIREBASE_PRIVATE_KEY`
+
+Then run:
+
+```bash
+npm install
+npm run migrate:firebase
+npm run build
+npm start
+```
+
+The migration stores Firestore documents in `data/catalog.db` while preserving their original document paths. This keeps the existing catalog/visibility behavior without changing the website's product functionality.
+
+Do not commit or upload service-account credentials. The provided `.env.example` is only a template.
