@@ -158,9 +158,11 @@ a {
   .hero-title {
     font-size: 2.2rem;
   }
+
   .hero-img-container {
     height: 290px;
   }
+
   .hero-section {
     padding: 30px 0;
   }
@@ -466,7 +468,7 @@ section[style]::before {
 
 .hero-section img {
   animation: float 4s ease-in-out infinite;
-  margin-top: 59px;
+  /* margin-top: 59px; */
 }
 
 /* Mobile */

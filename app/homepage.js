@@ -226,82 +226,181 @@ export default function Home({ city }) {
       {/* OUR PRODUCTS */}
       <section className="py-5 product-section">
         <div className="container-fluid px-3 px-md-5">
+
+          {/* Header */}
           <div className="d-flex justify-content-between align-items-center mb-4">
             <div className="text-start">
-              <h2 className="section-title text-start mb-0">Our Products</h2>
+              <h2 className="section-title text-start mb-0">
+                Our Products
+              </h2>
             </div>
+
             <Link
               href={isValidCity ? `/${citySlug}/items` : "/items"}
               className="btn btn-outline-dark rounded-pill px-4 fw-semibold d-none d-md-inline-block"
             >
-              View All Products <i className="bi bi-arrow-right ms-2"></i>
+              View All Products
+              <i className="bi bi-arrow-right ms-2"></i>
             </Link>
           </div>
 
-          <div className="row g-4">
-            {displayProducts.map((item, i) => {
-              const itemImg =
-                (item.images && Array.isArray(item.images) && item.images[0]) ||
-                item.image ||
-                item.imageUrl ||
-                "/HA.png";
+          {/* Products */}
+          {Array.isArray(displayProducts) && displayProducts.length > 0 ? (
+            <div className="row g-4">
 
-              return (
-                <div className="col-lg-3 col-md-6" key={item.id || item.slug || i}>
-                  <div className="product-card-pro h-100 d-flex flex-column shadow-sm rounded-4 overflow-hidden border">
-                    <div className="product-img-pro position-relative">
-                      <img
-                        src={itemImg}
-                        alt={item.title || "Biomedical Product"}
-                        className="img-fluid"
-                        onError={(e) => {
-                          e.currentTarget.src = "/HA.png";
+              {displayProducts.slice(0, 3).map((item, i) => {
+                const itemImg =
+                  Array.isArray(item?.images) && item.images.length > 0
+                    ? item.images[0]
+                    : item?.image ||
+                    item?.imageUrl ||
+                    "/HA.png";
+
+                const productTitle =
+                  item?.title ||
+                  item?.name ||
+                  "Biomedical Product";
+
+                const productSlug =
+                  item?.slug ||
+                  item?.productId ||
+                  item?.id ||
+                  "";
+
+                const productHref = productSlug
+                  ? isValidCity
+                    ? `/${citySlug}/items/${productSlug}`
+                    : `/items/${productSlug}`
+                  : isValidCity
+                    ? `/${citySlug}/items`
+                    : "/items";
+
+                return (
+                  <div
+                    className="col-lg-4 col-md-6"
+                    key={
+                      item?.id ||
+                      item?.productId ||
+                      item?.slug ||
+                      `product-${i}`
+                    }
+                  >
+                    <div className="product-card-pro h-100 d-flex flex-column shadow-sm rounded-4 overflow-hidden border">
+
+                      {/* Image */}
+                      <div
+                        className="product-img-pro position-relative"
+                        style={{
+                          height: "260px",
+                          background: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          overflow: "hidden",
                         }}
-                      />
-                    </div>
-
-                    <div className="product-body p-4 d-flex flex-column flex-grow-1 justify-content-between text-start">
-                      <div>
-                        <h6 className="fw-bold fs-6 mb-2 text-dark">
-                          {item.title}
-                        </h6>
-
-                        <div className="d-flex flex-wrap gap-2 my-2">
-                          {item.brand && (
-                            <span className="badge bg-light text-dark border">
-                              {item.brand}
-                            </span>
-                          )}
-                          {item.size && (
-                            <span className="badge bg-light text-dark border">
-                              {item.size}
-                            </span>
-                          )}
-                          {item.usage && (
-                            <span className="badge bg-light text-dark border">
-                              {item.usage}
-                            </span>
-                          )}
-                        </div>
+                      >
+                        <img
+                          src={itemImg}
+                          alt={productTitle}
+                          className="img-fluid"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                            padding: "20px",
+                          }}
+                          onError={(e) => {
+                            if (e.currentTarget.src.endsWith("/HA.png")) return;
+                            e.currentTarget.src = "/HA.png";
+                          }}
+                        />
                       </div>
 
-                      <Link
-                        href={
-                          isValidCity
-                            ? `/${citySlug}/items`
-                            : "/items"
-                        }
-                        className="product-view-btn text-center text-decoration-none d-flex align-items-center justify-content-center mt-3"
-                      >
-                        View Details
-                      </Link>
+                      {/* Body */}
+                      <div className="product-body p-4 d-flex flex-column flex-grow-1">
+
+                        <div>
+                          <h6 className="fw-bold fs-6 mb-3 text-dark">
+                            {productTitle}
+                          </h6>
+
+                          <div className="d-flex flex-wrap gap-2">
+
+                            {item?.brand && (
+                              <span className="badge bg-light text-dark border">
+                                {item.brand}
+                              </span>
+                            )}
+
+                            {item?.size && (
+                              <span className="badge bg-light text-dark border">
+                                {item.size}
+                              </span>
+                            )}
+
+                            {item?.usage && (
+                              <span className="badge bg-light text-dark border">
+                                {item.usage}
+                              </span>
+                            )}
+
+                          </div>
+                        </div>
+
+                        {/* Button */}
+                        <Link
+                          href={productHref}
+                          className="product-view-btn text-center text-decoration-none d-flex align-items-center justify-content-center mt-4"
+                        >
+                          View Details
+                          <i className="bi bi-arrow-right ms-2"></i>
+                        </Link>
+
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
 
+            </div>
+          ) : (
+            /* No Products */
+            <div
+              className="d-flex flex-column align-items-center justify-content-center text-center"
+              style={{
+                minHeight: "220px",
+                padding: "40px 20px",
+                border: "1px solid #eee",
+                borderRadius: "20px",
+                background: "#fff",
+              }}
+            >
+              <div
+                className="mb-3 d-flex align-items-center justify-content-center"
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "50%",
+                  background: "#f8f8f8",
+                }}
+              >
+                <i
+                  className="bi bi-box-seam"
+                  style={{ fontSize: "28px" }}
+                ></i>
+              </div>
+
+              <h5 className="fw-bold mb-2">
+                Products Currently Unavailable
+              </h5>
+
+              <p className="text-muted mb-0">
+                Product information is currently unavailable.
+              </p>
+            </div>
+          )}
+
+          {/* Mobile View All */}
           <div className="mt-4 text-center d-md-none">
             <Link
               href={isValidCity ? `/${citySlug}/items` : "/items"}
@@ -310,6 +409,7 @@ export default function Home({ city }) {
               View All Products
             </Link>
           </div>
+
         </div>
       </section>
 

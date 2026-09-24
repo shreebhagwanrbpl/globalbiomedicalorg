@@ -76,23 +76,21 @@ export default function Navbar() {
 
           {/* MENU */}
           <div
-            className={`collapse navbar-collapse justify-content-end ${
-              menuOpen ? "show" : ""
-            }`}
+            className={`collapse navbar-collapse justify-content-end ${menuOpen ? "show" : ""
+              }`}
           >
             <ul className="navbar-nav align-items-lg-center gap-lg-4 gap-3">
               <li className="nav-item">
                 <Link
                   href="/products"
-                  className={`nav-link ${
-                    pathname.startsWith("/products") || pathname.startsWith("/items") ? "active" : ""
-                  }`}
+                  className={`nav-link ${pathname.startsWith("/products") || pathname.startsWith("/items") ? "active" : ""
+                    }`}
                 >
                   Products
                 </Link>
               </li>
 
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link
                   href="/category/hematology-analyzer"
                   className={`nav-link ${
@@ -101,14 +99,13 @@ export default function Navbar() {
                 >
                   Categories
                 </Link>
-              </li>
+              </li> */}
 
               <li className="nav-item">
                 <Link
                   href="/services"
-                  className={`nav-link ${
-                    pathname.startsWith("/services") ? "active" : ""
-                  }`}
+                  className={`nav-link ${pathname.startsWith("/services") ? "active" : ""
+                    }`}
                 >
                   Services
                 </Link>
@@ -117,9 +114,8 @@ export default function Navbar() {
               <li className="nav-item">
                 <Link
                   href="/about"
-                  className={`nav-link ${
-                    pathname.startsWith("/about") ? "active" : ""
-                  }`}
+                  className={`nav-link ${pathname.startsWith("/about") ? "active" : ""
+                    }`}
                 >
                   About
                 </Link>
@@ -128,9 +124,8 @@ export default function Navbar() {
               <li className="nav-item">
                 <Link
                   href="/contact"
-                  className={`nav-link ${
-                    pathname.startsWith("/contact") ? "active" : ""
-                  }`}
+                  className={`nav-link ${pathname.startsWith("/contact") ? "active" : ""
+                    }`}
                 >
                   Contact
                 </Link>
