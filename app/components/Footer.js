@@ -33,7 +33,7 @@ export default function Footer() {
       try {
         const res = await fetch("/api/site-data?type=contact", { cache: "no-store" });
         const json = await res.json();
-        setContactInfo(json?.data?.contactInfo || []);
+        setContactInfo(json?.data?.contactInfo || (Array.isArray(json?.data) ? json.data : []));
       } catch (err) {
         console.log(err);
       }
