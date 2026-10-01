@@ -261,7 +261,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
             const { jsPDF } = await import("jspdf");
             const html2canvas = (await import("html2canvas")).default;
 
-            const rawImg = selectedImage || (product.images && product.images[0]) || product.image || "/placeholder.jpg";
+            const rawImg = selectedImage || (product.images && product.images[0]) || product.image || "/HA.png";
 
             // Helper to get image as Base64 data URL via /api/image-proxy server endpoint
             const getBase64Image = async (url) => {
@@ -640,7 +640,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                         />
                                     )}
                                     <img
-                                        src={selectedImage || product.image || "/placeholder.jpg"}
+                                        src={selectedImage || product.image || "/HA.png"}
                                         alt={product.title}
                                         onLoad={() => setImageLoaded(true)}
                                         decoding="async"
@@ -653,7 +653,8 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                                             opacity: imageLoaded ? 1 : 0,
                                         }}
                                         onError={(e) => {
-                                            e.currentTarget.src = "/placeholder.jpg";
+                                            if (e.currentTarget.src.endsWith("/HA.png")) return;
+                                            e.currentTarget.src = "/HA.png";
                                         }}
                                     />
                                 </>
@@ -663,7 +664,7 @@ export default function ProductDetails({ slug, product: initialProduct }) {
                         <div className="d-flex gap-2 flex-wrap mt-3">
                             {(product.images?.length
                                 ? product.images
-                                : [product.image || "/placeholder.jpg"]
+                                : [product.image || "/HA.png"]
                             ).map((img, index) => (
                                 <img
                                     key={index}

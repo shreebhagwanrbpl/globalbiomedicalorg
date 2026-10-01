@@ -4,17 +4,17 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-export default function Hero({ city }) {
+export default function Hero({ city, initialHero = null }) {
   const [mounted, setMounted] = useState(false);
-  const [homeLoading, setHomeLoading] = useState(true);
+  const [data, setData] = useState(initialHero || {});
+  const [homeLoading, setHomeLoading] = useState(!initialHero);
 
-  const [data, setData] = useState({});
   const pathname = usePathname();
   const pathParts = pathname.split("/").filter(Boolean);
 
-  const [currentCity, setCurrentCity] = useState("");
-  const [isValidCity, setIsValidCity] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [currentCity, setCurrentCity] = useState(city || "");
+  const [isValidCity, setIsValidCity] = useState(!!city);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkDistrict = async () => {
@@ -23,7 +23,6 @@ export default function Hero({ city }) {
       if (!slug) {
         setCurrentCity("");
         setIsValidCity(false);
-        setLoading(false);
         return;
       }
 
@@ -42,7 +41,6 @@ export default function Hero({ city }) {
         setCurrentCity("");
         setIsValidCity(false);
       }
-      setLoading(false);
     };
 
     checkDistrict();
@@ -77,24 +75,25 @@ export default function Hero({ city }) {
     fetchData();
   }, []);
 
-  if (!mounted || homeLoading || loading) {
-    return (
-      <div className="page-loader">
-        <div className="loader-circle"></div>
-        <h2>Global Biomedical</h2>
-        <p>Loading amazing healthcare solutions...</p>
-      </div>
-    );
+  if (!mounted && !initialHero) {
+    return null;
   }
 
-  // Admin-managed text is used exactly as stored in SQLite.
-  // Only the image is allowed to use a local static fallback.
-  const heroBadge = "Trusted Since 2009";
-  const heroTitle = data?.title || "";
-  const heroDescription = data?.description || "";
-  const button1Text = data?.button1Text || "";
-  const button2Text = data?.button2Text || "";
-  const heroImage = data?.image || "/HA.png";
+  // Admin-managed text is used, with robust defaults for missing fields
+  const heroBadge = data?.badge || "Trusted Since 2009";
+  const heroTitle = data?.title || "Precision Diagnostics, Powered by Smarter Biomedical Solutions";
+  const heroDescription =
+    data?.description ||
+    "Empowering laboratories and healthcare professionals with dependable diagnostic instruments, laboratory essentials, and biomedical solutions built for accuracy, efficiency, and everyday performance.";
+  const button1Text = data?.button1Text || "Request Product Details";
+  const button1Link =
+    data?.button1Link ||
+    (isValidCity ? `/${citySlug}/items` : "/items");
+  const button2Text = data?.button2Text || "Talk to Our Experts";
+  const button2Link =
+    data?.button2Link ||
+    (isValidCity ? `/${citySlug}/contact` : "/contact");
+  const heroImage = data?.image || data?.imageUrl || "/HA.png";
 
   return (
     <section className="hero-section">
@@ -141,23 +140,23 @@ export default function Hero({ city }) {
               </div>
 
               <div className="mt-4 pt-2 d-flex flex-wrap gap-3 align-items-center">
-                {button1Text && (data?.button1Link ? (
-                  <Link href={data.button1Link} className="hero-btn-primary">
+                {button1Text && (
+                  <Link
+                    href={button1Link}
+                    className="hero-btn-primary text-decoration-none d-inline-flex align-items-center"
+                  >
                     {button1Text} <i className="bi bi-arrow-right ms-2"></i>
                   </Link>
-                ) : (
-                  <span className="hero-btn-primary">
-                    {button1Text} <i className="bi bi-arrow-right ms-2"></i>
-                  </span>
-                ))}
+                )}
 
-                {button2Text && (data?.button2Link ? (
-                  <Link href={data.button2Link} className="hero-btn-outline">
+                {button2Text && (
+                  <Link
+                    href={button2Link}
+                    className="hero-btn-outline text-decoration-none d-inline-flex align-items-center"
+                  >
                     {button2Text}
                   </Link>
-                ) : (
-                  <span className="hero-btn-outline">{button2Text}</span>
-                ))}
+                )}
               </div>
             </div>
 

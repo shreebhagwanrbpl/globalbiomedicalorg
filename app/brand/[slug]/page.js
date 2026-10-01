@@ -85,10 +85,14 @@ export default async function BrandPage({ params }) {
                   style={{ height: "240px", borderBottom: "1px solid #f1f5f9" }}
                 >
                   <img
-                    src={prod.images?.[0] || prod.image || "/placeholder.jpg"}
+                    src={prod.images?.[0] || prod.image || "/HA.png"}
                     alt={`${prod.title} - ${brandName}`}
                     className="img-fluid"
                     style={{ maxHeight: "200px", objectFit: "contain" }}
+                    onError={(e) => {
+                      if (e.currentTarget.src.endsWith("/HA.png")) return;
+                      e.currentTarget.src = "/HA.png";
+                    }}
                   />
                 </div>
                 <div className="card-body p-4 d-flex flex-column justify-content-between">

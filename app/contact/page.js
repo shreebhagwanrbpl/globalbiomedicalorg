@@ -51,6 +51,11 @@ export default function Contact({ city }) {
   const [selectedDistrictSlug, setSelectedDistrictSlug] = useState(initialSlug);
   const [currentCity, setCurrentCity] = useState(initialSlug);
   const [stateName, setStateName] = useState("Rajasthan");
+  const [contactData, setContactData] = useState({
+    address: "Jaipur, Rajasthan, India",
+    email: "info@globalbiomedical.org",
+    phones: ["+91 9257984336", "+91 8529833535", "+91 9983301657"],
+  });
 
   const formatCity = (name = "") =>
     name
@@ -62,6 +67,24 @@ export default function Contact({ city }) {
 
   useEffect(() => {
     setMounted(true);
+    const fetchContact = async () => {
+      try {
+        const res = await fetch("/api/site-data?type=contact", { cache: "no-store" });
+        const json = await res.json();
+        if (json?.data) {
+          setContactData((prev) => ({
+            ...prev,
+            ...json.data,
+            phones: Array.isArray(json.data.phones) && json.data.phones.length > 0 ? json.data.phones : prev.phones,
+            email: json.data.email || prev.email,
+            address: json.data.address || prev.address,
+          }));
+        }
+      } catch (err) {
+        console.error("Error loading contact info:", err);
+      }
+    };
+    fetchContact();
   }, []);
 
   useEffect(() => {
@@ -302,49 +325,79 @@ export default function Contact({ city }) {
                   Have a product inquiry, pricing quote request, or urgent maintenance call in <strong>{cityName}</strong>? Our technical specialists are ready to assist.
                 </p>
 
-                <div className="contact-info d-flex flex-column gap-4">
+                <div className="contact-info d-flex flex-column gap-3">
+                  {/* ADDRESS */}
                   <div className="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border">
                     <div className="p-2 bg-plum text-white rounded-circle">
-                      <i className="bi bi-geo-alt-fill fs-4"></i>
+                      <i className="bi bi-geo-alt-fill fs-5"></i>
                     </div>
                     <div>
-                      <strong className="text-dark d-block mb-1">Service & Office Location</strong>
+                      <strong className="text-dark d-block mb-1">Head Office & Registered Address</strong>
                       <p className="text-secondary small mb-0 fw-medium">
-                        {cityName}, {stateName}, India
+                        {contactData.address || "F-4, 1st Floor, Plot No. 16, D-Block Tagor Nagar, Ajmer-Delhi Bypass Rd, Jaipur, Rajasthan 302021, India"}
                       </p>
-                      <small className="text-muted">Serving all medical centers in {cityName} district</small>
+                      {cityName && (
+                        <small className="text-muted d-block mt-1">
+                          Serving all healthcare & diagnostic centers in <strong>{cityName}</strong> ({stateName})
+                        </small>
+                      )}
                     </div>
                   </div>
 
+                  {/* EMAIL */}
                   <div className="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border">
                     <div className="p-2 bg-plum text-white rounded-circle">
-                      <i className="bi bi-envelope-fill fs-4"></i>
+                      <i className="bi bi-envelope-fill fs-5"></i>
                     </div>
                     <div>
-                      <strong className="text-dark d-block mb-1">Email Support</strong>
-                      <a href="mailto:info@globalbiomedical.org" className="text-plum text-decoration-none fw-semibold small">
-                        info@globalbiomedical.org
+                      <strong className="text-dark d-block mb-1">Official Email</strong>
+                      <a href={`mailto:${contactData.email || "info@globalbiomedical.org"}`} className="text-plum text-decoration-none fw-semibold small">
+                        {contactData.email || "info@globalbiomedical.org"}
                       </a>
                     </div>
                   </div>
 
+                  {/* PHONES & WHATSAPP */}
                   <div className="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border">
                     <div className="p-2 bg-plum text-white rounded-circle">
-                      <i className="bi bi-telephone-fill fs-4"></i>
+                      <i className="bi bi-telephone-fill fs-5"></i>
+                    </div>
+                    <div className="w-100">
+                      <strong className="text-dark d-block mb-1">Helpline & Sales Contact</strong>
+                      <div className="d-flex flex-column gap-1.5 mt-1">
+                        {(Array.isArray(contactData.phones) && contactData.phones.length > 0
+                          ? contactData.phones
+                          : ["+91 9257984336", "+91 8529833535", "+91 9983301657", "+91 8318368383"]
+                        ).map((phone, idx) => (
+                          <div key={idx} className="d-flex align-items-center justify-content-between flex-wrap">
+                            <a href={`tel:${String(phone).replace(/[^0-9+]/g, "")}`} className="text-dark fw-bold text-decoration-none small">
+                              <i className="bi bi-phone me-1 text-plum"></i> {phone}
+                            </a>
+                            <a
+                              href={`https://wa.me/${String(phone).replace(/[^0-9]/g, "")}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-sm btn-outline-success py-0 px-2 rounded-pill small"
+                              style={{ fontSize: "11px" }}
+                            >
+                              <i className="bi bi-whatsapp me-1"></i> Chat
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* WORKING HOURS */}
+                  <div className="d-flex align-items-start gap-3 p-3 rounded-3 bg-white border">
+                    <div className="p-2 bg-plum text-white rounded-circle">
+                      <i className="bi bi-clock-fill fs-5"></i>
                     </div>
                     <div>
-                      <strong className="text-dark d-block mb-1">24/7 Phone & WhatsApp Support</strong>
-                      <div className="d-flex flex-column gap-1 mt-1">
-                        <a href="tel:+919257984336" className="text-dark fw-bold text-decoration-none small">
-                          <i className="bi bi-phone me-1 text-plum"></i> +91 9257984336
-                        </a>
-                        <a href="tel:+918529833535" className="text-dark fw-bold text-decoration-none small">
-                          <i className="bi bi-phone me-1 text-plum"></i> +91 8529833535
-                        </a>
-                        <a href="tel:+919983301657" className="text-dark fw-bold text-decoration-none small">
-                          <i className="bi bi-phone me-1 text-plum"></i> +91 9983301657
-                        </a>
-                      </div>
+                      <strong className="text-dark d-block mb-1">Working Hours</strong>
+                      <p className="text-secondary small mb-0 fw-medium">
+                        {contactData.workingHours || "Mon - Sat: 9:30 AM - 6:30 PM"}
+                      </p>
                     </div>
                   </div>
                 </div>

@@ -11,13 +11,14 @@ const ProductCard = React.memo(function ProductCard({ product, district }) {
         {/* Image */}
         <div className="relative h-[180px] sm:h-[220px] rounded-2xl lg:rounded-3xl overflow-hidden bg-slate-100">
           <img
-            src={product.images?.[0] || product.image || "/placeholder.jpg"}
+            src={product.images?.[0] || product.image || "/HA.png"}
             alt={product.title}
             loading="lazy"
             decoding="async"
             className="w-full h-full object-contain p-5"
             onError={(e) => {
-              e.currentTarget.src = "/placeholder.jpg";
+              if (e.currentTarget.src.endsWith("/HA.png")) return;
+              e.currentTarget.src = "/HA.png";
             }}
           />
         </div>

@@ -4,17 +4,31 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-export default function Home({ city }) {
+export default function Home({
+  city,
+  initialHero = null,
+  initialServices = null,
+  initialProducts = [],
+}) {
   const [mounted, setMounted] = useState(false);
-  const [homeLoading, setHomeLoading] = useState(true);
-  const [services, setServices] = useState([]);
-  const [products, setProducts] = useState([]);
+  const [services, setServices] = useState(
+    Array.isArray(initialServices?.services)
+      ? initialServices.services
+      : Array.isArray(initialServices)
+        ? initialServices
+        : []
+  );
+  const [products, setProducts] = useState(
+    Array.isArray(initialProducts) ? initialProducts : []
+  );
+  const [homeLoading, setHomeLoading] = useState(
+    !initialProducts || initialProducts.length === 0
+  );
   const pathname = usePathname();
   const pathParts = pathname.split("/").filter(Boolean);
-  const [currentCity, setCurrentCity] = useState("");
-  const [isValidCity, setIsValidCity] = useState(false);
+  const [currentCity, setCurrentCity] = useState(city || "");
+  const [isValidCity, setIsValidCity] = useState(!!city);
   const [pageLoading, setPageLoading] = useState(false);
-  const [animating, setAnimating] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -25,7 +39,12 @@ export default function Home({ city }) {
       try {
         const res = await fetch("/api/site-data?type=services", { cache: "no-store" });
         const json = await res.json();
-        if (json?.data) setServices(json.data.services || []);
+        const servList = Array.isArray(json?.data?.services)
+          ? json.data.services
+          : Array.isArray(json?.data)
+            ? json.data
+            : [];
+        if (servList.length > 0) setServices(servList);
       } catch (err) {
         console.error("Error fetching services:", err);
       }
@@ -39,15 +58,13 @@ export default function Home({ city }) {
         const res = await fetch(`/api/catalog?websiteId=globalbiomedicalorg&companyId=global&t=${Date.now()}`, { cache: "no-store" });
         if (res.ok) {
           const json = await res.json();
-          if (Array.isArray(json.products)) {
+          if (Array.isArray(json.products) && json.products.length > 0) {
             setProducts(json.products);
             return;
           }
         }
-        setProducts([]);
       } catch (err) {
         console.error("Error fetching homepage products:", err);
-        setProducts([]);
       } finally {
         setHomeLoading(false);
       }
@@ -95,33 +112,24 @@ export default function Home({ city }) {
     checkDistrict();
   }, [pathname]);
 
-  const icons = ["bi-heart-pulse", "bi-capsule", "bi-tools"];
+  const icons = [
+    "bi-heart-pulse-fill",
+    "bi-tools",
+    "bi-person-badge-fill",
+    "bi-capsule",
+    "bi-shield-check",
+    "bi-truck",
+  ];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMounted(true);
-      setAnimating(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!mounted || homeLoading || pageLoading || animating) {
-    return (
-      <div className="page-loader">
-        <div className="loader-circle"></div>
-        <h2>Global Biomedical</h2>
-        <p>Loading amazing healthcare solutions...</p>
-      </div>
-    );
-  }
-
-  // Firebase dummy fallback has been removed. Show only live SQLite catalog products.
-  const displayProducts = Array.isArray(products) ? products.slice(0, 4) : [];
+  const displayProducts = Array.isArray(products) && products.length > 0
+    ? products.slice(0, 6)
+    : Array.isArray(initialProducts)
+      ? initialProducts.slice(0, 6)
+      : [];
 
   return (
     <>
-      <Hero city={city} />
+      <Hero city={city} initialHero={initialHero} />
 
       {/* TRUST STRIP */}
       <section className="trust-strip">
@@ -248,7 +256,7 @@ export default function Home({ city }) {
           {Array.isArray(displayProducts) && displayProducts.length > 0 ? (
             <div className="row g-4">
 
-              {displayProducts.slice(0, 3).map((item, i) => {
+              {displayProducts.map((item, i) => {
                 const itemImg =
                   Array.isArray(item?.images) && item.images.length > 0
                     ? item.images[0]
@@ -572,14 +580,16 @@ export default function Home({ city }) {
             <div className="mt-4 d-flex justify-content-center gap-3 flex-wrap">
               <Link
                 href={isValidCity ? `/${citySlug}/contact` : "/contact"}
+                className="cta-btn-primary text-decoration-none d-inline-flex align-items-center justify-content-center"
               >
-                <button className="cta-btn-primary">Get in Touch</button>
+                Get in Touch
               </Link>
 
               <Link
                 href={isValidCity ? `/${citySlug}/items` : "/items"}
+                className="cta-btn-outline text-decoration-none d-inline-flex align-items-center justify-content-center"
               >
-                <button className="cta-btn-outline">Request Quote</button>
+                Request Quote
               </Link>
             </div>
           </div>

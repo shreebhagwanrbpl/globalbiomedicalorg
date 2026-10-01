@@ -727,10 +727,11 @@ export default function ProductsClient({ initialProducts = [], district = null, 
                                         <div className="col-lg-3 col-md-4">
                                           <div className="list-image">
                                             <img
-                                              src={product.images?.[0] || product.image || "/placeholder.jpg"}
+                                              src={product.images?.[0] || product.image || "/HA.png"}
                                               alt={product.title}
                                               onError={(e) => {
-                                                e.currentTarget.src = "/placeholder.jpg";
+                                                if (e.currentTarget.src.endsWith("/HA.png")) return;
+                                                e.currentTarget.src = "/HA.png";
                                               }}
                                             />
                                           </div>

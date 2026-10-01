@@ -1,4 +1,8 @@
 import HomePage from "./homepage";
+import { fetchFullCatalog, fetchSiteDocument } from "@/lib/data-fetcher-server";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = {
   title: "Global Biomedical | Medical Equipment Supplier in India",
@@ -12,12 +16,9 @@ export const metadata = {
     "Diagnostic Equipment",
     "Global Biomedical",
     "Diagnostic",
-    "Hospital ",
+    "Hospital",
     "Biomedical",
-    "Medical"
-
-
-
+    "Medical",
   ],
   alternates: {
     canonical: "https://globalbiomedical.org",
@@ -52,6 +53,36 @@ export const metadata = {
   },
 };
 
-export default function Home() {
-  return <HomePage />;
-}
+export default async function Home() {
+  let initialProducts = [];
+  let initialHero = null;
+  let initialServices = null;
+
+  try {
+    const [prods, hero, serv] = await Promise.allSettled([
+      fetchFullCatalog(),
+      fetchSiteDocument("home"),
+      fetchSiteDocument("services"),
+    ]);
+
+    if (prods.status === "fulfilled" && Array.isArray(prods.value)) {
+      initialProducts = prods.value;
+    }
+    if (hero.status === "fulfilled" && hero.value) {
+      initialHero = hero.value;
+    }
+    if (serv.status === "fulfilled" && serv.value) {
+      initialServices = serv.value;
+    }
+  } catch (err) {
+    console.error("[Home Page Server]", err);
+  }
+
+  return (
+    <HomePage
+      initialProducts={initialProducts}
+      initialHero={initialHero}
+      initialServices={initialServices}
+    />
+  );
+}

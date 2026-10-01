@@ -3,8 +3,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const DEFAULT_CONTACT_INFO = [
+  { label: "Address", value: "Jaipur, Rajasthan, India" },
+  { label: "Email", value: "info@globalbiomedical.org" },
+  { label: "Phone", value: "+91 9257984336" },
+  { label: "Mobile", value: "+91 8529833535" },
+  { label: "Telephone", value: "+91 9983301657" },
+  { label: "WhatsApp", value: "+91 9257984336" },
+];
+
 export default function Footer() {
-  const [contactInfo, setContactInfo] = useState([]);
+  const [contactInfo, setContactInfo] = useState(DEFAULT_CONTACT_INFO);
   const pathname = usePathname();
 
   const getValue = (key) => {
@@ -33,9 +42,12 @@ export default function Footer() {
       try {
         const res = await fetch("/api/site-data?type=contact", { cache: "no-store" });
         const json = await res.json();
-        setContactInfo(json?.data?.contactInfo || []);
+        const info = json?.data?.contactInfo;
+        if (Array.isArray(info) && info.length > 0) {
+          setContactInfo(info);
+        }
       } catch (err) {
-        console.log(err);
+        console.error("Error fetching footer contact:", err);
       }
     };
 
@@ -139,22 +151,22 @@ export default function Footer() {
 
           {/* CATEGORIES */}
           <div className="col-lg-3 col-md-6">
-            <h6 className="footer-title">Product Categories</h6>
+            <h6 className="footer-title">Product Catalog</h6>
             <ul className="footer-links">
               <li>
-                <Link href="/category/hematology-analyzer">Hematology Analyzers</Link>
+                <Link href="/items">Test Strips (All)</Link>
               </li>
               <li>
-                <Link href="/category/biochemistry-analyzer">Biochemistry Analyzers</Link>
+                <Link href="/items">Blood Glucose Test Strips</Link>
               </li>
               <li>
-                <Link href="/category/electrolyte-analyzer">Electrolyte Analyzers</Link>
+                <Link href="/items">Hemoglobin Test Strips</Link>
               </li>
               <li>
-                <Link href="/category/immunoassay-analyzer">Immunoassay Analyzers</Link>
+                <Link href="/items">Urine Reagent Test Strips</Link>
               </li>
               <li>
-                <Link href="/category/laboratory-consumables">Medical Consumables</Link>
+                <Link href="/items">Diagnostic Consumables</Link>
               </li>
             </ul>
           </div>
