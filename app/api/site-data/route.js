@@ -1,30 +1,28 @@
 import { NextResponse } from "next/server";
-import { fetchAdminJson } from "@/lib/admin-api";
-import { getDetectedWebsiteId } from "@/lib/catalog-config";
+import { getPageData, getDistricts, getDistrictData } from "@/lib/mongoDb";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get("type");
-    const websiteId = searchParams.get("websiteId") || getDetectedWebsiteId();
-    const slug = searchParams.get("slug");
+    const type = searchParams.get("type") || "home";
+    const district = searchParams.get("district") || undefined;
+    const page = searchParams.get("page") || undefined;
 
-    if (!type) {
-      return NextResponse.json({ success: false, error: "type is required" }, { status: 400 });
+    let data = null;
+    if (type === "districts") {
+      data = await getDistricts();
+    } else if (type === "district" && district) {
+      data = await getDistrictData(district);
+    } else {
+      data = await getPageData(page || type);
     }
 
-    const params = new URLSearchParams({ type, websiteId });
-    if (slug) params.set("slug", slug);
-
-    const data = await fetchAdminJson(`/api/site-data?${params.toString()}`);
-    return NextResponse.json(data, {
-      headers: { "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0" },
-    });
+    return NextResponse.json({ success: true, type, data, timestamp: Date.now() });
   } catch (error) {
-    console.error("[website /api/site-data]", error);
-    return NextResponse.json({ success: false, data: null, error: error.message }, { status: 502 });
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

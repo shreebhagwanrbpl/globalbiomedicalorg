@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
-import { fetchAdminJson } from "@/lib/admin-api";
+import { getFullCatalog } from "@/lib/mongoDb";
+import { fetchFullCatalog } from "@/lib/data-fetcher";
 import { getDetectedCompanyId, getDetectedWebsiteId } from "@/lib/catalog-config";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export async function GET(request) {
   try {
@@ -11,18 +13,18 @@ export async function GET(request) {
     const websiteId = searchParams.get("websiteId") || getDetectedWebsiteId();
     const companyId = searchParams.get("companyId") || getDetectedCompanyId();
 
-    const params = new URLSearchParams({ websiteId, companyId });
-    const data = await fetchAdminJson(`/api/catalog?${params.toString()}`);
+    let products = [];
+    try {
+      products = await getFullCatalog(companyId, websiteId);
+    } catch (dbErr) {
+      products = await fetchFullCatalog();
+    }
 
-    return NextResponse.json(data, {
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-        "CDN-Cache-Control": "no-store",
-        "Surrogate-Control": "no-store",
-      },
-    });
+    return NextResponse.json(
+      { success: true, count: products.length, products, timestamp: Date.now() },
+      { status: 200, headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } }
+    );
   } catch (error) {
-    console.error("[website /api/catalog]", error);
-    return NextResponse.json({ success: false, products: [], error: error.message }, { status: 502 });
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
