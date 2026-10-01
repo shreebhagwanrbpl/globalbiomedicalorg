@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { WEBSITE_ID, COMPANY_ID } from "@/lib/catalog-utils";
-import { getProductsFromDb } from "@/lib/sqlite";
-import { STATIC_PRODUCTS } from "@/lib/static-data";
+import { getFullCatalog } from "@/lib/mongoDb";
+import { fetchFullCatalog } from "@/lib/data-fetcher";
+import { getDetectedCompanyId, getDetectedWebsiteId } from "@/lib/catalog-config";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -13,46 +13,18 @@ export async function GET(request) {
     const websiteId = searchParams.get("websiteId") || WEBSITE_ID;
     const companyId = searchParams.get("companyId") || COMPANY_ID;
 
-    const dbProducts = getProductsFromDb(websiteId, companyId);
-    const finalProducts =
-      Array.isArray(dbProducts) && dbProducts.length > 0
-        ? dbProducts
-        : STATIC_PRODUCTS;
+    let products = [];
+    try {
+      products = await getFullCatalog(companyId, websiteId);
+    } catch (dbErr) {
+      products = await fetchFullCatalog();
+    }
 
     return NextResponse.json(
-      {
-        success: true,
-        products: finalProducts,
-        data: finalProducts,
-        websiteId,
-        companyId,
-      },
-      {
-        headers: {
-          "Cache-Control":
-            "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-          "CDN-Cache-Control": "no-store",
-          "Surrogate-Control": "no-store",
-        },
-      }
+      { success: true, count: products.length, products, timestamp: Date.now() },
+      { status: 200, headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } }
     );
   } catch (error) {
-    console.error("[website /api/catalog]", error);
-    const fallbackDb = getProductsFromDb();
-    const finalProducts = fallbackDb.length > 0 ? fallbackDb : STATIC_PRODUCTS;
-    return NextResponse.json(
-      {
-        success: true,
-        products: finalProducts,
-        data: finalProducts,
-        error: error.message,
-      },
-      {
-        status: 200,
-        headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
-        },
-      }
-    );
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

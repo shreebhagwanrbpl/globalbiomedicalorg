@@ -42,10 +42,7 @@ export default function Footer() {
       try {
         const res = await fetch("/api/site-data?type=contact", { cache: "no-store" });
         const json = await res.json();
-        const info = json?.data?.contactInfo;
-        if (Array.isArray(info) && info.length > 0) {
-          setContactInfo(info);
-        }
+        setContactInfo(json?.data?.contactInfo || (Array.isArray(json?.data) ? json.data : []));
       } catch (err) {
         console.error("Error fetching footer contact:", err);
       }
