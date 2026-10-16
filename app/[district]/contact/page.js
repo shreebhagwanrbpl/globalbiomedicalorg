@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import Contact from "@/app/contact/page";
 
 export async function generateMetadata({ params }) {

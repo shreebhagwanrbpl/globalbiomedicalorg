@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import DistrictPage, { generateMetadata as districtGenerateMetadata } from "../district/[slug]/page";
 
 export async function generateMetadata({ params }) {

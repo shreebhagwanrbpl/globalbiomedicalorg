@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import Services from "@/app/services/page";
 
 export async function generateMetadata({ params }) {
